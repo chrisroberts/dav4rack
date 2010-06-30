@@ -11,7 +11,8 @@ module RackDAV
       @response = response
       @options = options
       @resource = resource_class.new(implied_path, @options)
-      raise Forbidden if request.path_info.include?('../')
+      authenticate
+      raise Forbidden if request.path_info.include?('..')
     end
     
     def url_escape(s)
@@ -44,7 +45,7 @@ module RackDAV
       map_exceptions do
         resource.get(request, response)
       end
-      if(response.status == 200)
+      if(response.status == 200 && !resource.collection?)
         response['Etag'] = resource.etag
         response['Content-Type'] = resource.content_type
         response['Content-Length'] = resource.content_length.to_s
@@ -366,6 +367,12 @@ module RackDAV
             rexml_convert(xml, child)
           end
         end
+      end
+    end
+    
+    def authenticate
+      if(resource.respond_to?(:authenticate))
+        raise Forbidden unless resource.authenticate(request.env['HTTP_AUTHORIZATION'].gsub(/^[^\s]+\s/, ''))
       end
     end
     
