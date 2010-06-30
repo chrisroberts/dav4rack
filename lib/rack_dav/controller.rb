@@ -9,7 +9,7 @@ module RackDAV
       @request = request
       @response = response
       @options = options
-      @resource = resource_class.new(url_unescape(request.path_info), @options)
+      @resource = resource_class.new(implied_path, @options)
       raise Forbidden if request.path_info.include?('../')
     end
     
@@ -82,60 +82,18 @@ module RackDAV
     end
     
     def copy
-      raise NotFound if not resource.exist?
-      
-      dest_uri = URI.parse(env['HTTP_DESTINATION'])
-      destination = url_unescape(dest_uri.path)
-
-      raise BadGateway if dest_uri.host and dest_uri.host != request.host
-      raise Forbidden if destination == resource.path
-      
-      dest = resource_class.new(destination, @options)
-      dest = dest.child(resource.name) if dest.collection?
-      
-      dest_existed = dest.exist?
-      
-      copy_recursive(resource, dest, depth, errors = [])
-      
-      if errors.empty?
-        response.status = dest_existed ? NoContent : Created
-      else
-        multistatus do |xml|
-          response_errors(xml, errors)
-        end
-      end
-    rescue URI::InvalidURIError => e
-      raise BadRequest.new(e.message)
+      move(:copy)
     end
 
-    def move
+    def move(*args)
       raise NotFound if not resource.exist?
-
       dest_uri = URI.parse(env['HTTP_DESTINATION'])
       destination = url_unescape(dest_uri.path)
-
       raise BadGateway if dest_uri.host and dest_uri.host != request.host
       raise Forbidden if destination == resource.path
-      
-      dest = resource_class.new(destination, @options)
-      dest = dest.child(resource.name) if dest.collection?
-      
-      dest_existed = dest.exist?
-      
+      dest = resource_class.new(clean_path(destination), @options)
       raise Conflict if depth <= 1
-      
-      copy_recursive(resource, dest, depth, errors = [])
-      delete_recursive(resource, errors)
-      
-      if errors.empty?
-        response.status = dest_existed ? NoContent : Created
-      else
-        multistatus do |xml|
-          response_errors(xml, errors)
-        end
-      end
-    rescue URI::InvalidURIError => e
-      raise BadRequest.new(e.message)
+      resource.send(args.include?(:copy) ? :copy : :move, dest)
     end
     
     def propfind
@@ -151,7 +109,7 @@ module RackDAV
       multistatus do |xml|
         for resource in find_resources
           xml.response do
-            xml.href "http://#{host}#{url_escape resource.path}"
+            xml.href "http://#{host}#{root_uri_path}/#{url_escape(resource.path)}"
             propstats xml, get_properties(resource, names)
           end
         end
@@ -167,7 +125,7 @@ module RackDAV
       multistatus do |xml|
         for resource in find_resources
           xml.response do
-            xml.href "http://#{host}#{resource.path}"
+            xml.href "http://#{host}#{root_uri_path}/#{resource.path}"
             propstats xml, set_properties(resource, prop_set)
           end
         end
@@ -219,14 +177,40 @@ module RackDAV
       @request.env
     end
     
+    def scheme
+      request.scheme
+    end
+    
     def host
-      env['HTTP_HOST']
+      request.host
+    end
+    
+    def port
+      request.port
     end
     
     def resource_class
       @options[:resource_class]
     end
 
+    def root_uri_path
+      @options[:root_uri_path]
+    end
+    
+    def implied_path
+      clean_path(@request.path_info)
+    end
+    
+    def clean_path(x)
+      ip = url_unescape(x)
+      ip.gsub!(/^#{Regexp.escape(root_uri_path)}/, '') if root_uri_path
+      ip
+    end
+    
+    def actual_path
+      url_unescape(@request.path_info)
+    end
+    
     def depth
       case env['HTTP_DEPTH']
       when '0' then 0
@@ -343,7 +327,7 @@ module RackDAV
     def response_errors(xml, errors)
       for path, status in errors
         xml.response do
-          xml.href "http://#{host}#{path}"
+          xml.href "#{scheme}://#{host}:#{port}#{path}"
           xml.status "#{request.env['HTTP_VERSION']} #{status.status_line}"
         end
       end
