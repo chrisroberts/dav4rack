@@ -63,15 +63,11 @@ module RackDAV
     end
 
     def delete
-      delete_recursive(resource, errors = [])
-      
-      if errors.empty?
-        response.status = NoContent
-      else
-        multistatus do |xml|
-          response_errors(xml, errors)
-        end
+      raise NotFound unless resource.exist?
+      map_exceptions do
+        resource.delete
       end
+      response.status = Success
     end
     
     def mkcol
@@ -241,40 +237,6 @@ module RackDAV
         ary = resource.descendants
       end
       ary ? ary : []
-    end
-
-    def delete_recursive(res, errors)
-      for child in res.children
-        delete_recursive(child, errors)
-      end
-      
-      begin
-        map_exceptions { res.delete } if errors.empty?
-      rescue Status
-        errors << [res.path, $!]
-      end
-    end
-    
-    def copy_recursive(res, dest, depth, errors)
-      map_exceptions do
-        if dest.exist?
-          if overwrite
-            delete_recursive(dest, errors)
-          else
-            raise PreconditionFailed
-          end
-        end
-        res.copy(dest)
-      end
-    rescue Status
-      errors << [res.path, $!]
-    else
-      if depth > 0
-        for child in res.children
-          dest_child = dest.child(child.name)
-          copy_recursive(child, dest_child, depth - 1, errors)
-        end
-      end
     end
     
     def map_exceptions
