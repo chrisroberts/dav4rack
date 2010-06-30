@@ -3,7 +3,6 @@ require 'builder'
 require 'time'
 require 'uri'
 require 'rexml/document'
-require 'webrick/httputils'
 
 require 'rack'
 require 'rack_dav/builder_namespace'

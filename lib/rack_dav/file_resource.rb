@@ -1,3 +1,5 @@
+require 'webrick/httputils'
+
 module RackDAV
 
   class FileResource < Resource
