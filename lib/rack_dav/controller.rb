@@ -1,5 +1,6 @@
 module RackDAV
   
+  # TODO: Update this to use nokogiri instead of slow slow rexml
   class Controller
     include RackDAV::HTTPStatus
     
@@ -40,13 +41,16 @@ module RackDAV
     
     def get
       raise NotFound if not resource.exist?
-      response['Etag'] = resource.etag
-      response['Content-Type'] = resource.content_type
-      response['Content-Length'] = resource.content_length.to_s
-      response['Last-Modified'] = resource.last_modified.httpdate      
       map_exceptions do
         resource.get(request, response)
       end
+      if(response.status == 200)
+        response['Etag'] = resource.etag
+        response['Content-Type'] = resource.content_type
+        response['Content-Length'] = resource.content_length.to_s
+        response['Last-Modified'] = resource.last_modified.httpdate
+      end
+      response
     end
 
     def put
@@ -82,14 +86,18 @@ module RackDAV
     end
 
     def move(*args)
-      raise NotFound if not resource.exist?
+      raise NotFound unless resource.exist?
       dest_uri = URI.parse(env['HTTP_DESTINATION'])
       destination = url_unescape(dest_uri.path)
       raise BadGateway if dest_uri.host and dest_uri.host != request.host
       raise Forbidden if destination == resource.path
       dest = resource_class.new(clean_path(destination), @options)
-      raise Conflict if depth <= 1
-      resource.send(args.include?(:copy) ? :copy : :move, dest)
+      if(args.include?(:copy))
+        resource.copy(dest, overwrite)
+      else
+        raise Conflict if depth <= 1
+        resource.move(dest)
+      end
     end
     
     def propfind
@@ -130,6 +138,7 @@ module RackDAV
       resource.save
     end
 
+    # TODO: Rewrite this to actually do something useful
     def lock
       raise NotFound if not resource.exist?
 
@@ -160,6 +169,7 @@ module RackDAV
       end
     end
 
+    # TODO: Rewrite this to actually do something useful
     def unlock
       raise NoContent
     end
@@ -220,9 +230,9 @@ module RackDAV
     end
 
     # TODO: Adding current resource causes weird duplication when using
-    # a webdav path. Perhaps have the controller handle based on if
-    # a base path is set? This can also be helpful for feeding the correct
-    # path through to the resource.
+    # a webdav path. Test this method when using root path. If original is
+    # needed, we can simply check if the path is set or not and include
+    # current if needed
     def find_resources
       ary = nil
       case env['HTTP_DEPTH']
