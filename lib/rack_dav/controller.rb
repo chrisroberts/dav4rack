@@ -113,7 +113,7 @@ module RackDAV
 
       dest_uri = URI.parse(env['HTTP_DESTINATION'])
       destination = url_unescape(dest_uri.path)
-      
+
       raise BadGateway if dest_uri.host and dest_uri.host != request.host
       raise Forbidden if destination == resource.path
       
@@ -239,15 +239,24 @@ module RackDAV
       env['HTTP_OVERWRITE'].to_s.upcase != 'F'
     end
 
+    # TODO: Adding current resource causes weird duplication when using
+    # a webdav path. Perhaps have the controller handle based on if
+    # a base path is set? This can also be helpful for feeding the correct
+    # path through to the resource.
     def find_resources
+      ary = nil
       case env['HTTP_DEPTH']
       when '0'
-        [resource]
+        # [resource]
+        ary = [resource]
       when '1'
-        [resource] + resource.children
+        # [resource] + resource.children
+        ary = resource.children
       else
-        [resource] + resource.descendants
+        # [resource] + resource.descendants
+        ary = resource.descendants
       end
+      ary ? ary : []
     end
 
     def delete_recursive(res, errors)
