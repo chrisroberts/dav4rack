@@ -1,11 +1,12 @@
 module RackDAV
 
   class Resource
-    attr_reader :path, :options
+    attr_reader :path, :options, :public_path
     
-    def initialize(path, options)
-      @path = path
-      @options = options
+    def initialize(public_path, path, options)
+      @public_path = public_path.dup
+      @path = path.dup
+      @options = options.dup
     end
         
     # If this is a collection, return the child resources.
