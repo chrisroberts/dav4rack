@@ -371,8 +371,21 @@ module RackDAV
     end
     
     def authenticate
+      authed = true
       if(resource.respond_to?(:authenticate))
-        raise Forbidden unless resource.authenticate(request.env['HTTP_AUTHORIZATION'].gsub(/^[^\s]+\s/, ''))
+        authed = false
+        if(request.env['HTTP_AUTHORIZATION'])
+          auth = Rack::Auth::Basic::Request.new(request.env)
+          if(auth.basic? && auth.credentials)
+            authed = resource.authenticate(auth.credentials[0], auth.credentials[1])
+          end
+        end
+      end
+      unless(authed)
+        response.body = resource.respond_to?(:authentication_error_msg) ? resource.authentication_error_msg : 'Not Authorized'
+        response['Content-Length'] = response.body.length
+        response['WWW-Authenticate'] = "Basic realm=\"#{resource.respond_to?(:authentication_realm) ? resource.authentication_realm : 'Locked content'}\""
+        raise Unauthorized.new unless authed
       end
     end
     
