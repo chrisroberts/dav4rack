@@ -10,7 +10,7 @@ module RackDAV
       @request = request
       @response = response
       @options = options
-      @resource = resource_class.new(implied_path, @options)
+      @resource = resource_class.new(request.env['REQUEST_PATH'], implied_path, @options)
       authenticate
       raise Forbidden if request.path_info.include?('..')
     end
@@ -91,8 +91,8 @@ module RackDAV
       dest_uri = URI.parse(env['HTTP_DESTINATION'])
       destination = url_unescape(dest_uri.path)
       raise BadGateway if dest_uri.host and dest_uri.host != request.host
-      raise Forbidden if destination == resource.path
-      dest = resource_class.new(clean_path(destination), @options)
+      raise Forbidden if destination == resource.public_path
+      dest = resource_class.new(destination, clean_path(destination), @options)
       if(args.include?(:copy))
         resource.copy(dest, overwrite)
       else
@@ -108,13 +108,13 @@ module RackDAV
         names = resource.property_names
       else
         names = request_match("/propfind/prop/*").map { |e| e.name }
-        raise BadRequest if names.empty?
+        names = resource.property_names if names.empty?
       end
 
       multistatus do |xml|
         for resource in find_resources
           xml.response do
-            xml.href "http://#{host}#{root_uri_path}/#{url_escape(resource.path)}"
+            xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
             propstats xml, get_properties(resource, names)
           end
         end
@@ -130,7 +130,7 @@ module RackDAV
       multistatus do |xml|
         for resource in find_resources
           xml.response do
-            xml.href "http://#{host}#{root_uri_path}/#{resource.path}"
+            xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
             propstats xml, set_properties(resource, prop_set)
           end
         end
@@ -140,6 +140,9 @@ module RackDAV
     end
 
     # TODO: Rewrite this to actually do something useful
+    # NOTE: Providing real locking the the resource is allowed to 
+    # handle will provide an easy way to deal with all the dot files
+    # os x throws at the system
     def lock
       raise NotFound if not resource.exist?
 
@@ -205,7 +208,7 @@ module RackDAV
     end
     
     def implied_path
-      clean_path(@request.path_info)
+      clean_path(@request.path_info.dup)
     end
     
     def clean_path(x)
