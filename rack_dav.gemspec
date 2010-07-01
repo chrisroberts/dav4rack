@@ -21,6 +21,8 @@ lib/rack_dav/controller.rb
 lib/rack_dav/builder_namespace.rb
 lib/rack_dav/http_status.rb
 lib/rack_dav/resource.rb
+lib/rack_dav/interceptor.rb
+lib/rack_dav/interceptor_resource.rb
 bin/rack_dav
 spec/handler_spec.rb
 README.md
