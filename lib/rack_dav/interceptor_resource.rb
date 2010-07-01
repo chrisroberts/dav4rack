@@ -6,8 +6,8 @@ module RackDAV
     
     def initialize(*args)
       super
-      @root_paths = @options[:handlers].keys
-      @mappings = @options[:handlers]
+      @root_paths = @options[:mappings].keys
+      @mappings = @options[:mappings]
     end
         
     # If this is a collection, return the child resources.
@@ -28,17 +28,17 @@ module RackDAV
     
     # Return the creation time.
     def creation_date
-      Time.now - 100
+      Time.now
     end
 
     # Return the time of last modification.
     def last_modified
-      Time.now - 100
+      Time.now
     end
     
     # Set the time of last modification.
     def last_modified=(time)
-      Time.now - 100
+      Time.now
     end
 
     # Return an Etag, an unique hash value for this resource.
