@@ -1,7 +1,9 @@
+require 'ruby-prof'
+
 module RackDAV
   
   class Handler
-    
+    include RackDAV::HTTPStatus    
     def initialize(options={})
       @options = {
         :resource_class => FileResource,
@@ -10,6 +12,7 @@ module RackDAV
     end
 
     def call(env)
+
       request = Rack::Request.new(env)
       response = Rack::Response.new
 
@@ -20,12 +23,13 @@ module RackDAV
       rescue HTTPStatus::Status => status
         response.status = status.code
       end
-      
+
       # Strings in Ruby 1.9 are no longer enumerable.  Rack still expects the response.body to be
       # enumerable, however.
-      response.body = [response.body] if not response.body.respond_to? :each
 
+      response.body = [response.body] if not response.body.respond_to? :each
       response.status = response.status ? response.status.to_i : 200
+      
       response.finish
     end
     
