@@ -139,7 +139,6 @@ module RackDAV
       new_public.slice!(-1) if new_public[-1,1] == '/'
       new_public = "#{new_public}#{name}"
       if(key = @root_paths.find{|x| new_path =~ /^#{Regexp.escape(x.downcase)}\/?/})
-        pp @mappings[key]
         @mappings[key][:class].new(new_public, new_path.gsub(key, ''), @mappings[key][:options] ? @mappings[key][:options] : options)
       else
         self.class.new(new_public, new_path, options)
