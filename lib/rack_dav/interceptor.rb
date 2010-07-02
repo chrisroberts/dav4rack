@@ -2,7 +2,7 @@ require 'rack_dav/interceptor_resource'
 module RackDAV
   class Interceptor
     def initialize(app, args={})
-      @roots = args[:handlers].keys
+      @roots = args[:mappings].keys
       @args = args
       @app = app
     end
@@ -11,7 +11,7 @@ module RackDAV
       path = env['REQUEST_PATH'].downcase
       method = env['REQUEST_METHOD']
       if(@roots.detect{|x| path =~ /^#{Regexp.escape(x.downcase)}\/?/}.nil? && ['OPTIONS', 'PROPFIND'].include?(method))
-        @app = RackDAV::Handler.new(:resource_class => InterceptorResource, :handlers => @args[:handlers])
+        @app = RackDAV::Handler.new(:resource_class => InterceptorResource, :mappings => @args[:mappings])
       end
       @app.call(env)
     end
