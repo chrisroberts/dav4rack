@@ -16,15 +16,17 @@ module RackDAV
     end
     
     def url_escape(s)
-      s.gsub(/([^\/a-zA-Z0-9_.-]+)/n) do
-        '%' + $1.unpack('H2' * $1.size).join('%').upcase
-      end.tr(' ', '+')
+      URI.escape(s)
+#       s.gsub(/([^\/a-zA-Z0-9_.-]+)/n) do
+#         '%' + $1.unpack('H2' * $1.size).join('%').upcase
+#       end.tr(' ', '+')
     end
 
     def url_unescape(s)
-      s.tr('+', ' ').gsub(/((?:%[0-9a-fA-F]{2})+)/n) do
-        [$1.delete('%')].pack('H*')
-      end
+      URI.unescape(s)
+#       s.tr('+', ' ').gsub(/((?:%[0-9a-fA-F]{2})+)/n) do
+#         [$1.delete('%')].pack('H*')
+#       end
     end    
     
     def options
@@ -72,7 +74,7 @@ module RackDAV
       map_exceptions do
         resource.delete
       end
-      response.status = Success
+      response.status = OK
     end
     
     def mkcol
