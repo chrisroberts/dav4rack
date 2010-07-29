@@ -13,17 +13,17 @@ module RackDAV
     # If this is a collection, return the child resources.
     def children
       childs = @root_paths.find_all{|x|x =~ /^#{Regexp.escape(@path)}/}
-      childs.map{|a| child a.gsub(/^#{Regexp.escape(@path)}/, '').split('/').delete_if{|x|x.empty?}.first }.flatten
+      childs = childs.map{|a| child a.gsub(/^#{Regexp.escape(@path)}/, '').split('/').delete_if{|x|x.empty?}.first }.flatten
     end
 
     # Is this resource a collection?
     def collection?
-      true
+      true if exist?
     end
 
     # Does this recource exist?
     def exist?
-      true
+      !@root_paths.find_all{|x| x =~ /^#{Regexp.escape(@path)}/}.empty?
     end
     
     # Return the creation time.
@@ -125,7 +125,7 @@ module RackDAV
     end
 
     def display_name
-      name
+      File.basename(path.to_s)
     end
     
     def child(name, option={})
@@ -143,37 +143,6 @@ module RackDAV
       else
         self.class.new(new_public, new_path, options)
       end
-    end
-    
-    def property_names
-      %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength)
-    end
-    
-    def get_property(name)
-      case name
-      when 'resourcetype'     then resource_type
-      when 'displayname'      then display_name
-      when 'creationdate'     then creation_date.xmlschema 
-      when 'getcontentlength' then content_length.to_s
-      when 'getcontenttype'   then content_type
-      when 'getetag'          then etag
-      when 'getlastmodified'  then last_modified.httpdate
-      end
-    end
-
-    def set_property(name, value)
-      case name
-      when 'resourcetype'    then self.resource_type = value
-      when 'getcontenttype'  then self.content_type = value
-      when 'getetag'         then self.etag = value
-      when 'getlastmodified' then self.last_modified = Time.httpdate(value)
-      end
-    rescue ArgumentError
-      raise HTTPStatus::Conflict
-    end
-
-    def remove_property(name)
-      raise HTTPStatus::Forbidden
     end
 
     def parent
