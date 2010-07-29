@@ -1,3 +1,5 @@
+require 'nokogiri'
+
 module RackDAV
   
   # TODO: Update this to use nokogiri instead of slow slow rexml
@@ -12,7 +14,7 @@ module RackDAV
       @options = options
       @resource = resource_class.new(request.env['REQUEST_PATH'], implied_path, @options)
       authenticate
-      raise Forbidden if request.path_info.include?('..')
+      raise Forbidden if request.path_info.include?('../')
     end
     
     def url_escape(s)
@@ -36,14 +38,14 @@ module RackDAV
     end
     
     def head
-      raise NotFound if not resource.exist?
+      raise NotFound unless resource.exist?
       response['Etag'] = resource.etag
       response['Content-Type'] = resource.content_type
       response['Last-Modified'] = resource.last_modified.httpdate
     end
     
     def get
-      raise NotFound if not resource.exist?
+      raise NotFound unless resource.exist?
       map_exceptions do
         resource.get(request, response)
       end
@@ -104,15 +106,13 @@ module RackDAV
     end
     
     def propfind
-      raise NotFound if not resource.exist?
-
-      if not request_match("/propfind/allprop").empty?
+      raise NotFound unless resource.exist?
+      unless(request_match('/propfind/allprop').empty?)
         names = resource.property_names
       else
-        names = request_match("/propfind/prop/*").map { |e| e.name }
+        names = request_match('/propfind/prop').children.map{|n|n.name}
         names = resource.property_names if names.empty?
       end
-
       multistatus do |xml|
         for resource in find_resources
           xml.response do
@@ -124,10 +124,10 @@ module RackDAV
     end
     
     def proppatch
-      raise NotFound if not resource.exist?
+      raise NotFound unless resource.exist?
 
-      prop_rem = request_match("/propertyupdate/remove/prop/*").map { |e| [e.name] }
-      prop_set = request_match("/propertyupdate/set/prop/*").map { |e| [e.name, e.text] }
+      prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
+      prop_set = request_match('/propertyupdate/set/prop').children.map{|n| [n.name, n.text] }
 
       multistatus do |xml|
         for resource in find_resources
@@ -146,11 +146,11 @@ module RackDAV
     # handle will provide an easy way to deal with all the dot files
     # os x throws at the system
     def lock
-      raise NotFound if not resource.exist?
+      raise NotFound unless resource.exist?
 
-      lockscope = request_match("/lockinfo/lockscope/*")[0].name
-      locktype = request_match("/lockinfo/locktype/*")[0].name
-      owner = request_match("/lockinfo/owner/href")[0]
+      lockscope = request_match('/lockinfo/lockscope').first.name
+      locktype = request_match('/lockinfo/locktype').first.name
+      owner = request_match('/lockinfo/owner/href').first
       locktoken = "opaquelocktoken:" + sprintf('%x-%x-%s', Time.now.to_i, Time.now.sec, resource.etag)
 
       response['Lock-Token'] = locktoken
@@ -270,13 +270,13 @@ module RackDAV
     end
     
     def request_document
-      @request_document ||= REXML::Document.new(request.body.read)
+      @request_document ||= Nokogiri.XML(request.body.read)
     rescue REXML::ParseException
       raise BadRequest
     end
 
     def request_match(pattern)
-      REXML::XPath::match(request_document, pattern, '' => 'DAV:')
+      request_document.xpath(pattern, '' => 'DAV:')
     end
 
     def render_xml
