@@ -42,16 +42,6 @@ module RackDAV
       sprintf('%x-%x-%x', stat.ino, stat.size, stat.mtime.to_i)
     end
 
-    # Return the resource type.
-    #
-    # If this is a collection, return
-    # REXML::Element.new('D:collection')
-    def resource_type
-      if collection?
-        REXML::Element.new('D:collection')
-      end
-    end
-
     # Return the mime type of this resource.
     def content_type
       if stat.directory?

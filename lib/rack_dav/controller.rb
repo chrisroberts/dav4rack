@@ -1,8 +1,5 @@
-require 'nokogiri'
-
 module RackDAV
   
-  # TODO: Update this to use nokogiri instead of slow slow rexml
   class Controller
     include RackDAV::HTTPStatus
     
@@ -19,16 +16,10 @@ module RackDAV
     
     def url_escape(s)
       URI.escape(s)
-#       s.gsub(/([^\/a-zA-Z0-9_.-]+)/n) do
-#         '%' + $1.unpack('H2' * $1.size).join('%').upcase
-#       end.tr(' ', '+')
     end
 
     def url_unescape(s)
       URI.unescape(s)
-#       s.tr('+', ' ').gsub(/((?:%[0-9a-fA-F]{2})+)/n) do
-#         [$1.delete('%')].pack('H*')
-#       end
     end    
     
     def options
@@ -114,10 +105,10 @@ module RackDAV
         names = resource.property_names if names.empty?
       end
       multistatus do |xml|
-        for resource in find_resources
-          xml.response do
-            xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
-            propstats xml, get_properties(resource, names)
+        find_resources.each do |resource|
+          xml['D'].response do
+            xml['D'].href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+            propstats(xml, get_properties(resource, names))
           end
         end
       end
@@ -125,19 +116,16 @@ module RackDAV
     
     def proppatch
       raise NotFound unless resource.exist?
-
       prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
       prop_set = request_match('/propertyupdate/set/prop').children.map{|n| [n.name, n.text] }
-
       multistatus do |xml|
-        for resource in find_resources
-          xml.response do
-            xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
-            propstats xml, set_properties(resource, prop_set)
+        find_resources.each do |resource|
+          xml['D'].response do
+            xml['D'].href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+            propstats(xml, set_properties(resource, prop_set))
           end
         end
       end
-
       resource.save
     end
 
@@ -155,20 +143,18 @@ module RackDAV
 
       response['Lock-Token'] = locktoken
 
-      render_xml do |xml|
-        xml.prop('xmlns:D' => "DAV:") do
-          xml.lockdiscovery do
-            xml.activelock do
-              xml.lockscope { xml.tag! lockscope }
-              xml.locktype { xml.tag! locktype }
-              xml.depth 'Infinity'
-              if owner
-                xml.owner { xml.href owner.text }
-              end
-              xml.timeout "Second-60"
-              xml.locktoken do
-                xml.href locktoken
-              end
+      render_xml(:prop) do |xml|
+        xml['D'].lockdiscovery do
+          xml['D'].activelock do
+            xml['D'].lockscope lockscope
+            xml['D'].locktype locktype
+            xml['D'].depth 'Infinity'
+            if owner
+              xml['D'].owner { xml['D'].href owner.text }
+            end
+            xml['D'].timeout "Second-60"
+            xml['D'].locktoken do
+              xml['D'].href locktoken
             end
           end
         end
@@ -279,34 +265,30 @@ module RackDAV
       request_document.xpath(pattern, '' => 'DAV:')
     end
 
-    def render_xml
-      xml = Builder::XmlMarkup.new(:indent => 2)
-      xml.instruct! :xml, :version => "1.0", :encoding => "UTF-8"
-      
-      xml.namespace('D') do
-        yield xml
-      end
-      
-      response.body = xml.target!
-      response["Content-Type"] = 'text/xml; charset="utf-8"'
-      response["Content-Length"] = response.body.size.to_s
-    end
-      
-    def multistatus
-      render_xml do |xml|
-        xml.multistatus('xmlns:D' => "DAV:") do
+    def render_xml(root_type)
+      raise ArgumentError.new 'Expecting block' unless block_given?
+      doc = Nokogiri::XML::Builder.new do |xml|
+        xml.send(root_type.to_s, 'xmlns:D' => 'DAV:') do
+          xml.parent.namespace = xml.parent.namespace_definitions.first
           yield xml
         end
       end
       
+      response.body = doc.to_xml
+      response["Content-Type"] = 'text/xml; charset="utf-8"'
+      response["Content-Length"] = response.body.size.to_s
+    end
+      
+    def multistatus(&block)
+      render_xml(:multistatus, &block)
       response.status = MultiStatus
     end
     
     def response_errors(xml, errors)
       for path, status in errors
-        xml.response do
-          xml.href "#{scheme}://#{host}:#{port}#{path}"
-          xml.status "#{request.env['HTTP_VERSION']} #{status.status_line}"
+        xml['D'].response do
+          xml['D'].href "#{scheme}://#{host}:#{port}#{path}"
+          xml['D'].status "#{request.env['HTTP_VERSION']} #{status.status_line}"
         end
       end
     end
@@ -342,34 +324,38 @@ module RackDAV
     def propstats(xml, stats)
       return if stats.empty?
       for status, props in stats
-        xml.propstat do
-          xml.prop do
+        xml['D'].propstat do
+          xml['D'].prop do
             for name, value in props
-              if value.is_a?(REXML::Element)
-                xml.tag!(name) do
-                  rexml_convert(xml, value)
+              if(value.is_a?(Nokogiri::XML::Node))
+                xml['D'].send(name) do
+                  xml_convert(xml, value)
+                end
+              elsif(value.is_a?(Symbol))
+                xml['D'].send(name) do
+                  xml['D'].send(value)
                 end
               else
-                xml.tag!(name, value)
+                xml['D'].send(name, value)
               end
             end
           end
-          xml.status "#{request.env['HTTP_VERSION']} #{status.status_line}"
+          xml['D'].status "#{request.env['HTTP_VERSION']} #{status.status_line}"
         end
       end
     end
     
-    def rexml_convert(xml, element)
-      if element.elements.empty?
-        if element.text
-          xml.tag!(element.name, element.text, element.attributes)
+    def xml_convert(xml, element)
+      if element.children.empty?
+        if element.text?
+          xml.send(element.name, element.text, element.attributes)
         else
-          xml.tag!(element.name, element.attributes)
+          xml.send(element.name, element.attributes)
         end
       else
-        xml.tag!(element.name, element.attributes) do
+        xml.send(element.name, element.attributes) do
           element.elements.each do |child|
-            rexml_convert(xml, child)
+            xml_convert(xml, child)
           end
         end
       end

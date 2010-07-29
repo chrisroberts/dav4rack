@@ -18,7 +18,6 @@ lib/rack_dav.rb
 lib/rack_dav/file_resource.rb
 lib/rack_dav/handler.rb
 lib/rack_dav/controller.rb
-lib/rack_dav/builder_namespace.rb
 lib/rack_dav/http_status.rb
 lib/rack_dav/resource.rb
 lib/rack_dav/interceptor.rb

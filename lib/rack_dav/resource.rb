@@ -45,13 +45,8 @@ module RackDAV
     end
 
     # Return the resource type.
-    #
-    # If this is a collection, return
-    # REXML::Element.new('D:collection')
     def resource_type
-      if collection?
-        REXML::Element.new('D:collection')
-      end
+      :collection if collection?
     end
 
     # Return the mime type of this resource.

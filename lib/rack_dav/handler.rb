@@ -1,19 +1,20 @@
-require 'ruby-prof'
-
 module RackDAV
   
   class Handler
     include RackDAV::HTTPStatus    
     def initialize(options={})
-      @options = {
-        :resource_class => FileResource,
-        :root => Dir.pwd
-      }.merge(options)
+      @options = options.dup
+      unless(@options[:resource_class])
+        require 'file_resource'
+        @options[:resource_class] = FileResource
+        @options[:root] = Dir.pwd
+      end
     end
 
     def call(env)
 
       request = Rack::Request.new(env)
+      pp request
       response = Rack::Response.new
 
       begin
@@ -30,6 +31,7 @@ module RackDAV
       response.body = [response.body] if not response.body.respond_to? :each
       response.status = response.status ? response.status.to_i : 200
       
+      puts response.body
       response.finish
     end
     
