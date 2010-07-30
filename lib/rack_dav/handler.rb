@@ -19,8 +19,8 @@ module RackDAV
 
       begin
         controller = Controller.new(request, response, @options.dup)
-        controller.send(request.request_method.downcase)
-        
+        res = controller.send(request.request_method.downcase)
+        response.status = res.code if res.is_a?(HTTPStatus::Status)
       rescue HTTPStatus::Status => status
         response.status = status.code
       end
