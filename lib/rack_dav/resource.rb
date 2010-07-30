@@ -1,7 +1,21 @@
 module RackDAV
-
+  
+  class LockFailure < RuntimeError
+    attr_reader :path_status
+    def initialize(*args)
+      super(*args)
+      @path_status = {}
+    end
+    
+    def add_failure(path, status)
+      @path_status[path] = status
+    end
+  end
+  
   class Resource
     attr_reader :path, :options, :public_path
+    
+    include RackDAV::HTTPStatus
     
     def initialize(public_path, path, options)
       @public_path = public_path.dup
@@ -100,6 +114,28 @@ module RackDAV
     def move(dest)
       copy(dest)
       delete
+    end
+    
+    # args:: Hash of lock arguments
+    # Request for a lock on the given resource. A valid lock should lock
+    # all descendents. Failures should be noted and returned as an exception
+    # using LockFailure.
+    # Valid args keys: :timeout -> requested timeout
+    #                  :depth -> lock depth
+    #                  :scope -> lock scope
+    #                  :type -> lock type
+    #                  :owner -> lock owner
+    # Should return a tuple: [lock_time, locktoken] where lock_time is the
+    # given timeout
+    # NOTE: See section 9.10 of RFC 4918 for guidance about
+    # how locks should be generated and the expected responses
+    # (http://www.webdav.org/specs/rfc4918.html#rfc.section.9.10)
+    def lock(args)
+      raise NotImplemented
+    end
+    
+    def unlock(token)
+      raise NotImplemented
     end
     
     # HTTP MKCOL request.
