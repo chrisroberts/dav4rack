@@ -14,13 +14,18 @@ module RackDAV
       raise Forbidden if request.path_info.include?('../')
     end
     
+    
     def url_escape(s)
-      URI.escape(s)
+      s.gsub(/([^\/a-zA-Z0-9_.-]+)/n) do
+        '%' + $1.unpack('H2' * $1.size).join('%').upcase
+      end.tr(' ', '+')
     end
-
+    
     def url_unescape(s)
-      URI.unescape(s)
-    end    
+      s.tr('+', ' ').gsub(/((?:%[0-9a-fA-F]{2})+)/n) do
+        [$1.delete('%')].pack('H*')
+      end
+    end  
     
     def options
       response["Allow"] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
@@ -37,44 +42,32 @@ module RackDAV
     
     def get
       raise NotFound unless resource.exist?
-      map_exceptions do
-        resource.get(request, response)
-      end
+      res = resource.get(request, response)
       if(response.status == 200 && !resource.collection?)
         response['Etag'] = resource.etag
         response['Content-Type'] = resource.content_type
         response['Content-Length'] = resource.content_length.to_s
         response['Last-Modified'] = resource.last_modified.httpdate
       end
-      response
+      res
     end
 
     def put
       raise Forbidden if resource.collection?
-      map_exceptions do
-        resource.put(request, response)
-      end
+      resource.put(request, response)
     end
 
     def post
-      map_exceptions do
-        resource.post(request, response)
-      end
+      resource.post(request, response)
     end
 
     def delete
       raise NotFound unless resource.exist?
-      map_exceptions do
-        resource.delete
-      end
-      response.status = OK
+      resource.delete
     end
     
     def mkcol
-      map_exceptions do
-        resource.make_collection
-      end
-      response.status = Created
+      resource.make_collection
     end
     
     def copy
@@ -91,17 +84,17 @@ module RackDAV
       if(args.include?(:copy))
         resource.copy(dest, overwrite)
       else
-        raise Conflict if depth <= 1
+        raise Conflict unless depth.is_a?(Symbol) || depth > 1
         resource.move(dest)
       end
     end
     
     def propfind
       raise NotFound unless resource.exist?
-      unless(request_match('/propfind/allprop').empty?)
+      unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
         names = resource.property_names
       else
-        names = request_match('/propfind/prop').children.map{|n|n.name}
+        names = request_document.xpath("//#{ns}propfind/#{ns}prop").children.find_all{|n|n.element?}.map{|n|n.name}
         names = resource.property_names if names.empty?
       end
       multistatus do |xml|
@@ -129,41 +122,59 @@ module RackDAV
       resource.save
     end
 
-    # TODO: Rewrite this to actually do something useful
-    # NOTE: Providing real locking the the resource is allowed to 
-    # handle will provide an easy way to deal with all the dot files
-    # os x throws at the system
+
+    # Locks a resource
+    # NOTE: This will pass an argument hash to Resource#lock and
+    # wait for a success/failure response. 
     def lock
       raise NotFound unless resource.exist?
-
-      lockscope = request_match('/lockinfo/lockscope').first.name
-      locktype = request_match('/lockinfo/locktype').first.name
-      owner = request_match('/lockinfo/owner/href').first
-      locktoken = "opaquelocktoken:" + sprintf('%x-%x-%s', Time.now.to_i, Time.now.sec, resource.etag)
-
-      response['Lock-Token'] = locktoken
-
-      render_xml(:prop) do |xml|
-        xml['D'].lockdiscovery do
-          xml['D'].activelock do
-            xml['D'].lockscope lockscope
-            xml['D'].locktype locktype
-            xml['D'].depth 'Infinity'
-            if owner
-              xml['D'].owner { xml['D'].href owner.text }
-            end
-            xml['D'].timeout "Second-60"
-            xml['D'].locktoken do
-              xml['D'].href locktoken
+      lockinfo = request_document.xpath("//#{ns}lockinfo")
+      asked = {}
+      asked[:timeout] = request.env['Timeout'].split(',').map{|x|x.strip} if request.env['Timeout']
+      asked[:depth] = depth
+      raise BadRequest unless [0, :infinity].include?(asked[:depth])
+      asked[:scope] = lockinfo.xpath("//#{ns}lockscope").children.find_all{|n|n.element?}.map{|n|n.name}.first
+      asked[:type] = lockinfo.xpath("#{ns}locktype").children.find_all{|n|n.element?}.map{|n|n.name}.first
+      asked[:owner] = lockinfo.xpath("//#{ns}owner/#{ns}href").children.map{|n|n.text}.first
+      begin
+        lock_time, locktoken = resource.lock(asked)
+        render_xml(:prop) do |xml|
+          xml['D'].lockdiscovery do
+            xml['D'].activelock do
+              if(asked[:scope])
+                xml['D'].lockscope do
+                  xml['D'].send(asked[:scope])
+                end
+              end
+              if(asked[:type])
+                xml['D'].locktype do
+                  xml['D'].send(asked[:type])
+                end
+              end
+              xml['D'].depth asked[:depth].to_s
+              xml['D'].timeout lock_time ? "Second-#{lock_time}" : 'infinity'
+              xml['D'].locktoken do
+                xml['D'].href locktoken
+              end
             end
           end
         end
+        response.status = resource.exist? ? OK : Created
+      rescue LockFailure => e
+        multistatus do |xml|
+          e.path_status.each_pair do |path, status|
+            xml['D'].response do
+              xml['D'].href path
+              xml['D'].status "#{request.env['HTTP_VERSION']} #{status.status_line}"
+            end
+          end
+        end
+        response.status = MultiStatus
       end
     end
 
-    # TODO: Rewrite this to actually do something useful
     def unlock
-      raise NoContent
+      resource.unlock(lock_token)
     end
 
     # ************************************************************
@@ -208,15 +219,23 @@ module RackDAV
     def actual_path
       url_unescape(@request.path_info)
     end
+
+    def lock_token
+      env['HTTP_LOCK_TOKEN'] || nil
+    end
     
+    # Requested depth
     def depth
-      case env['HTTP_DEPTH']
-      when '0' then 0
-      when '1' then 1
-      else 100
+      d = env['HTTP_DEPTH']
+      if(d =~ /^\d+$/)
+        d = d.to_i
+      else
+        d = :infinity
       end
+      d
     end
 
+    # Overwrite is allowed
     def overwrite
       env['HTTP_OVERWRITE'].to_s.upcase != 'F'
     end
@@ -227,32 +246,15 @@ module RackDAV
     # current if needed
     def find_resources
       ary = nil
-      case env['HTTP_DEPTH']
-      when '0'
-        # [resource]
+      case depth
+      when 0
         ary = [resource]
-      when '1'
-        # [resource] + resource.children
+      when 1
         ary = resource.children
       else
-        # [resource] + resource.descendants
         ary = resource.descendants
       end
       ary ? ary : []
-    end
-    
-    def map_exceptions
-      yield
-    rescue
-      case $!
-      when URI::InvalidURIError then raise BadRequest
-      when Errno::EACCES then raise Forbidden
-      when Errno::ENOENT then raise Conflict
-      when Errno::EEXIST then raise Conflict      
-      when Errno::ENOSPC then raise InsufficientStorage
-      else
-        raise
-      end
     end
     
     def request_document
@@ -261,8 +263,18 @@ module RackDAV
       raise BadRequest
     end
 
+    def ns
+      _ns = request_document.root.namespace_definitions.first.prefix.to_s
+      _ns += ':' unless _ns.empty?
+      _ns
+    end
+    
     def request_match(pattern)
-      request_document.xpath(pattern, '' => 'DAV:')
+      res = request_document.xpath(pattern, request_document.root.namespaces)
+      puts "Looking for: #{pattern}"
+      puts "Found:"
+      pp res
+      res
     end
 
     def render_xml(root_type)
@@ -297,9 +309,8 @@ module RackDAV
       stats = Hash.new { |h, k| h[k] = [] }
       for name in names
         begin
-          map_exceptions do
-            stats[OK] << [name, resource.get_property(name)]
-          end
+          val = resource.get_property(name)
+          stats[OK].push [name, val] if val
         rescue Status
           stats[$!] << name
         end
@@ -311,9 +322,7 @@ module RackDAV
       stats = Hash.new { |h, k| h[k] = [] }
       for name, value in pairs
         begin
-          map_exceptions do
-            stats[OK] << [name, resource.set_property(name, value)]
-          end
+          stats[OK] << [name, resource.set_property(name, value)]
         rescue Status
           stats[$!] << name
         end
@@ -360,7 +369,7 @@ module RackDAV
         end
       end
     end
-    
+
     def authenticate
       authed = true
       if(resource.respond_to?(:authenticate))
@@ -379,7 +388,7 @@ module RackDAV
         raise Unauthorized.new unless authed
       end
     end
-    
+
   end
 
 end 
