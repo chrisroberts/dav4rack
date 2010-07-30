@@ -1,7 +1,8 @@
 require 'digest/sha1'
+
 module RackDAV
 
-  class InterceptorResource < RackDAV::Resource
+  class InterceptorResource < Resource
     attr_reader :path, :options
     
     def initialize(*args)
@@ -60,50 +61,49 @@ module RackDAV
     #
     # Write the content of the resource to the response.body.
     def get(request, response)
-      raise NotImplementedError
+      raise Forbidden
     end
 
     # HTTP PUT request.
     #
     # Save the content of the request.body.
     def put(request, response)
-      raise NotImplementedError
+      raise Forbidden
     end
     
     # HTTP POST request.
     #
     # Usually forbidden.
     def post(request, response)
-      raise NotImplementedError
+      raise Forbidden
     end
     
     # HTTP DELETE request.
     #
     # Delete this resource.
     def delete
-      raise NotImplementedError
+      raise Forbidden
     end
     
     # HTTP COPY request.
     #
     # Copy this resource to given destination resource.
     def copy(dest)
-      raise NotImplementedError
+      raise Forbidden
     end
   
     # HTTP MOVE request.
     #
     # Move this resource to given destination resource.
     def move(dest)
-      copy(dest)
-      delete
+      raise Forbidden
     end
     
     # HTTP MKCOL request.
     #
     # Create this resource as collection.
     def make_collection
-      raise NotImplementedError
+      raise Forbidden
     end
 
     def ==(other)
