@@ -9,7 +9,7 @@ module RackDAV
       @request = request
       @response = response
       @options = options
-      @resource = resource_class.new(request.path, implied_path, @options)
+      @resource = resource_class.new(actual_path, implied_path, @request, @options)
       authenticate
       raise Forbidden if request.path_info.include?('../')
     end
@@ -208,7 +208,7 @@ module RackDAV
     end
     
     def implied_path
-      clean_path(@request.path_info.dup)
+      clean_path(@request.path.dup)
     end
     
     def clean_path(x)
@@ -218,7 +218,7 @@ module RackDAV
     end
     
     def actual_path
-      url_unescape(@request.path_info)
+      url_unescape(@request.path.dup)
     end
 
     def lock_token

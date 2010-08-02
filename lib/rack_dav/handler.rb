@@ -12,7 +12,7 @@ module RackDAV
     end
 
     def call(env)
-
+      
       request = Rack::Request.new(env)
       response = Rack::Response.new
       
