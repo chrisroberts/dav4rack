@@ -121,7 +121,6 @@ module RackDAV
           end
         end
       end
-      resource.save
     end
 
 
@@ -265,7 +264,7 @@ module RackDAV
     
     def request_document
       @request_document ||= Nokogiri.XML(request.body.read)
-    rescue REXML::ParseException
+    rescue
       raise BadRequest
     end
 
@@ -299,7 +298,7 @@ module RackDAV
       
     def multistatus(&block)
       render_xml(:multistatus, &block)
-      response.status = MultiStatus
+      MultiStatus
     end
     
     def response_errors(xml, errors)
