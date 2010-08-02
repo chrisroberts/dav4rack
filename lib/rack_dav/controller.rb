@@ -9,7 +9,7 @@ module RackDAV
       @request = request
       @response = response
       @options = options
-      @resource = resource_class.new(request.env['REQUEST_PATH'], implied_path, @options)
+      @resource = resource_class.new(request.path, implied_path, @options)
       authenticate
       raise Forbidden if request.path_info.include?('../')
     end
@@ -31,6 +31,7 @@ module RackDAV
       response["Allow"] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
       response["Dav"] = "2"
       response["Ms-Author-Via"] = "DAV"
+      NoContent
     end
     
     def head
@@ -38,6 +39,7 @@ module RackDAV
       response['Etag'] = resource.etag
       response['Content-Type'] = resource.content_type
       response['Last-Modified'] = resource.last_modified.httpdate
+      NoContent
     end
     
     def get
@@ -165,7 +167,7 @@ module RackDAV
           e.path_status.each_pair do |path, status|
             xml['D'].response do
               xml['D'].href path
-              xml['D'].status "#{request.env['HTTP_VERSION']} #{status.status_line}"
+              xml['D'].status "#{http_version} #{status.status_line}"
             end
           end
         end
@@ -235,6 +237,10 @@ module RackDAV
       d
     end
 
+    def http_version
+      env['HTTP_VERSION'] || env['SERVER_PROTOCOL'] || 'HTTP/1.0'
+    end
+    
     # Overwrite is allowed
     def overwrite
       env['HTTP_OVERWRITE'].to_s.upcase != 'F'
@@ -264,17 +270,17 @@ module RackDAV
     end
 
     def ns
-      _ns = request_document.root.namespace_definitions.first.prefix.to_s
-      _ns += ':' unless _ns.empty?
+      _ns = ''
+      if(request_document && request_document.root && request_document.root.namespace_definitions.size > 0)
+        _ns = request_document.root.namespace_definitions.first.prefix.to_s
+        _ns += ':' unless _ns.empty?
+      end
       _ns
     end
     
     def request_match(pattern)
-      res = request_document.xpath(pattern, request_document.root.namespaces)
-      puts "Looking for: #{pattern}"
-      puts "Found:"
-      pp res
-      res
+      nil unless request_document
+      request_document.xpath(pattern, request_document.root.namespaces)
     end
 
     def render_xml(root_type)
@@ -300,7 +306,7 @@ module RackDAV
       for path, status in errors
         xml['D'].response do
           xml['D'].href "#{scheme}://#{host}:#{port}#{path}"
-          xml['D'].status "#{request.env['HTTP_VERSION']} #{status.status_line}"
+          xml['D'].status "#{http_version} #{status.status_line}"
         end
       end
     end
@@ -349,7 +355,7 @@ module RackDAV
               end
             end
           end
-          xml['D'].status "#{request.env['HTTP_VERSION']} #{status.status_line}"
+          xml['D'].status "#{http_version} #{status.status_line}"
         end
       end
     end
