@@ -207,6 +207,10 @@ module RackDAV
       list
     end
 
+    def allows_redirect?
+      %w(webdrive cyberduck webdavfs).include? request.user_agent.downcase
+    end
+    
   end
 
 end
