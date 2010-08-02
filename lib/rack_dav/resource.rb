@@ -17,9 +17,10 @@ module RackDAV
     
     include RackDAV::HTTPStatus
     
-    def initialize(public_path, path, options)
+    def initialize(public_path, path, request, options)
       @public_path = public_path.dup
       @path = path.dup
+      @request = request
       @options = options.dup
     end
         
@@ -157,10 +158,6 @@ module RackDAV
       name
     end
     
-    def child(name, option={})
-      self.class.new(path + '/' + name, options)
-    end
-    
     def property_names
       %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength)
     end
@@ -192,10 +189,20 @@ module RackDAV
       raise HTTPStatus::Forbidden
     end
 
+    def child(name, option={})
+      new_public = public_path.dup
+      new_public = new_public + '/' unless new_public[-1,1] == '/'
+      new_public = '/' + new_public unless new_public[0,1] == '/'
+      new_path = path.dup
+      new_path = new_path + '/' unless new_path[-1,1] == '/'
+      new_path = '/' + new_path unless new_path[0,1] == '/'
+      self.class.new("#{new_public}#{name}", "#{new_path}#{name}", request, options)
+    end
+    
     def parent
       elements = @path.scan(/[^\/]+/)
       return nil if elements.empty?
-      self.class.new('/' + elements[0..-2].to_a.join('/'), @options)
+      self.class.new(('/' + @public_path.scan(/[^\/]+/)[0..-2].join('/')), ('/' + elements[0..-2].to_a.join('/')), @request, @options)
     end
     
     def descendants
@@ -208,7 +215,11 @@ module RackDAV
     end
 
     def allows_redirect?
-      %w(webdrive cyberduck webdavfs).include? request.user_agent.downcase
+      %w(webdrive cyberduck webdavfs).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.downcase : request.env['HTTP_USER_AGENT'].downcase) =~ /#{x}/}
+    end
+    
+    def request
+      @request
     end
     
   end
