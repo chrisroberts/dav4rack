@@ -4,8 +4,8 @@ require 'uri'
 require 'nokogiri'
 
 require 'rack'
-require 'rack_dav/http_status'
-require 'rack_dav/resource'
-require 'rack_dav/handler'
-require 'rack_dav/controller'
+require 'dav4rack/http_status'
+require 'dav4rack/resource'
+require 'dav4rack/handler'
+require 'dav4rack/controller'
 

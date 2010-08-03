@@ -1,7 +1,7 @@
-module RackDAV
+module DAV4Rack
   
   class Handler
-    include RackDAV::HTTPStatus    
+    include DAV4Rack::HTTPStatus    
     def initialize(options={})
       @options = options.dup
       unless(@options[:resource_class])

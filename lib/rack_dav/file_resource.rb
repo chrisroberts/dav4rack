@@ -1,6 +1,6 @@
 require 'webrick/httputils'
 
-module RackDAV
+module DAV4Rack
 
   class FileResource < Resource
     include WEBrick::HTTPUtils

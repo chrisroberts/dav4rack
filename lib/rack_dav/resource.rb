@@ -1,4 +1,4 @@
-module RackDAV
+module DAV4Rack
   
   class LockFailure < RuntimeError
     attr_reader :path_status
@@ -15,7 +15,7 @@ module RackDAV
   class Resource
     attr_reader :path, :options, :public_path, :request
     
-    include RackDAV::HTTPStatus
+    include DAV4Rack::HTTPStatus
     
     # public_path:: Path received via request
     # path:: Internal resource path (Only different from public path when using root_uri's for webdav)

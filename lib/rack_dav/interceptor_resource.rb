@@ -1,6 +1,6 @@
 require 'digest/sha1'
 
-module RackDAV
+module DAV4Rack
 
   class InterceptorResource < Resource
     attr_reader :path, :options
@@ -11,97 +11,67 @@ module RackDAV
       @mappings = @options[:mappings]
     end
         
-    # If this is a collection, return the child resources.
     def children
       childs = @root_paths.find_all{|x|x =~ /^#{Regexp.escape(@path)}/}
       childs = childs.map{|a| child a.gsub(/^#{Regexp.escape(@path)}/, '').split('/').delete_if{|x|x.empty?}.first }.flatten
     end
 
-    # Is this resource a collection?
     def collection?
       true if exist?
     end
 
-    # Does this recource exist?
     def exist?
       !@root_paths.find_all{|x| x =~ /^#{Regexp.escape(@path)}/}.empty?
     end
     
-    # Return the creation time.
     def creation_date
       Time.now
     end
 
-    # Return the time of last modification.
     def last_modified
       Time.now
     end
     
-    # Set the time of last modification.
     def last_modified=(time)
       Time.now
     end
 
-    # Return an Etag, an unique hash value for this resource.
     def etag
       Digest::SHA1.hexdigest(@path)
     end
 
-    # Return the mime type of this resource.
     def content_type
       'text/html'
     end
 
-    # Return the size in bytes for this resource.
     def content_length
       0
     end
 
-    # HTTP GET request.
-    #
-    # Write the content of the resource to the response.body.
     def get(request, response)
       raise Forbidden
     end
 
-    # HTTP PUT request.
-    #
-    # Save the content of the request.body.
     def put(request, response)
       raise Forbidden
     end
     
-    # HTTP POST request.
-    #
-    # Usually forbidden.
     def post(request, response)
       raise Forbidden
     end
     
-    # HTTP DELETE request.
-    #
-    # Delete this resource.
     def delete
       raise Forbidden
     end
     
-    # HTTP COPY request.
-    #
-    # Copy this resource to given destination resource.
     def copy(dest)
       raise Forbidden
     end
   
-    # HTTP MOVE request.
-    #
-    # Move this resource to given destination resource.
     def move(dest)
       raise Forbidden
     end
     
-    # HTTP MKCOL request.
-    #
-    # Create this resource as collection.
     def make_collection
       raise Forbidden
     end
@@ -129,7 +99,7 @@ module RackDAV
       new_public.slice!(-1) if new_public[-1,1] == '/'
       new_public = "#{new_public}#{name}"
       if(key = @root_paths.find{|x| new_path =~ /^#{Regexp.escape(x.downcase)}\/?/})
-        @mappings[key][:class].new(new_public, new_path.gsub(key, ''), request, @mappings[key][:options] ? @mappings[key][:options] : options)
+        @mappings[key][:resource_class].new(new_public, new_path.gsub(key, ''), request, {:root_uri_path => key}.merge(@mappings[key][:options] ? @mappings[key][:options] : options))
       else
         self.class.new(new_public, new_path, request, options)
       end

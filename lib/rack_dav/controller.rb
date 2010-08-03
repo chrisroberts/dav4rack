@@ -1,7 +1,7 @@
-module RackDAV
+  module DAV4Rack
   
   class Controller
-    include RackDAV::HTTPStatus
+    include DAV4Rack::HTTPStatus
     
     attr_reader :request, :response, :resource
 

@@ -1,7 +1,7 @@
 require 'net/http'
 require 'uri'
 
-module RackDAV
+module DAV4Rack
   
   class RemoteFile
     
