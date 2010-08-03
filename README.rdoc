@@ -19,7 +19,7 @@ simple server with:
 
     dav4rack
 
-This will start a Mongrel or WEBrick server on port 3000, which you can connect
+This will start a WEBrick server on port 3000, which you can connect
 to without authentication. The simple file resource allows very basic authentication
 which is used for an example. To enable it:
 
@@ -131,3 +131,7 @@ process to be freed up to deal with other waiters. A very simple example:
 == Issues/Bugs/Questions
 
 Please use the issues at github: http://github.com/chrisroberts/dav4rack
+
+== License
+
+Just like RackDAV before it, this software is distributed under the MIT license.
