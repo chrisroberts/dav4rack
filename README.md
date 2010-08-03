@@ -1,108 +1,139 @@
 ---
-title: RackDAV - Web Authoring for Rack
+title: DAV4Rack - Web Authoring for Rack
 ---
 
-RackDAV is Handler for [Rack][1], which allows content authoring over
-HTTP. RackDAV brings its own file backend, but other backends are
-possible by subclassing RackDAV::Resource.
+DAV4Rack is a framework for providing WebDAV via Rack allowing content
+authoring over HTTP. It is based off the [original RackDAV framework][1]
+to provide better Resource support for building customized WebDAV resources
+completely abstracted from the filesystem. Support for authentication and
+locking has been added as well as a move from REXML to Nokogiri. Enjoy!
 
 ## Install
 
-Just install the gem from github:
+### Via RubyGems
 
-    $ gem sources -a http://gems.github.com
-    $ sudo gem install georgi-rack_dav
+    gem install dav4rack
 
 ## Quickstart
 
 If you just want to share a folder over WebDAV, you can just start a
 simple server with:
 
-    $ rack_dav
+    dav4rack
 
-This will start a WEBrick server on port 3000, which you can connect
-to without authentication.
+This will start a Mongrel or WEBrick server on port 3000, which you can connect
+to without authentication. The simple file resource allows very basic authentication
+which is used for an example. To enable it:
+
+    dav4rack --username=user --password=pass
 
 ## Rack Handler
 
-Using RackDAV inside a rack application is quite easy. A simple rackup
-script looks like this:
+Using DAV4Rack within a rack application is pretty simple. A very slim
+rackup script would look something like this:
 
-    @@ruby
+  require 'rubygems'
+  require 'dav4rack'
+  
+  use Rack::CommonLogger
+  run DAV4Rack::Handler.new(:root => '/path/to/public/fileshare')
+  
+This will use the included FileResource and set the share path. However,
+DAV4Rack has some nifty little extras that can be enabled in the rackup script. First,
+an example of how to use a custom resource:
 
-    require 'rubygems'
-    require 'rack_dav'
-     
-    use Rack::CommonLogger
-     
-    run RackDAV::Handler.new('/path/to/docs')
+  run DAV4Rack::Handler.new(:resource_class => CustomResource, :custom => 'options', :passed => 'to resource')
+  
+Next, lets venture into mapping a path for our WebDAV access. In this example, we 
+will use default FileResource like in the first example, but instead of connecting
+directly to the host, we will have to connect to: http://host/webdav/share/
 
-## Implementing your own WebDAV resource
+  require 'rubygems'
+  require 'dav4rack'
+  
+  use Rack::CommonLogger
+  
+  app = Rack::Builder.new{
+    map '/webdav/share/' do
+      run DAV4Rack::Handler.new(:root => '/path/to/public/fileshare', :root_uri_path => '/webdav/share/')
+    end
+  }.to_app
+  run app
+  
+Aside from the #map block, notice the new option passed to the Handler's initialization, :root_uri_path. When
+DAV4Rack receives a request, it will automatically convert the request to the proper path and pass it to
+the resource.
 
-RackDAV::Resource is an abstract base class and defines an interface
-for accessing resources.
+Another tool available when building the rackup script is the Interceptor. The Interceptor's job is  to simply
+intecept WebDAV requests received up the path hierarchy where no resources are currently mapped. For example,
+lets continue with the last example but this time include the interceptor:
 
-Each resource will be initialized with a path, which should be used to
-find the real resource.
+  require 'rubygems'
+  require 'dav4rack'
+  
+  use Rack::CommonLogger
+  app = Rack::Builder.new{
+    map '/webdav/share/' do
+      run DAV4Rack::Handler.new(:root => '/path/to/public/fileshare', :root_uri_path => '/webdav/share/')
+    end
+    map '/webdav/share2/' do
+      run DAV4Rack::Handler.new(:resource_class => CustomResource, :root_uri_path => '/webdav/share2/')
+    end
+    map '/' do
+      use DAV4Rack::Interceptor, :mappings => {
+                                                '/webdav/share/' => {:resource_class => FileResource, :options => {:custom => 'option'}},
+                                                '/webdav/share2/' => {:resource_class => CustomResource}
+                                              }
+      use Rails::Rack::Static
+      run ActionController::Dispatcher.new
+    end
+  }.to_app
+  run app
 
-RackDAV::Handler needs to be initialized with the actual resource class:
+In this example we have two WebDAV resources restricted by path. This means those resources will handle requests to /webdav/share/*
+and /webdav/share2/* but nothing above that. To allow webdav to respond, we provide the Interceptor. The Interceptor does not
+provide any authentication support. It simply creates a virtual file system view to the provided mapped paths. Once the actual
+resources have been reached, authentication will be enforced based on the requirements defined by the individual resource. Also
+note in the root map you can see we are running a Rails application. This is how you can easily enable DAV4Rack with your Rails
+application.
 
-    @@ruby
+## Custom Resources
 
-    RackDAV::Handler.new(:resource_class => MyResource)
+Creating your own resource is easy. Simply inherit the DAV4Rack::Resource class, and start redefining all the methods
+you want to customize. The DAV4Rack::Resource class only has implementations for methods that can be provided extremely
+generically. This means that most things will require at least some sort of implementation. However, because the Resource
+is defined so generically, and the Controller simply passes the request on to the Resource, it is easy to create fully
+virtualized resources.
 
-RackDAV needs some information about the resources, so you have to
-implement following methods:
-        
-* __children__: If this is a collection, return the child resources.
+## Helpers
 
-* __collection?__: Is this resource a collection?
+There are some helpers worth mentioning that make things a little easier. DAV4Rack::Resource#accept_redirect? method is available to Resources.
+If true, the currently connected client will accept and properly use a 302 redirect for a GET request. Most clients do not properly
+support this, which can be a real pain when working with virtualized files that may located some where else, like S3. To deal with
+those clients that don't support redirects, a helper has been provided so resources don't have to deal with proxying themselves. The 
+DAV4Rack::RemoteFile allows the resource to simple tell Rack to download and send the file from the provided resource and go away, allowing the 
+process to be freed up to deal with other waiters. A very simple example:
 
-* __exist?__: Does this recource exist?
+  class MyResource < DAV4Rack::Resource
+    def initialize(*args)
+      super(*args)
+      @item = method_to_fill_this_properly
+    end
     
-* __creation\_date__: Return the creation time.
+    def get
+      if(accept_redirect?)
+        response.redirect item[:url]
+      else
+        response.body = DAV4Rack::RemoteFile.new(item[:url], :size => content_length, :mime_type => content_type)
+        OK
+      end
+    end
+  end
+  
+## Issues/Bugs/Questions
 
-* __last\_modified__: Return the time of last modification.
-    
-* __last\_modified=(time)__: Set the time of last modification.
+Please use the issues at github: http://github.com/chrisroberts/dav4rack
 
-* __etag__: Return an Etag, an unique hash value for this resource.
+## Footnotes:
 
-* __content_type__: Return the mime type of this resource.
-
-* __content\_length__: Return the size in bytes for this resource.
-
-
-Most importantly you have to implement the actions, which are called
-to retrieve and change the resources:
-
-* __get(request, response)__: Write the content of the resource to the response.body.
-
-* __put(request, response)__: Save the content of the request.body.
-
-* __post(request, response)__: Usually forbidden.
-
-* __delete__: Delete this resource.
-
-* __copy(dest)__: Copy this resource to given destination resource.
-
-* __move(dest)__: Move this resource to given destination resource.
-    
-* __make\_collection__: Create this resource as collection.
-
-
-Note, that it is generally possible, that a resource object is
-instantiated for a not yet existing resource.
-
-For inspiration you should have a look at the FileResource
-implementation. Please let me now, if you are going to implement a new
-type of resource.
-
-
-### RackDAV on GitHub
-
-Download or fork the project on its [Github page][2]
-
-
-[1]: http://github.com/chneukirchen/rack
-[2]: http://github.com/georgi/rack_dav
+[1]: http://github.com/georgi/rack_dav
