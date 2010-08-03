@@ -3,7 +3,16 @@ require 'webrick/httputils'
 module DAV4Rack
 
   class FileResource < Resource
+    
     include WEBrick::HTTPUtils
+    
+    def authenticate(user, pass)
+      if(options[:username])
+        options[:username] == user && options[:password] == pass
+      else
+        true
+      end
+    end
     
     # If this is a collection, return the child resources.
     def children
@@ -60,6 +69,7 @@ module DAV4Rack
     #
     # Write the content of the resource to the response.body.
     def get(request, response)
+      raise NotFound unless exist?
       if stat.directory?
         response.body = ""
         Rack::Directory.new(root).call(request.env)[2].each do |line|
@@ -71,6 +81,7 @@ module DAV4Rack
         file.path = file_path
         response.body = file
       end
+      OK
     end
 
     # HTTP PUT request.
@@ -78,6 +89,7 @@ module DAV4Rack
     # Save the content of the request.body.
     def put(request, response)
       write(request.body)
+      Created
     end
     
     # HTTP POST request.
@@ -96,6 +108,7 @@ module DAV4Rack
       else
         File.unlink(file_path)
       end
+      NoContent
     end
     
     # HTTP COPY request.
@@ -109,6 +122,7 @@ module DAV4Rack
           dest.write(file)
         end
       end
+      OK
     end
   
     # HTTP MOVE request.
@@ -117,6 +131,7 @@ module DAV4Rack
     def move(dest)
       copy(dest)
       delete
+      OK
     end
     
     # HTTP MKCOL request.
@@ -124,6 +139,7 @@ module DAV4Rack
     # Create this resource as collection.
     def make_collection
       Dir.mkdir(file_path)
+      NoContent
     end
   
     # Write to this resource from given IO.
