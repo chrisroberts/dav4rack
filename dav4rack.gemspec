@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.executables << 'dav4rack'
   s.has_rdoc = true
-  s.extra_rdoc_files = ['README.md']  
+  s.extra_rdoc_files = ['README.rdoc']  
   s.files = %w{
 .gitignore
 LICENSE
@@ -25,6 +25,6 @@ lib/dav4rack/interceptor_resource.rb
 lib/dav4rack/remote_file.rb
 bin/dav4rack
 spec/handler_spec.rb
-README.md
+README.rdoc
 }
 end

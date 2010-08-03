@@ -1,4 +1,4 @@
-require 'rack_dav/interceptor_resource'
+require 'dav4rack/interceptor_resource'
 module DAV4Rack
   class Interceptor
     def initialize(app, args={})
