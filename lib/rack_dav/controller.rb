@@ -4,8 +4,13 @@ module RackDAV
     include RackDAV::HTTPStatus
     
     attr_reader :request, :response, :resource
-    
-    def initialize(request, response, options)
+
+    # request:: Rack::Request
+    # response:: Rack::Response
+    # options:: Options hash
+    # Create a new Controller.
+    # NOTE: options will be passed to Resource
+    def initialize(request, response, options={})
       @request = request
       @response = response
       @options = options
@@ -14,19 +19,23 @@ module RackDAV
       raise Forbidden if request.path_info.include?('../')
     end
     
-    
+    # s:: string
+    # Escape URL string
     def url_escape(s)
       s.gsub(/([^\/a-zA-Z0-9_.-]+)/n) do
         '%' + $1.unpack('H2' * $1.size).join('%').upcase
       end.tr(' ', '+')
     end
     
+    # s:: string
+    # Unescape URL string
     def url_unescape(s)
       s.tr('+', ' ').gsub(/((?:%[0-9a-fA-F]{2})+)/n) do
         [$1.delete('%')].pack('H*')
       end
     end  
     
+    # Return response to OPTIONS
     def options
       response["Allow"] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
       response["Dav"] = "2"
@@ -34,6 +43,7 @@ module RackDAV
       NoContent
     end
     
+    # Return response to HEAD
     def head
       raise NotFound unless resource.exist?
       response['Etag'] = resource.etag
@@ -42,6 +52,7 @@ module RackDAV
       NoContent
     end
     
+    # Return response to GET
     def get
       raise NotFound unless resource.exist?
       res = resource.get(request, response)
@@ -54,35 +65,43 @@ module RackDAV
       res
     end
 
+    # Return response to PUT
     def put
       raise Forbidden if resource.collection?
       resource.put(request, response)
     end
 
+    # Return response to POST
     def post
       resource.post(request, response)
     end
 
+    # Return response to DELETE
     def delete
       raise NotFound unless resource.exist?
       resource.delete
     end
     
+    # Return response to MKCOL
     def mkcol
       resource.make_collection
     end
     
+    # Return response to COPY
     def copy
       move(:copy)
     end
 
+    # args:: Only argument used: :copy
+    # Move Resource to new location. If :copy is provided,
+    # Resource will be copied (implementation ease)
     def move(*args)
       raise NotFound unless resource.exist?
       dest_uri = URI.parse(env['HTTP_DESTINATION'])
       destination = url_unescape(dest_uri.path)
       raise BadGateway if dest_uri.host and dest_uri.host != request.host
       raise Forbidden if destination == resource.public_path
-      dest = resource_class.new(destination, clean_path(destination), @options)
+      dest = resource_class.new(destination, clean_path(destination), @request, @options)
       if(args.include?(:copy))
         resource.copy(dest, overwrite)
       else
@@ -91,6 +110,7 @@ module RackDAV
       end
     end
     
+    # Return respoonse to PROPFIND
     def propfind
       raise NotFound unless resource.exist?
       unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
@@ -101,22 +121,23 @@ module RackDAV
       end
       multistatus do |xml|
         find_resources.each do |resource|
-          xml['D'].response do
-            xml['D'].href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+          xml.response do
+            xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
             propstats(xml, get_properties(resource, names))
           end
         end
       end
     end
     
+    # Return response to PROPPATCH
     def proppatch
       raise NotFound unless resource.exist?
       prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
       prop_set = request_match('/propertyupdate/set/prop').children.map{|n| [n.name, n.text] }
       multistatus do |xml|
         find_resources.each do |resource|
-          xml['D'].response do
-            xml['D'].href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+          xml.response do
+            xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
             propstats(xml, set_properties(resource, prop_set))
           end
         end
@@ -124,7 +145,7 @@ module RackDAV
     end
 
 
-    # Locks a resource
+    # Lock current resource
     # NOTE: This will pass an argument hash to Resource#lock and
     # wait for a success/failure response. 
     def lock
@@ -140,22 +161,22 @@ module RackDAV
       begin
         lock_time, locktoken = resource.lock(asked)
         render_xml(:prop) do |xml|
-          xml['D'].lockdiscovery do
-            xml['D'].activelock do
+          xml.lockdiscovery do
+            xml.activelock do
               if(asked[:scope])
-                xml['D'].lockscope do
-                  xml['D'].send(asked[:scope])
+                xml.lockscope do
+                  xml.send(asked[:scope])
                 end
               end
               if(asked[:type])
-                xml['D'].locktype do
-                  xml['D'].send(asked[:type])
+                xml.locktype do
+                  xml.send(asked[:type])
                 end
               end
-              xml['D'].depth asked[:depth].to_s
-              xml['D'].timeout lock_time ? "Second-#{lock_time}" : 'infinity'
-              xml['D'].locktoken do
-                xml['D'].href locktoken
+              xml.depth asked[:depth].to_s
+              xml.timeout lock_time ? "Second-#{lock_time}" : 'infinity'
+              xml.locktoken do
+                xml.href locktoken
               end
             end
           end
@@ -164,9 +185,9 @@ module RackDAV
       rescue LockFailure => e
         multistatus do |xml|
           e.path_status.each_pair do |path, status|
-            xml['D'].response do
-              xml['D'].href path
-              xml['D'].status "#{http_version} #{status.status_line}"
+            xml.response do
+              xml.href path
+              xml.status "#{http_version} #{status.status_line}"
             end
           end
         end
@@ -174,6 +195,7 @@ module RackDAV
       end
     end
 
+    # Unlock current resource
     def unlock
       resource.unlock(lock_token)
     end
@@ -183,44 +205,55 @@ module RackDAV
     
     private
 
+    # Request environment variables
     def env
       @request.env
     end
     
+    # Current request scheme (http/https)
     def scheme
       request.scheme
     end
     
+    # Request host
     def host
       request.host
     end
     
+    # Request port
     def port
       request.port
     end
     
+    # Class of the resource in use
     def resource_class
       @options[:resource_class]
     end
 
+    # Root URI path for the resource
     def root_uri_path
       @options[:root_uri_path]
     end
     
+    # Returns Resource path with root URI removed
     def implied_path
       clean_path(@request.path.dup)
     end
     
+    # x:: request path
+    # Unescapes path and removes root URI if applicable
     def clean_path(x)
       ip = url_unescape(x)
       ip.gsub!(/^#{Regexp.escape(root_uri_path)}/, '') if root_uri_path
       ip
     end
     
+    # Unescaped request path
     def actual_path
       url_unescape(@request.path.dup)
     end
 
+    # Lock token if provided by client
     def lock_token
       env['HTTP_LOCK_TOKEN'] || nil
     end
@@ -236,6 +269,7 @@ module RackDAV
       d
     end
 
+    # Current HTTP version being used
     def http_version
       env['HTTP_VERSION'] || env['SERVER_PROTOCOL'] || 'HTTP/1.0'
     end
@@ -245,10 +279,7 @@ module RackDAV
       env['HTTP_OVERWRITE'].to_s.upcase != 'F'
     end
 
-    # TODO: Adding current resource causes weird duplication when using
-    # a webdav path. Test this method when using root path. If original is
-    # needed, we can simply check if the path is set or not and include
-    # current if needed
+    # Find resources at depth requested
     def find_resources
       ary = nil
       case depth
@@ -262,12 +293,15 @@ module RackDAV
       ary ? ary : []
     end
     
+    # XML parsed request
     def request_document
       @request_document ||= Nokogiri.XML(request.body.read)
     rescue
       raise BadRequest
     end
 
+    # Namespace being used within XML document
+    # TODO: Make this better
     def ns
       _ns = ''
       if(request_document && request_document.root && request_document.root.namespace_definitions.size > 0)
@@ -277,16 +311,20 @@ module RackDAV
       _ns
     end
     
+    # pattern:: XPath pattern
+    # Search XML document for given XPath
     def request_match(pattern)
       nil unless request_document
       request_document.xpath(pattern, request_document.root.namespaces)
     end
 
+    # root_type:: Root tag name
+    # Render XML and set Rack::Response#body= to final XML
     def render_xml(root_type)
       raise ArgumentError.new 'Expecting block' unless block_given?
       doc = Nokogiri::XML::Builder.new do |xml|
-        xml.send(root_type.to_s, 'xmlns:D' => 'DAV:') do
-          xml.parent.namespace = xml.parent.namespace_definitions.first
+        xml.send(root_type.to_s, 'xmlns' => 'DAV:') do
+#           xml.parent.namespace = xml.parent.namespace_definitions.first
           yield xml
         end
       end
@@ -296,20 +334,29 @@ module RackDAV
       response["Content-Length"] = response.body.size.to_s
     end
       
+    # block:: block
+    # Creates a multistatus response using #render_xml and
+    # returns the correct status
     def multistatus(&block)
       render_xml(:multistatus, &block)
       MultiStatus
     end
     
+    # xml:: Nokogiri::XML::Builder
+    # errors:: Array of errors
+    # Crafts responses for errors
     def response_errors(xml, errors)
       for path, status in errors
-        xml['D'].response do
-          xml['D'].href "#{scheme}://#{host}:#{port}#{path}"
-          xml['D'].status "#{http_version} #{status.status_line}"
+        xml.response do
+          xml.href "#{scheme}://#{host}:#{port}#{path}"
+          xml.status "#{http_version} #{status.status_line}"
         end
       end
     end
 
+    # resource:: Resource
+    # names:: Property names
+    # Returns array of property values for given names
     def get_properties(resource, names)
       stats = Hash.new { |h, k| h[k] = [] }
       for name in names
@@ -323,6 +370,9 @@ module RackDAV
       stats
     end
 
+    # resource:: Resource
+    # pairs:: name value pairs
+    # Sets the given properties
     def set_properties(resource, pairs)
       stats = Hash.new { |h, k| h[k] = [] }
       for name, value in pairs
@@ -335,30 +385,36 @@ module RackDAV
       stats
     end
     
+    # xml:: Nokogiri::XML::Builder
+    # stats:: Array of stats
+    # Build propstats response
     def propstats(xml, stats)
       return if stats.empty?
       for status, props in stats
-        xml['D'].propstat do
-          xml['D'].prop do
+        xml.propstat do
+          xml.prop do
             for name, value in props
               if(value.is_a?(Nokogiri::XML::Node))
-                xml['D'].send(name) do
+                xml.send(name) do
                   xml_convert(xml, value)
                 end
               elsif(value.is_a?(Symbol))
-                xml['D'].send(name) do
-                  xml['D'].send(value)
+                xml.send(name) do
+                  xml.send(value)
                 end
               else
-                xml['D'].send(name, value)
+                xml.send(name, value)
               end
             end
           end
-          xml['D'].status "#{http_version} #{status.status_line}"
+          xml.status "#{http_version} #{status.status_line}"
         end
       end
     end
     
+    # xml:: Nokogiri::XML::Builder
+    # element:: Nokogiri::XML::Element
+    # Converts element into proper text
     def xml_convert(xml, element)
       if element.children.empty?
         if element.text?
@@ -375,6 +431,9 @@ module RackDAV
       end
     end
 
+    # Perform authentication
+    # NOTE: Authentication will only be performed if the Resource
+    # has defined an #authenticate method
     def authenticate
       authed = true
       if(resource.respond_to?(:authenticate))
@@ -388,7 +447,6 @@ module RackDAV
       end
       unless(authed)
         response.body = resource.respond_to?(:authentication_error_msg) ? resource.authentication_error_msg : 'Not Authorized'
-        response['Content-Length'] = response.body.length
         response['WWW-Authenticate'] = "Basic realm=\"#{resource.respond_to?(:authentication_realm) ? resource.authentication_realm : 'Locked content'}\""
         raise Unauthorized.new unless authed
       end
