@@ -13,10 +13,21 @@ module RackDAV
   end
   
   class Resource
-    attr_reader :path, :options, :public_path
+    attr_reader :path, :options, :public_path, :request
     
     include RackDAV::HTTPStatus
     
+    # public_path:: Path received via request
+    # path:: Internal resource path (Only different from public path when using root_uri's for webdav)
+    # request:: Rack::Request
+    # options:: Any options provided for this resource
+    # Creates a new instance of the resource.
+    # NOTE: path and public_path will only differ if the root_uri has been set for the resource. The
+    #       controller will strip out the starting path so the resource can easily determine what
+    #       it is working on. For example:
+    #       request -> /my/webdav/directory/actual/path
+    #       public_path -> /my/webdav/directory/actual/path
+    #       path -> /actual/path
     def initialize(public_path, path, request, options)
       @public_path = public_path.dup
       @path = path.dup
@@ -59,7 +70,8 @@ module RackDAV
       raise NotImplementedError
     end
 
-    # Return the resource type.
+    # Return the resource type. Generally only used to specify
+    # resource is a collection.
     def resource_type
       :collection if collection?
     end
@@ -113,8 +125,7 @@ module RackDAV
     #
     # Move this resource to given destination resource.
     def move(dest)
-      copy(dest)
-      delete
+      raise NotImplemented
     end
     
     # args:: Hash of lock arguments
@@ -138,30 +149,35 @@ module RackDAV
     def unlock(token)
       raise NotImplemented
     end
-    
-    # HTTP MKCOL request.
-    #
+
     # Create this resource as collection.
     def make_collection
       raise NotImplementedError
     end
 
+    # other:: Resource
+    # Returns if current resource is equal to other resource
     def ==(other)
       path == other.path
     end
 
+    # Name of the resource
     def name
       File.basename(path)
     end
 
+    # Name of the resource to be displayed to the client
     def display_name
       name
     end
     
+    # Available properties
     def property_names
       %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength)
     end
     
+    # name:: String - Property name
+    # Returns the value of the given property
     def get_property(name)
       case name
       when 'resourcetype'     then resource_type
@@ -174,6 +190,9 @@ module RackDAV
       end
     end
 
+    # name:: String - Property name
+    # value:: New value
+    # Set the property to the given value
     def set_property(name, value)
       case name
       when 'resourcetype'    then self.resource_type = value
@@ -185,11 +204,16 @@ module RackDAV
       raise HTTPStatus::Conflict
     end
 
+    # name:: Property name
+    # Remove the property from the resource
     def remove_property(name)
       raise HTTPStatus::Forbidden
     end
 
-    def child(name, option={})
+    # name:: Name of child
+    # Create a new child with the given name
+    # NOTE:: Include trailing '/' if child is collection
+    def child(name)
       new_public = public_path.dup
       new_public = new_public + '/' unless new_public[-1,1] == '/'
       new_public = '/' + new_public unless new_public[0,1] == '/'
@@ -199,12 +223,14 @@ module RackDAV
       self.class.new("#{new_public}#{name}", "#{new_path}#{name}", request, options)
     end
     
+    # Return parent of this resource
     def parent
       elements = @path.scan(/[^\/]+/)
       return nil if elements.empty?
       self.class.new(('/' + @public_path.scan(/[^\/]+/)[0..-2].join('/')), ('/' + elements[0..-2].to_a.join('/')), @request, @options)
     end
     
+    # Return list of descendants
     def descendants
       list = []
       children.each do |child|
@@ -214,12 +240,9 @@ module RackDAV
       list
     end
 
+    # Does client allow GET redirection
     def allows_redirect?
-      %w(webdrive cyberduck webdavfs).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.downcase : request.env['HTTP_USER_AGENT'].downcase) =~ /#{x}/}
-    end
-    
-    def request
-      @request
+      %w(webdrive cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.downcase : request.env['HTTP_USER_AGENT'].downcase) =~ /#{Regexp.escape(x)}/}
     end
     
   end
