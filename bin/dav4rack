@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'rack_dav'
+require 'dav4rack'
 
 app = Rack::Builder.new do
   use Rack::ShowExceptions
@@ -9,7 +9,7 @@ app = Rack::Builder.new do
   use Rack::Reloader
   use Rack::Lint
   
-  run RackDAV::Handler.new
+  run DAV4Rack::Handler.new
 
 end.to_app
 
