@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'time'
 require 'uri'
 require 'nokogiri'
@@ -9,3 +8,6 @@ require 'dav4rack/resource'
 require 'dav4rack/handler'
 require 'dav4rack/controller'
 
+module DAV4Rack
+  VERSION = '0.0.1'
+end
