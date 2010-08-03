@@ -2,6 +2,55 @@
 
 require 'rubygems'
 require 'dav4rack'
+require 'getoptlong'
+
+def print_help_msg
+  print_version_info
+  puts "Usage: dav4rack [opts]"
+  puts " --help               Print help message"
+  puts " --version            Print version information"
+  puts " --username name      Set username"
+  puts " --password pass      Set password"
+  puts " --root /share/path   Set path to share directory"
+end
+
+def print_version_info
+  puts "DAV 4 Rack - Rack based WebDAV Framework - Version: #{DAV4Rack::VERSION}"
+end
+
+opts = GetoptLong.new(
+  ['--username', '-u', GetoptLong::REQUIRED_ARGUMENT],
+  ['--password', '-p', GetoptLong::REQUIRED_ARGUMENT],
+  ['--help', '-h', GetoptLong::NO_ARGUMENT],
+  ['--version', '-v', GetoptLong::NO_ARGUMENT],
+  ['--root', '-r', GetoptLong::REQUIRED_ARGUMENT]
+)
+
+credentials = {}
+
+opts.each do |opt,arg|
+  case opt
+  when '--help'
+    print_help_msg
+    exit(0)
+  when '--username'
+    credentials[:username] = arg
+  when '--password'
+    credentials[:password] = arg
+  when '--root'
+    credentials[:root] = arg
+    unless(File.exists?(arg) && File.directory?(arg))
+      puts "ERROR: Path provided is not a valid directory (#{arg})"
+      exit(-1)
+    end
+  when '--version'
+    print_version_info
+    exit(0)
+  else
+    puts "ERROR: Unknown option provided"
+    exit(-1)
+  end
+end
 
 app = Rack::Builder.new do
   use Rack::ShowExceptions
@@ -9,12 +58,8 @@ app = Rack::Builder.new do
   use Rack::Reloader
   use Rack::Lint
   
-  run DAV4Rack::Handler.new
+  run DAV4Rack::Handler.new(credentials)
 
 end.to_app
 
-begin
-  Rack::Handler::Mongrel.run(app, :Port => 3000)
-rescue
-  Rack::Handler::WEBrick.run(app, :Port => 3000)
-end
+Rack::Handler::WEBrick.run(app, :Port => 3000)
