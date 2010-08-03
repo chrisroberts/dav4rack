@@ -35,7 +35,7 @@ module RackDAV
       # Apache wants the body dealt with, so just read it and junk it
       buf = true
       buf = request.body.read(8192) while buf
-      
+
       response.finish
     end
     
