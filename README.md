@@ -1,20 +1,18 @@
----
-title: DAV4Rack - Web Authoring for Rack
----
+== DAV4Rack - Web Authoring for Rack
 
 DAV4Rack is a framework for providing WebDAV via Rack allowing content
-authoring over HTTP. It is based off the [original RackDAV framework][1]
+authoring over HTTP. It is based off the {original RackDAV framework}[http://github.com/georgi/rack_dav]
 to provide better Resource support for building customized WebDAV resources
 completely abstracted from the filesystem. Support for authentication and
 locking has been added as well as a move from REXML to Nokogiri. Enjoy!
 
-## Install
+== Install
 
-### Via RubyGems
+=== Via RubyGems
 
     gem install dav4rack
 
-## Quickstart
+== Quickstart
 
 If you just want to share a folder over WebDAV, you can just start a
 simple server with:
@@ -27,7 +25,7 @@ which is used for an example. To enable it:
 
     dav4rack --username=user --password=pass
 
-## Rack Handler
+== Rack Handler
 
 Using DAV4Rack within a rack application is pretty simple. A very slim
 rackup script would look something like this:
@@ -97,7 +95,7 @@ resources have been reached, authentication will be enforced based on the requir
 note in the root map you can see we are running a Rails application. This is how you can easily enable DAV4Rack with your Rails
 application.
 
-## Custom Resources
+== Custom Resources
 
 Creating your own resource is easy. Simply inherit the DAV4Rack::Resource class, and start redefining all the methods
 you want to customize. The DAV4Rack::Resource class only has implementations for methods that can be provided extremely
@@ -105,7 +103,7 @@ generically. This means that most things will require at least some sort of impl
 is defined so generically, and the Controller simply passes the request on to the Resource, it is easy to create fully
 virtualized resources.
 
-## Helpers
+== Helpers
 
 There are some helpers worth mentioning that make things a little easier. DAV4Rack::Resource#accept_redirect? method is available to Resources.
 If true, the currently connected client will accept and properly use a 302 redirect for a GET request. Most clients do not properly
@@ -130,10 +128,6 @@ process to be freed up to deal with other waiters. A very simple example:
     end
   end
   
-## Issues/Bugs/Questions
+== Issues/Bugs/Questions
 
 Please use the issues at github: http://github.com/chrisroberts/dav4rack
-
-## Footnotes:
-
-[1]: http://github.com/georgi/rack_dav
