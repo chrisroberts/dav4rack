@@ -161,7 +161,7 @@ module DAV4Rack
     
     def lock(args)
       raise Conflict unless parent_exists?
-      lock_check(args[:type])
+      lock_check(args[:scope])
       lock = @lock_class.explicit_locks(@path).find{|l| l.scope == args[:scope] && l.kind == args[:type] && l.user == @user}
       unless(lock)
         token = UUIDTools::UUID.random_create.to_s
@@ -180,9 +180,11 @@ module DAV4Rack
       [lock.remaining_timeout, lock.token]
     end
 
-    def lock_check(lock_type)
+    # lock_scope:: scope of lock
+    # Check if resource is locked. Raise DAV4Rack::LockFailure if locks are in place.
+    def lock_check(lock_scope)
       if(@lock_class.explicitly_locked?(@path))
-        raise Locked if lock_type == 'exclusive'
+        raise Locked if lock_scope == 'exclusive'
         p @lock_class.explicit_locks(@path)
         raise Locked if @lock_class.explicit_locks(@path).find_all{|l|l.scope == 'exclusive' && l.user == @user}.size > 0
       elsif(@lock_class.implicitly_locked?(@path))
@@ -206,8 +208,9 @@ module DAV4Rack
       end
     end
     
+    # token:: Lock token
+    # Remove the given lock
     def unlock(token)
-      puts "Received unlock request for token: #{token}"
       token = token.slice(1, token.length - 2)
       raise BadRequest if token.nil? || token.empty?
       lock = @lock_class.find_by_token(token)
