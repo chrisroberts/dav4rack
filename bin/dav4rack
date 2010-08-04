@@ -62,4 +62,9 @@ app = Rack::Builder.new do
 
 end.to_app
 
-Rack::Handler::WEBrick.run(app, :Port => 3000)
+begin
+  Rack::Handler::Mongrel.run(app, :Port => 3000)
+rescue => e
+  puts "Failed to start mongrel (#{e}). Falling back to WEBrick."
+  Rack::Handler::WEBrick.run(app, :Port => 3000)
+end
