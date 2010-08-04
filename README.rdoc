@@ -19,9 +19,10 @@ simple server with:
 
     dav4rack
 
-This will start a WEBrick server on port 3000, which you can connect
-to without authentication. The simple file resource allows very basic authentication
-which is used for an example. To enable it:
+This will start a Mongrel or WEBrick server on port 3000, which you can connect
+to without authentication. Note that Mongrel is much more responsive, so if you
+are having slowness issues, install it and give that a try. The simple file resource
+allows very basic authentication which is used for an example. To enable it:
 
     dav4rack --username=user --password=pass
 
