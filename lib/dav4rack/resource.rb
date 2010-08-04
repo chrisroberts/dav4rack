@@ -1,3 +1,5 @@
+require 'uuidtools'
+
 module DAV4Rack
   
   class LockFailure < RuntimeError
@@ -32,7 +34,14 @@ module DAV4Rack
       @public_path = public_path.dup
       @path = path.dup
       @request = request
+      @lock_class = options[:lock_class]
+      unless(@lock_class)
+        require 'dav4rack/lock_store'
+        @lock_class = LockStore
+      end
       @options = options.dup
+      @max_timeout = options[:max_timeout] || 86400
+      @default_timeout = options[:default_timeout] || 60
     end
         
     # If this is a collection, return the child resources.
@@ -45,9 +54,16 @@ module DAV4Rack
       raise NotImplementedError
     end
 
-    # Does this recource exist?
+    # Does this resource exist?
     def exist?
       raise NotImplementedError
+    end
+    
+    # Does the parent resource exist?
+    def parent_exists?
+      check = @path.dup.split('/')
+      check.pop
+      self.class.new(check.join('/') + '/', check.join('/') + '/', request, options).exist?
     end
     
     # Return the creation time.
@@ -142,14 +158,67 @@ module DAV4Rack
     # NOTE: See section 9.10 of RFC 4918 for guidance about
     # how locks should be generated and the expected responses
     # (http://www.webdav.org/specs/rfc4918.html#rfc.section.9.10)
+    
     def lock(args)
-      raise NotImplemented
+      raise Conflict unless parent_exists?
+      lock_check(args[:type])
+      lock = @lock_class.explicit_locks(@path).find{|l| l.scope == args[:scope] && l.kind == args[:type] && l.user == @user}
+      unless(lock)
+        token = UUIDTools::UUID.random_create.to_s
+        lock = @lock_class.generate(@path, @user, token)
+        lock.scope = args[:scope]
+        lock.kind = args[:type]
+        lock.owner = args[:owner]
+        lock.individual = args[:depth] == 0
+        if(args[:timeout])
+          lock.timeout = args[:timeout] <= @max_timeout && args[:timeout] > 0 ? args[:timeout] : @max_timeout
+        else
+          lock.timeout = @default_timeout
+        end
+        lock.save
+      end
+      [lock.remaining_timeout, lock.token]
+    end
+
+    def lock_check(lock_type)
+      if(@lock_class.explicitly_locked?(@path))
+        raise Locked if lock_type == 'exclusive'
+        p @lock_class.explicit_locks(@path)
+        raise Locked if @lock_class.explicit_locks(@path).find_all{|l|l.scope == 'exclusive' && l.user == @user}.size > 0
+      elsif(@lock_class.implicitly_locked?(@path))
+        if(lock_type == 'exclusive')
+          locks = @lock_class.implicit_locks(@path)
+          failure = DAV4Rack::LockFailure.new("Failed to lock: #{@path}")
+          locks.each do |lock|
+            failure.add_failure(@path, Locked)
+          end
+          raise failure
+        else
+          locks = @lock_class.implict_locks(@path).find_all{|l| l.scope == 'exclusive' && l.user == @user}
+          if(locks.size > 0)
+            failure = LockFailure.new("Failed to lock: #{@path}")
+            locks.each do |lock|
+              failure.add_failure(@path, Locked)
+            end
+            raise failure
+          end
+        end
+      end
     end
     
     def unlock(token)
-      raise NotImplemented
+      puts "Received unlock request for token: #{token}"
+      token = token.slice(1, token.length - 2)
+      raise BadRequest if token.nil? || token.empty?
+      lock = @lock_class.find_by_token(token)
+      raise Forbidden unless lock && lock.user == @user
+      raise Conflict unless lock.path =~ /^#{Regexp.escape(@path)}.*$/
+      lock.destroy
+      delete if name[0,1] == '.' && @options[:delete_dotfiles]
+      NoContent
     end
-
+    
+    
     # Create this resource as collection.
     def make_collection
       raise NotImplementedError
@@ -242,7 +311,7 @@ module DAV4Rack
 
     # Does client allow GET redirection
     def allows_redirect?
-      %w(webdrive cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.downcase : request.env['HTTP_USER_AGENT'].downcase) =~ /#{Regexp.escape(x)}/}
+      %w(cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.downcase : request.env['HTTP_USER_AGENT'].downcase) =~ /#{Regexp.escape(x)}/}
     end
     
   end
