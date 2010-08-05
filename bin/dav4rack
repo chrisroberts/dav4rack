@@ -63,6 +63,11 @@ app = Rack::Builder.new do
 end.to_app
 
 begin
+  puts 'Attempting to start unicorn...'
+  require 'unicorn'
+  Unicorn.run(app, :listeners => ["0.0.0.0:3000"])
+rescue => e
+  puts "Failed to start unicorn (#{e}). Starting mongrel..."
   Rack::Handler::Mongrel.run(app, :Port => 3000)
 rescue => e
   puts "Failed to start mongrel (#{e}). Falling back to WEBrick."
