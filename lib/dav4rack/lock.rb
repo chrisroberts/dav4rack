@@ -27,10 +27,6 @@ module DAV4Rack
       @args[:timeout].to_i - (Time.now.to_i - @args[:created_at].to_i)
     end
     
-    def save
-      true
-    end
-    
     def method_missing(*args)
       if(@args.has_key?(args.first.to_sym))
         @args[args.first.to_sym]
