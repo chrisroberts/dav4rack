@@ -42,6 +42,7 @@ module DAV4Rack
       @options = options.dup
       @max_timeout = options[:max_timeout] || 86400
       @default_timeout = options[:default_timeout] || 60
+      @user = request.ip
     end
         
     # If this is a collection, return the child resources.
@@ -188,13 +189,11 @@ module DAV4Rack
 
     # lock_scope:: scope of lock
     # Check if resource is locked. Raise DAV4Rack::LockFailure if locks are in place.
-    def lock_check(lock_scope)
+    def lock_check(lock_scope=nil)
       if(@lock_class.explicitly_locked?(@path))
-        raise Locked if lock_scope == 'exclusive'
-        p @lock_class.explicit_locks(@path)
         raise Locked if @lock_class.explicit_locks(@path).find_all{|l|l.scope == 'exclusive' && l.user != @user}.size > 0
       elsif(@lock_class.implicitly_locked?(@path))
-        if(lock_type == 'exclusive')
+        if(lock_scope.to_s == 'exclusive')
           locks = @lock_class.implicit_locks(@path)
           failure = DAV4Rack::LockFailure.new("Failed to lock: #{@path}")
           locks.each do |lock|
