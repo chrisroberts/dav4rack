@@ -175,7 +175,13 @@ module DAV4Rack
         else
           lock.timeout = @default_timeout
         end
-        lock.save
+        lock.save if lock.respond_to? :save
+      end
+      begin
+        lock_check(args[:type])
+      rescue DAV4Rack::LockFailure => e
+        lock.destroy
+        raise e
       end
       [lock.remaining_timeout, lock.token]
     end
@@ -186,7 +192,7 @@ module DAV4Rack
       if(@lock_class.explicitly_locked?(@path))
         raise Locked if lock_scope == 'exclusive'
         p @lock_class.explicit_locks(@path)
-        raise Locked if @lock_class.explicit_locks(@path).find_all{|l|l.scope == 'exclusive' && l.user == @user}.size > 0
+        raise Locked if @lock_class.explicit_locks(@path).find_all{|l|l.scope == 'exclusive' && l.user != @user}.size > 0
       elsif(@lock_class.implicitly_locked?(@path))
         if(lock_type == 'exclusive')
           locks = @lock_class.implicit_locks(@path)
@@ -196,7 +202,7 @@ module DAV4Rack
           end
           raise failure
         else
-          locks = @lock_class.implict_locks(@path).find_all{|l| l.scope == 'exclusive' && l.user == @user}
+          locks = @lock_class.implict_locks(@path).find_all{|l| l.scope == 'exclusive' && l.user != @user}
           if(locks.size > 0)
             failure = LockFailure.new("Failed to lock: #{@path}")
             locks.each do |lock|
