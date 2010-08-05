@@ -68,6 +68,7 @@
     # Return response to PUT
     def put
       raise Forbidden if resource.collection?
+      resource.lock_check
       resource.put(request, response)
     end
 
@@ -79,11 +80,13 @@
     # Return response to DELETE
     def delete
       raise NotFound unless resource.exist?
+      resource.lock_check
       resource.delete
     end
     
     # Return response to MKCOL
     def mkcol
+      resource.lock_check
       resource.make_collection
     end
     
@@ -97,6 +100,7 @@
     # Resource will be copied (implementation ease)
     def move(*args)
       raise NotFound unless resource.exist?
+      resource.lock_check unless args.include?(:copy)
       dest_uri = URI.parse(env['HTTP_DESTINATION'])
       destination = url_unescape(dest_uri.path)
       raise BadGateway if dest_uri.host and dest_uri.host != request.host
@@ -132,6 +136,7 @@
     # Return response to PROPPATCH
     def proppatch
       raise NotFound unless resource.exist?
+      resource.lock_check
       prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
       prop_set = request_match('/propertyupdate/set/prop').children.map{|n| [n.name, n.text] }
       multistatus do |xml|
