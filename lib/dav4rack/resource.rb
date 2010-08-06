@@ -42,7 +42,7 @@ module DAV4Rack
       @options = options.dup
       @max_timeout = options[:max_timeout] || 86400
       @default_timeout = options[:default_timeout] || 60
-      @user = request.ip
+      @user = @options[:user] || request.ip
     end
         
     # If this is a collection, return the child resources.
@@ -64,7 +64,7 @@ module DAV4Rack
     def parent_exists?
       check = @path.dup.split('/')
       check.pop
-      self.class.new(check.join('/') + '/', check.join('/') + '/', request, options).exist?
+      self.class.new(check.join('/') + '/', check.join('/') + '/', request, options.merge(:user => @user)).exist?
     end
     
     # Return the creation time.
@@ -297,14 +297,14 @@ module DAV4Rack
       new_path = path.dup
       new_path = new_path + '/' unless new_path[-1,1] == '/'
       new_path = '/' + new_path unless new_path[0,1] == '/'
-      self.class.new("#{new_public}#{name}", "#{new_path}#{name}", request, options)
+      self.class.new("#{new_public}#{name}", "#{new_path}#{name}", request, options.merge(:user => @user))
     end
     
     # Return parent of this resource
     def parent
       elements = @path.scan(/[^\/]+/)
       return nil if elements.empty?
-      self.class.new(('/' + @public_path.scan(/[^\/]+/)[0..-2].join('/')), ('/' + elements[0..-2].to_a.join('/')), @request, @options)
+      self.class.new(('/' + @public_path.scan(/[^\/]+/)[0..-2].join('/')), ('/' + elements[0..-2].to_a.join('/')), @request, @options.merge(:user => @user))
     end
     
     # Return list of descendants
@@ -319,7 +319,7 @@ module DAV4Rack
 
     # Does client allow GET redirection
     def allows_redirect?
-      %w(cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.downcase : request.env['HTTP_USER_AGENT'].downcase) =~ /#{Regexp.escape(x)}/}
+      %w(cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.to_s.downcase : request.env['HTTP_USER_AGENT'].to_s.downcase) =~ /#{Regexp.escape(x)}/}
     end
     
   end
