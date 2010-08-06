@@ -16,6 +16,31 @@ module DAV4Rack
   
   class Resource
     attr_reader :path, :options, :public_path, :request
+    @@blocks = {:before => {}, :after => {}}
+    
+    class << self
+      
+      # This lets us define a bunch of before and after blocks that are
+      # either called before all methods on the resource, or only specific
+      # methods on the resource
+      def method_missing(*args, &block)
+        m = args.unshift
+        parts = m.split('_')
+        type = parts.unshift.to_sym
+        method = parts.emtpy? ? nil : parts.join('_').to_sym
+        if(@@blocks[type] && block_given?)
+          if(method)
+            @@blocks[type][method] ||= []
+            @@blocks[type][method] << block
+          else
+            @@blocks[type][:'__all__'] << block
+          end
+        else
+          raise NoMethodError.new("Undefined method #{m} for class #{self}")
+        end
+      end
+      
+    end
     
     include DAV4Rack::HTTPStatus
     
@@ -30,7 +55,10 @@ module DAV4Rack
     #       request -> /my/webdav/directory/actual/path
     #       public_path -> /my/webdav/directory/actual/path
     #       path -> /actual/path
+    # NOTE: Customized Resources should not use initialize for setup. Instead
+    #       use the #setup method
     def initialize(public_path, path, request, options)
+      skip_alias = [:authenticate]
       @public_path = public_path.dup
       @path = path.dup
       @request = request
@@ -43,8 +71,29 @@ module DAV4Rack
       @max_timeout = options[:max_timeout] || 86400
       @default_timeout = options[:default_timeout] || 60
       @user = @options[:user] || request.ip
+      setup if respond_to?(:setup)
+      public_methods(false).each do |method|
+        next if skip_alias.include?(method.to_sym) || method[0,4] == 'DAV_'
+        self.class.class_eval "alias :'DAV_#{method}' :'#{method}'"
+        self.class.class_eval "undef :'#{method}'"
+      end
     end
-        
+    
+    # This allows us to call before and after blocks
+    def method_missing(*args)
+      result = nil
+      orig = args.shift
+      [:'__all__', orig.to_sym].each{|sym| @@blocks[:before][sym].each{|b|b.call(self)} if @@blocks[:before] && @@blocks[:before][sym]}
+      m = "DAV_#{orig}"
+      if(respond_to?(m))
+        result = send m, *args
+      else
+        raise NoMethodError.new("Undefined method: #{orig} for class #{self}.")
+      end
+      [:'__all__', orig.to_sym].each{|sym| @@blocks[:after][sym].each{|b|b.call(self)} if @@blocks[:after] && @@blocks[:after][sym]}
+      result
+    end
+    
     # If this is a collection, return the child resources.
     def children
       raise NotImplementedError
@@ -62,9 +111,7 @@ module DAV4Rack
     
     # Does the parent resource exist?
     def parent_exists?
-      check = @path.dup.split('/')
-      check.pop
-      self.class.new(check.join('/') + '/', check.join('/') + '/', request, options.merge(:user => @user)).exist?
+      parent.exist?
     end
     
     # Return the creation time.
