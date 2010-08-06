@@ -11,12 +11,12 @@
     # Create a new Controller.
     # NOTE: options will be passed to Resource
     def initialize(request, response, options={})
+      raise Forbidden if request.path_info.include?('../')
       @request = request
       @response = response
       @options = options
       @resource = resource_class.new(actual_path, implied_path, @request, @options)
       authenticate
-      raise Forbidden if request.path_info.include?('../')
     end
     
     # s:: string
@@ -56,7 +56,7 @@
     def get
       raise NotFound unless resource.exist?
       res = resource.get(request, response)
-      if(response.status == 200 && !resource.collection?)
+      if(res == OK && !resource.collection?)
         response['Etag'] = resource.etag
         response['Content-Type'] = resource.content_type
         response['Content-Length'] = resource.content_length.to_s
@@ -69,7 +69,13 @@
     def put
       raise Forbidden if resource.collection?
       resource.lock_check
-      resource.put(request, response)
+      status = resource.put(request, response)
+      multistatus do |xml|
+        xml.response do
+          xml.href resource.path
+          xml.status "#{http_version} #{status.status_line}"
+        end
+      end
     end
 
     # Return response to POST
@@ -87,7 +93,13 @@
     # Return response to MKCOL
     def mkcol
       resource.lock_check
-      resource.make_collection
+      status = resource.make_collection
+      multistatus do |xml|
+        xml.response do
+          xml.href resource.path
+          xml.status "#{http_version} #{status.status_line}"
+        end
+      end
     end
     
     # Return response to COPY
@@ -105,12 +117,20 @@
       destination = url_unescape(dest_uri.path)
       raise BadGateway if dest_uri.host and dest_uri.host != request.host
       raise Forbidden if destination == resource.public_path
-      dest = resource_class.new(destination, clean_path(destination), @request, @options)
+      dest = resource_class.new(destination, clean_path(destination), @request, @options.merge(:user => resource.user))
+      status = nil
       if(args.include?(:copy))
-        resource.copy(dest, overwrite)
+        status = resource.copy(dest, overwrite)
       else
         raise Conflict unless depth.is_a?(Symbol) || depth > 1
-        resource.move(dest)
+        status = resource.move(dest)
+      end
+      response['Location'] = "#{scheme}://#{host}:#{port}#{dest.public_path}" if status == Created
+      multistatus do |xml|
+        xml.response do
+          xml.href "#{scheme}://#{host}:#{port}#{dest.public_path}"
+          xml.status = "#{http_version} #{status.status_line}"
+        end
       end
     end
     
@@ -196,7 +216,6 @@
             end
           end
         end
-        response.status = MultiStatus
       end
     end
 
@@ -453,7 +472,7 @@
       unless(authed)
         response.body = resource.respond_to?(:authentication_error_msg) ? resource.authentication_error_msg : 'Not Authorized'
         response['WWW-Authenticate'] = "Basic realm=\"#{resource.respond_to?(:authentication_realm) ? resource.authentication_realm : 'Locked content'}\""
-        raise Unauthorized.new unless authed
+        raise Unauthorized unless authed
       end
     end
 
