@@ -1,3 +1,4 @@
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__)) + '/lib/'
 require 'dav4rack'
 Gem::Specification.new do |s|
   s.name = 'dav4rack'
