@@ -19,10 +19,10 @@ simple server with:
 
     dav4rack
 
-This will start a Mongrel or WEBrick server on port 3000, which you can connect
-to without authentication. Note that Mongrel is much more responsive, so if you
-are having slowness issues, install it and give that a try. The simple file resource
-allows very basic authentication which is used for an example. To enable it:
+This will start a Unicorn, Mongrel or WEBrick server on port 3000, which you can connect
+to without authentication. Unicorn and Mongrel will be much more responsive than WEBrick,
+so if you are having slowness issues, install one of them and restart the dav4rack process.
+The simple file resource allows very basic authentication which is used for an example. To enable it:
 
     dav4rack --username=user --password=pass
 
@@ -44,8 +44,8 @@ an example of how to use a custom resource:
   run DAV4Rack::Handler.new(:resource_class => CustomResource, :custom => 'options', :passed => 'to resource')
   
 Next, lets venture into mapping a path for our WebDAV access. In this example, we 
-will use default FileResource like in the first example, but instead of connecting
-directly to the host, we will have to connect to: http://host/webdav/share/
+will use default FileResource like in the first example, but instead of the WebDAV content
+being available at the root directory, we will map it to a specific directory: /webdav/share/
 
   require 'rubygems'
   require 'dav4rack'
@@ -59,7 +59,7 @@ directly to the host, we will have to connect to: http://host/webdav/share/
   }.to_app
   run app
   
-Aside from the #map block, notice the new option passed to the Handler's initialization, :root_uri_path. When
+Aside from the Builder#map block, notice the new option passed to the Handler's initialization, :root_uri_path. When
 DAV4Rack receives a request, it will automatically convert the request to the proper path and pass it to
 the resource.
 
@@ -108,14 +108,13 @@ virtualized resources.
 
 There are some helpers worth mentioning that make things a little easier. DAV4Rack::Resource#accept_redirect? method is available to Resources.
 If true, the currently connected client will accept and properly use a 302 redirect for a GET request. Most clients do not properly
-support this, which can be a real pain when working with virtualized files that may located some where else, like S3. To deal with
+support this, which can be a real pain when working with virtualized files that may be located some where else, like S3. To deal with
 those clients that don't support redirects, a helper has been provided so resources don't have to deal with proxying themselves. The 
-DAV4Rack::RemoteFile allows the resource to simple tell Rack to download and send the file from the provided resource and go away, allowing the 
+DAV4Rack::RemoteFile allows the resource to simply tell Rack to download and send the file from the provided resource and go away, allowing the 
 process to be freed up to deal with other waiters. A very simple example:
 
   class MyResource < DAV4Rack::Resource
-    def initialize(*args)
-      super(*args)
+    def setup
       @item = method_to_fill_this_properly
     end
     
@@ -128,6 +127,55 @@ process to be freed up to deal with other waiters. A very simple example:
       end
     end
   end
+  
+
+== Authentication
+
+Authentication is performed on a per Resource basis. The Controller object will check the Resource for a Resource#authenticate method. If it exists,
+any authentication information will be passed to the method. Depending on the result, the Controller will either continue on with the request, or send
+a 401 Unauthorized response. 
+
+As a nicety, Resource#authentication_realm will be checked for existence and the returning string will be used as the Realm. Resource#authentication_error_msg
+will also be checked for existence and the returning string will be passed in the response upon authentication failure.
+
+Authentication can also be implemented using callbacks, as discussed below.
+  
+== Callbacks
+
+Resources can make use of callbacks to easily apply permissions, authentication or any other action that needs to be performed before or after any or all
+actions. Callbacks are applied to all publicly available methods. This is important for methods used internally within the resource. Methods not meant
+to be called by the Controller, or anyone else, should be scoped protected or private to reduce the interaction with callbacks.
+
+Callbacks can be called before or after a method call. For example:
+
+  class MyResource < DAV4Rack::Resource
+    before do |resource, method_name|
+      my_authentication_method
+    end
+    
+    after do |resource, method_name|
+      puts "#{Time.now} -> Completed: #{resource}##{method_name}"
+    end
+    
+    private
+    
+    def my_authentication_method
+      true
+    end
+  end
+  
+In this example MyResource#my_authentication_method will be called before any public method is called. After any method has been called a status
+line will be printed to STDOUT. Running callbacks before/after every method call is a bit much in most cases, so callbacks can be applied to specific
+methods:
+
+  class MyResource < DAV4Rack::Resource
+    before_get do |resource|
+      puts "#{Time.now} -> Received GET request from resource: #{resource}"
+    end
+  end
+  
+In this example, a simple status line will be printed to STDOUT before the MyResource#get method is called. The current resource object is always
+provided to callbacks. The method name is only provided to the generic before/after callbacks.
   
 == Issues/Bugs/Questions
 
