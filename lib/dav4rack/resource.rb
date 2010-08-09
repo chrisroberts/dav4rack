@@ -219,6 +219,7 @@ module DAV4Rack
     # (http://www.webdav.org/specs/rfc4918.html#rfc.section.9.10)
     
     def lock(args)
+      raise NotImplemented if @lock_class.nil?
       raise Conflict unless parent_exists?
       lock_check(args[:scope])
       lock = @lock_class.explicit_locks(@path).find{|l| l.scope == args[:scope] && l.kind == args[:type] && l.user == @user}
@@ -248,6 +249,7 @@ module DAV4Rack
     # lock_scope:: scope of lock
     # Check if resource is locked. Raise DAV4Rack::LockFailure if locks are in place.
     def lock_check(lock_scope=nil)
+      return unless @lock_class
       if(@lock_class.explicitly_locked?(@path))
         raise Locked if @lock_class.explicit_locks(@path).find_all{|l|l.scope == 'exclusive' && l.user != @user}.size > 0
       elsif(@lock_class.implicitly_locked?(@path))
@@ -274,6 +276,7 @@ module DAV4Rack
     # token:: Lock token
     # Remove the given lock
     def unlock(token)
+      raise NotImplemented if @lock_class.nil?
       token = token.slice(1, token.length - 2)
       raise BadRequest if token.nil? || token.empty?
       lock = @lock_class.find_by_token(token)
