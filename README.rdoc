@@ -176,8 +176,26 @@ methods:
   
 In this example, a simple status line will be printed to STDOUT before the MyResource#get method is called. The current resource object is always
 provided to callbacks. The method name is only provided to the generic before/after callbacks.
+
+Something very handy for dealing with the mess of files OS X leaves on the system:
+
+  class MyResource < DAV4Rack::Resource
+    after_unlock do |resource|
+      resource.delete if resource.name[0,1] == '.'
+    end
+  end
   
+Because OS X implements locking correctly, we can wait until it releases the lock on the file, and remove it if it's a hidden file. 
+
 == Issues/Bugs/Questions
+
+=== Known Issues
+
+* OS X Finder PUT fails when using NGINX (this is due to NGINX's lack of chunked transfer encoding)
+* Windows WebDAV mini-redirector fails (this client is very broken. patches welcome.)
+* Lots of unimplemented parts of the webdav spec (patches always welcome)
+
+=== Unknown Issues
 
 Please use the issues at github: http://github.com/chrisroberts/dav4rack
 
