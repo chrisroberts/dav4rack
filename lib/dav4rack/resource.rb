@@ -82,7 +82,7 @@ module DAV4Rack
         [:'__all__', method_name.to_sym].each do |sym|
           if(@@blocks[kind] && @@blocks[kind][sym])
             @@blocks[kind][sym].each do |b|
-              args = [self, sym == :'__all__' ? nil : sym].compact
+              args = [self, sym == :'__all__' ? sym : nil].compact
               b.call(*args)
             end
           end
