@@ -24,15 +24,16 @@ module DAV4Rack
       # either called before all methods on the resource, or only specific
       # methods on the resource
       def method_missing(*args, &block)
-        m = args.unshift
-        parts = m.split('_')
-        type = parts.unshift.to_sym
-        method = parts.emtpy? ? nil : parts.join('_').to_sym
+        m = args.shift
+        parts = m.to_s.split('_')
+        type = parts.shift.to_s.to_sym
+        method = parts.empty? ? nil : parts.join('_').to_sym
         if(@@blocks[type] && block_given?)
           if(method)
             @@blocks[type][method] ||= []
             @@blocks[type][method] << block
           else
+            @@blocks[type][:'__all__'] ||= []
             @@blocks[type][:'__all__'] << block
           end
         else
@@ -77,20 +78,29 @@ module DAV4Rack
         self.class.class_eval "alias :'DAV_#{method}' :'#{method}'"
         self.class.class_eval "undef :'#{method}'"
       end
+      @runner = lambda do |kind, method_name|
+        [:'__all__', method_name.to_sym].each do |sym|
+          if(@@blocks[kind] && @@blocks[kind][sym])
+            @@blocks[kind][sym].each do |b|
+              b.call(self)
+            end
+          end
+        end
+      end
     end
     
     # This allows us to call before and after blocks
     def method_missing(*args)
       result = nil
       orig = args.shift
-      [:'__all__', orig.to_sym].each{|sym| @@blocks[:before][sym].each{|b|b.call(self)} if @@blocks[:before] && @@blocks[:before][sym]}
+      @runner.call(:before, orig)
       m = "DAV_#{orig}"
       if(respond_to?(m))
         result = send m, *args
       else
         raise NoMethodError.new("Undefined method: #{orig} for class #{self}.")
       end
-      [:'__all__', orig.to_sym].each{|sym| @@blocks[:after][sym].each{|b|b.call(self)} if @@blocks[:after] && @@blocks[:after][sym]}
+      @runner.call(:after, orig)
       result
     end
     
