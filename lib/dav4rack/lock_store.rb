@@ -36,7 +36,7 @@ module DAV4Rack
       
       def implicit_locks(path)
         @locks_by_path.map do |lpath, lock|
-          lpath =~ /^#{Regexp.escape(path)}/ && lock.remaining_timeout > 0 && !lock.individual ? lock : nil
+          lpath =~ /^#{Regexp.escape(path)}/ && lock.remaining_timeout > 0 && lock.depth > 0 ? lock : nil
         end.compact
       end
       

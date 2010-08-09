@@ -82,7 +82,8 @@ module DAV4Rack
         [:'__all__', method_name.to_sym].each do |sym|
           if(@@blocks[kind] && @@blocks[kind][sym])
             @@blocks[kind][sym].each do |b|
-              b.call(self)
+              args = [self, sym == :'__all__' ? nil : sym].compact
+              b.call(*args)
             end
           end
         end
@@ -227,7 +228,7 @@ module DAV4Rack
         lock.scope = args[:scope]
         lock.kind = args[:type]
         lock.owner = args[:owner]
-        lock.individual = args[:depth] == 0
+        lock.depth = args[:depth].to_i
         if(args[:timeout])
           lock.timeout = args[:timeout] <= @max_timeout && args[:timeout] > 0 ? args[:timeout] : @max_timeout
         else
