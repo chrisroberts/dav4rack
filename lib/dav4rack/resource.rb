@@ -63,10 +63,12 @@ module DAV4Rack
       @public_path = public_path.dup
       @path = path.dup
       @request = request
-      @lock_class = options[:lock_class]
-      unless(@lock_class)
+      unless(options.has_key?(:lock_class))
         require 'dav4rack/lock_store'
         @lock_class = LockStore
+      else
+        @lock_class = options[:lock_class]
+        raise NameError.new("Unknown lock type constant provided: #{@lock_class}") unless @lock_class.nil? || defined?(@lock_class)
       end
       @options = options.dup
       @max_timeout = options[:max_timeout] || 86400
@@ -95,7 +97,7 @@ module DAV4Rack
       result = nil
       orig = args.shift
       @runner.call(:before, orig)
-      m = "DAV_#{orig}"
+      m = orig[0,4] == 'DAV_' ? orig : "DAV_#{orig}" # Attempt to prevent insanity loop
       if(respond_to?(m))
         result = send m, *args
       else
