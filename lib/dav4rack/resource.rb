@@ -15,8 +15,8 @@ module DAV4Rack
   end
   
   class Resource
-    attr_reader :path, :options, :public_path, :request
-    @@blocks = {:before => {}, :after => {}}
+    attr_reader :path, :options, :public_path, :request, :user
+    @@blocks = {}
     
     class << self
       
@@ -24,17 +24,19 @@ module DAV4Rack
       # either called before all methods on the resource, or only specific
       # methods on the resource
       def method_missing(*args, &block)
+        class_sym = self.name.to_sym
+        @@blocks[class_sym] ||= {:before => {}, :after => {}}
         m = args.shift
         parts = m.to_s.split('_')
         type = parts.shift.to_s.to_sym
         method = parts.empty? ? nil : parts.join('_').to_sym
-        if(@@blocks[type] && block_given?)
+        if(@@blocks[class_sym][type] && block_given?)
           if(method)
-            @@blocks[type][method] ||= []
-            @@blocks[type][method] << block
+            @@blocks[class_sym][type][method] ||= []
+            @@blocks[class_sym][type][method] << block
           else
-            @@blocks[type][:'__all__'] ||= []
-            @@blocks[type][:'__all__'] << block
+            @@blocks[class_sym][type][:'__all__'] ||= []
+            @@blocks[class_sym][type][:'__all__'] << block
           end
         else
           raise NoMethodError.new("Undefined method #{m} for class #{self}")
@@ -59,7 +61,7 @@ module DAV4Rack
     # NOTE: Customized Resources should not use initialize for setup. Instead
     #       use the #setup method
     def initialize(public_path, path, request, options)
-      skip_alias = [:authenticate]
+      @skip_alias = [:authenticate, :authentication_error_msg, :authentication_realm, :path, :options, :public_path, :request, :user]
       @public_path = public_path.dup
       @path = path.dup
       @request = request
@@ -76,14 +78,14 @@ module DAV4Rack
       @user = @options[:user] || request.ip
       setup if respond_to?(:setup)
       public_methods(false).each do |method|
-        next if skip_alias.include?(method.to_sym) || method[0,4] == 'DAV_'
+        next if @skip_alias.include?(method.to_sym) || method[0,4] == 'DAV_'
         self.class.class_eval "alias :'DAV_#{method}' :'#{method}'"
         self.class.class_eval "undef :'#{method}'"
       end
-      @runner = lambda do |kind, method_name|
+      @runner = lambda do |class_sym, kind, method_name|
         [:'__all__', method_name.to_sym].each do |sym|
-          if(@@blocks[kind] && @@blocks[kind][sym])
-            @@blocks[kind][sym].each do |b|
+          if(@@blocks[class_sym] && @@blocks[class_sym][kind] && @@blocks[class_sym][kind][sym])
+            @@blocks[class_sym][kind][sym].each do |b|
               args = [self, sym == :'__all__' ? sym : nil].compact
               b.call(*args)
             end
@@ -96,14 +98,12 @@ module DAV4Rack
     def method_missing(*args)
       result = nil
       orig = args.shift
-      @runner.call(:before, orig)
-      m = orig[0,4] == 'DAV_' ? orig : "DAV_#{orig}" # Attempt to prevent insanity loop
-      if(respond_to?(m))
-        result = send m, *args
-      else
-        raise NoMethodError.new("Undefined method: #{orig} for class #{self}.")
-      end
-      @runner.call(:after, orig)
+      class_sym = self.class.name.to_sym
+      m = orig.to_s[0,4] == 'DAV_' ? orig : "DAV_#{orig}" # Attempt to prevent insanity loop
+      raise NoMethodError.new("Undefined method: #{orig} for class #{self}.") unless respond_to?(m)
+      @runner.call(class_sym, :before, orig)
+      result = send m, *args
+      @runner.call(class_sym, :after, orig)
       result
     end
     
