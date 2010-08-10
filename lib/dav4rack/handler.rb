@@ -16,10 +16,15 @@ module DAV4Rack
       request = Rack::Request.new(env)
       response = Rack::Response.new
 
+      controller = nil
       begin
         controller = Controller.new(request, response, @options.dup)
         res = controller.send(request.request_method.downcase)
         response.status = res.code if res.respond_to?(:code)
+      rescue HTTPStatus::Unauthorized => status
+        response.body = controller.resource.respond_to?(:authentication_error_msg) ? controller.resource.authentication_error_msg : 'Not Authorized'
+        response['WWW-Authenticate'] = "Basic realm=\"#{controller.resource.respond_to?(:authentication_realm) ? controller.resource.authentication_realm : 'Locked content'}\""
+        response.status = status.code
       rescue HTTPStatus::Status => status
         response.status = status.code
       end
