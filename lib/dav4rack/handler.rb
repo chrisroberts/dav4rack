@@ -19,6 +19,7 @@ module DAV4Rack
       controller = nil
       begin
         controller = Controller.new(request, response, @options.dup)
+        controller.authenticate
         res = controller.send(request.request_method.downcase)
         response.status = res.code if res.respond_to?(:code)
       rescue HTTPStatus::Unauthorized => status

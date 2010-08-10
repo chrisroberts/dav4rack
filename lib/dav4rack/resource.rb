@@ -398,6 +398,8 @@ module DAV4Rack
       %w(cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.to_s.downcase : request.env['HTTP_USER_AGENT'].to_s.downcase) =~ /#{Regexp.escape(x)}/}
     end
     
+    # Returns authentication credentials if available in form of [username,password]
+    # TODO: Add support for digest
     def auth_credentials
       auth = Rack::Auth::Basic::Request.new(request.env)
       auth.basic? && auth.credentials ? auth.credentials : [nil,nil]

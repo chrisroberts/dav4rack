@@ -16,7 +16,6 @@
       @response = response
       @options = options
       @resource = resource_class.new(actual_path, implied_path, @request, @response, @options)
-      authenticate
     end
     
     # s:: string
@@ -224,6 +223,23 @@
       resource.unlock(lock_token)
     end
 
+    # Perform authentication
+    # NOTE: Authentication will only be performed if the Resource
+    # has defined an #authenticate method
+    def authenticate
+      authed = true
+      if(resource.respond_to?(:authenticate))
+        authed = false
+        if(request.env['HTTP_AUTHORIZATION'])
+          auth = Rack::Auth::Basic::Request.new(request.env)
+          if(auth.basic? && auth.credentials)
+            authed = resource.authenticate(auth.credentials[0], auth.credentials[1])
+          end
+        end
+      end
+      raise Unauthorized unless authed
+    end
+    
     # ************************************************************
     # private methods
     
@@ -457,23 +473,6 @@
           end
         end
       end
-    end
-
-    # Perform authentication
-    # NOTE: Authentication will only be performed if the Resource
-    # has defined an #authenticate method
-    def authenticate
-      authed = true
-      if(resource.respond_to?(:authenticate))
-        authed = false
-        if(request.env['HTTP_AUTHORIZATION'])
-          auth = Rack::Auth::Basic::Request.new(request.env)
-          if(auth.basic? && auth.credentials)
-            authed = resource.authenticate(auth.credentials[0], auth.credentials[1])
-          end
-        end
-      end
-      raise Unauthorized unless authed
     end
 
   end
