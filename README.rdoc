@@ -187,6 +187,27 @@ Something very handy for dealing with the mess of files OS X leaves on the syste
   
 Because OS X implements locking correctly, we can wait until it releases the lock on the file, and remove it if it's a hidden file. 
 
+Callbacks are called in the order they are defined, so you can easily build callbacks off each other. Like this example:
+
+  class MyResource < DAV4Rack::Resource
+    before do |resource, method_name|
+      resource.DAV_authenticate unless resource.user.is_a?(User)
+      raise Unauthorized unless resource.user.is_a?(User)
+    end
+    before do |resource, method_name|
+      resource.user.allowed?(method_name)
+    end
+  end
+  
+In this example, the second block checking User#allowed? can count on Resource#user being defined because the blocks are called in
+order, and if the Resource#user is not a User type, an exception is raised.
+
+=== Avoiding callbacks
+
+Something special to notice in the last example is the DAV_ prefix on authenticate. Providing the DAV_ prefix will prevent
+any callbacks being applied to the given method. This allows us to provide a public method that the callback can access on the resource
+without getting stuck in a loop.
+
 == Issues/Bugs/Questions
 
 === Known Issues
