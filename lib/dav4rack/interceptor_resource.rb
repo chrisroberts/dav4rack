@@ -99,9 +99,9 @@ module DAV4Rack
       new_public.slice!(-1) if new_public[-1,1] == '/'
       new_public = "#{new_public}#{name}"
       if(key = @root_paths.find{|x| new_path =~ /^#{Regexp.escape(x.downcase)}\/?/})
-        @mappings[key][:resource_class].new(new_public, new_path.gsub(key, ''), request, response, {:root_uri_path => key}.merge(@mappings[key][:options] ? @mappings[key][:options] : options))
+        @mappings[key][:resource_class].new(new_public, new_path.gsub(key, ''), request, response, {:root_uri_path => key, :user => @user}.merge(@mappings[key][:options] ? @mappings[key][:options] : options))
       else
-        self.class.new(new_public, new_path, request, response, options)
+        self.class.new(new_public, new_path, request, response, {:user => @user}.merge(options))
       end
     end
     
