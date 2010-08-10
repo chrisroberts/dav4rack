@@ -80,8 +80,8 @@ module DAV4Rack
       @user = @options[:user] || request.ip
       setup if respond_to?(:setup)
       public_methods(false).each do |method|
-        next if @skip_alias.include?(method.to_sym) || method[0,4] == 'DAV_'
-        self.class.class_eval "alias :'DAV_#{method}' :'#{method}'"
+        next if @skip_alias.include?(method.to_sym) || method[0,4] == 'DAV_' || method[0,5] == '_DAV_'
+        self.class.class_eval "alias :'_DAV_#{method}' :'#{method}'"
         self.class.class_eval "undef :'#{method}'"
       end
       @runner = lambda do |class_sym, kind, method_name|
@@ -101,7 +101,7 @@ module DAV4Rack
       result = nil
       orig = args.shift
       class_sym = self.class.name.to_sym
-      m = orig.to_s[0,4] == 'DAV_' ? orig : "DAV_#{orig}" # If hell is doing the same thing over and over and expecting a different result this is a hell preventer
+      m = orig.to_s[0,5] == '_DAV_' ? orig : "_DAV_#{orig}" # If hell is doing the same thing over and over and expecting a different result this is a hell preventer
       raise NoMethodError.new("Undefined method: #{orig} for class #{self}.") unless respond_to?(m)
       @runner.call(class_sym, :before, orig)
       result = send m, *args
