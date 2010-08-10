@@ -15,7 +15,8 @@ module DAV4Rack
   end
   
   class Resource
-    attr_reader :path, :options, :public_path, :request, :user
+    attr_reader :path, :options, :public_path, :request, :response
+    attr_accessor :user
     @@blocks = {}
     
     class << self
@@ -60,11 +61,12 @@ module DAV4Rack
     #       path -> /actual/path
     # NOTE: Customized Resources should not use initialize for setup. Instead
     #       use the #setup method
-    def initialize(public_path, path, request, options)
-      @skip_alias = [:authenticate, :authentication_error_msg, :authentication_realm, :path, :options, :public_path, :request, :user]
+    def initialize(public_path, path, request, response, options)
+      @skip_alias = [:authenticate, :authentication_error_msg, :authentication_realm, :path, :options, :public_path, :request, :response, :user, :user=]
       @public_path = public_path.dup
       @path = path.dup
       @request = request
+      @response = response
       unless(options.has_key?(:lock_class))
         require 'dav4rack/lock_store'
         @lock_class = LockStore
@@ -86,7 +88,7 @@ module DAV4Rack
         [:'__all__', method_name.to_sym].each do |sym|
           if(@@blocks[class_sym] && @@blocks[class_sym][kind] && @@blocks[class_sym][kind][sym])
             @@blocks[class_sym][kind][sym].each do |b|
-              args = [self, sym == :'__all__' ? sym : nil].compact
+              args = [self, sym == :'__all__' ? method_name : nil].compact
               b.call(*args)
             end
           end
@@ -99,7 +101,7 @@ module DAV4Rack
       result = nil
       orig = args.shift
       class_sym = self.class.name.to_sym
-      m = orig.to_s[0,4] == 'DAV_' ? orig : "DAV_#{orig}" # Attempt to prevent insanity loop
+      m = orig.to_s[0,4] == 'DAV_' ? orig : "DAV_#{orig}" # If hell is doing the same thing over and over and expecting a different result this is a hell preventer
       raise NoMethodError.new("Undefined method: #{orig} for class #{self}.") unless respond_to?(m)
       @runner.call(class_sym, :before, orig)
       result = send m, *args
@@ -360,14 +362,14 @@ module DAV4Rack
       new_path = path.dup
       new_path = new_path + '/' unless new_path[-1,1] == '/'
       new_path = '/' + new_path unless new_path[0,1] == '/'
-      self.class.new("#{new_public}#{name}", "#{new_path}#{name}", request, options.merge(:user => @user))
+      self.class.new("#{new_public}#{name}", "#{new_path}#{name}", request, response, options.merge(:user => @user))
     end
     
     # Return parent of this resource
     def parent
       elements = @path.scan(/[^\/]+/)
       return nil if elements.empty?
-      self.class.new(('/' + @public_path.scan(/[^\/]+/)[0..-2].join('/')), ('/' + elements[0..-2].to_a.join('/')), @request, @options.merge(:user => @user))
+      self.class.new(('/' + @public_path.scan(/[^\/]+/)[0..-2].join('/')), ('/' + elements[0..-2].to_a.join('/')), @request, @response, @options.merge(:user => @user))
     end
     
     # Return list of descendants
@@ -379,10 +381,26 @@ module DAV4Rack
       end
       list
     end
+    
+    protected
+    
+    # Index page template for GETs on collection
+    def index_page
+      '<html><head> <title>%s</title>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8" /></head>
+      <body> <h1>%s</h1> <hr /> <table> <tr> <th class="name">Name</th>
+      <th class="size">Size</th> <th class="type">Type</th> 
+      <th class="mtime">Last Modified</th> </tr> %s </table> <hr /> </body></html>'
+    end
 
     # Does client allow GET redirection
     def allows_redirect?
       %w(cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.to_s.downcase : request.env['HTTP_USER_AGENT'].to_s.downcase) =~ /#{Regexp.escape(x)}/}
+    end
+    
+    def auth_credentials
+      auth = Rack::Auth::Basic::Request.new(request.env)
+      auth.basic? && auth.credentials ? auth.credentials : [nil,nil]
     end
     
   end
