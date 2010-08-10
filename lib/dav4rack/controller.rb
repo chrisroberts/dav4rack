@@ -15,7 +15,7 @@
       @request = request
       @response = response
       @options = options
-      @resource = resource_class.new(actual_path, implied_path, @request, @options)
+      @resource = resource_class.new(actual_path, implied_path, @request, @response, @options)
       authenticate
     end
     
@@ -117,7 +117,7 @@
       destination = url_unescape(dest_uri.path)
       raise BadGateway if dest_uri.host and dest_uri.host != request.host
       raise Forbidden if destination == resource.public_path
-      dest = resource_class.new(destination, clean_path(destination), @request, @options.merge(:user => resource.user))
+      dest = resource_class.new(destination, clean_path(destination), @request, @response, @options.merge(:user => resource.user))
       status = nil
       if(args.include?(:copy))
         status = resource.copy(dest, overwrite)
@@ -387,6 +387,8 @@
         begin
           val = resource.get_property(name)
           stats[OK].push [name, val] if val
+        rescue Unauthorized => u
+          raise u
         rescue Status
           stats[$!] << name
         end
@@ -402,6 +404,8 @@
       for name, value in pairs
         begin
           stats[OK] << [name, resource.set_property(name, value)]
+        rescue Unauthorized => u
+          raise u
         rescue Status
           stats[$!] << name
         end
@@ -469,11 +473,7 @@
           end
         end
       end
-      unless(authed)
-        response.body = resource.respond_to?(:authentication_error_msg) ? resource.authentication_error_msg : 'Not Authorized'
-        response['WWW-Authenticate'] = "Basic realm=\"#{resource.respond_to?(:authentication_realm) ? resource.authentication_realm : 'Locked content'}\""
-        raise Unauthorized unless authed
-      end
+      raise Unauthorized unless authed
     end
 
   end
