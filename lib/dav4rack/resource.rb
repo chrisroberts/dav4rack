@@ -402,7 +402,7 @@ module DAV4Rack
     # TODO: Add support for digest
     def auth_credentials
       auth = Rack::Auth::Basic::Request.new(request.env)
-      auth.basic? && auth.credentials ? auth.credentials : [nil,nil]
+      auth.provided? && auth.basic? ? auth.credentials : [nil,nil]
     end
     
   end
