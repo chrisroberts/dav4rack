@@ -80,7 +80,7 @@ lets continue with the last example but this time include the interceptor:
     end
     map '/' do
       use DAV4Rack::Interceptor, :mappings => {
-                                                '/webdav/share/' => {:resource_class => FileResource, :options => {:custom => 'option'}},
+                                                '/webdav/share/' => {:resource_class => FileResource, :custom => 'option'},
                                                 '/webdav/share2/' => {:resource_class => CustomResource}
                                               }
       use Rails::Rack::Static
@@ -95,6 +95,16 @@ provide any authentication support. It simply creates a virtual file system view
 resources have been reached, authentication will be enforced based on the requirements defined by the individual resource. Also
 note in the root map you can see we are running a Rails application. This is how you can easily enable DAV4Rack with your Rails
 application.
+
+=== Enabling Logging
+
+DAV4Rack provides some simple logging in a Rails style format (simply for consistency) so the output should look some what familiar.
+
+  DAV4Rack::Handler.new(:resource_class => CustomResource, :log_to => '/my/log/file')
+  
+You can even specify the level of logging:
+
+  DAV4Rack::Handler.new(:resource_class => CustomResource, :log_to => ['/my/log/file', Logger::DEBUG])
 
 == Custom Resources
 
