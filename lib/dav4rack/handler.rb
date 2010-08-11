@@ -1,3 +1,5 @@
+require 'dav4rack/logger'
+
 module DAV4Rack
   
   class Handler
@@ -9,10 +11,11 @@ module DAV4Rack
         @options[:resource_class] = FileResource
         @options[:root] ||= Dir.pwd
       end
+      Logger.set(*@options[:log_to])
     end
 
     def call(env)
-      
+      start = Time.now
       request = Rack::Request.new(env)
       response = Rack::Response.new
 
@@ -28,6 +31,9 @@ module DAV4Rack
         response.status = status.code
       rescue HTTPStatus::Status => status
         response.status = status.code
+      rescue Exception => e
+        Logger.error "WebDAV Error: #{e}\n#{e.backtrace.join("\n")}"
+        raise e
       end
 
       # Strings in Ruby 1.9 are no longer enumerable.  Rack still expects the response.body to be
@@ -42,6 +48,9 @@ module DAV4Rack
       buf = true
       buf = request.body.read(8192) while buf
 
+      Logger.info "Processing WebDAV request: #{request.path} (for #{request.ip} at #{Time.now}) [#{request.request_method}]"
+      Logger.info "Completed in: #{((Time.now.to_f - start.to_f) * 1000).to_i} ms | #{response.status} [#{request.url}]"
+      
       response.finish
     end
     
