@@ -29,6 +29,7 @@ lib/dav4rack/interceptor_resource.rb
 lib/dav4rack/remote_file.rb
 lib/dav4rack/lock.rb
 lib/dav4rack/lock_store.rb
+lib/dav4rack/logger.rb
 bin/dav4rack
 spec/handler_spec.rb
 README.rdoc
