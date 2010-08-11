@@ -1,0 +1,12 @@
+0.1.1
+* Add logging capability
+* Simplify Interceptor mappings (provide options in hash instead of explicit :options)
+
+0.1.0
+
+* Callbacks available for resources
+* RemoteFile more aligned with Rack::File
+* Return multistatus responses PUT MKCOL and COPY/MOVE
+* Executable now uses Unicorn, Mongrel and WEBrick in that order
+* Simple resource locking enabled by default
+* Updated FileResource to work properly with new architecture
