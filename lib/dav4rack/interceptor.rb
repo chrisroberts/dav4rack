@@ -12,7 +12,7 @@ module DAV4Rack
       method = env['REQUEST_METHOD'].upcase
       app = nil
       if(@roots.detect{|x| path =~ /^#{Regexp.escape(x.downcase)}\/?/}.nil? && %w(OPTIONS PUT PROPFIND PROPPATCH MKCOL COPY MOVE LOCK UNLOCK).include?(method))
-        app = DAV4Rack::Handler.new(:resource_class => InterceptorResource, :mappings => @args[:mappings])
+        app = DAV4Rack::Handler.new(:resource_class => InterceptorResource, :mappings => @args[:mappings], :log_to => @args[:log_to])
       end
       app ? app.call(env) : @app.call(env)
     end
