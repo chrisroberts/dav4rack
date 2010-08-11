@@ -9,5 +9,5 @@ require 'dav4rack/handler'
 require 'dav4rack/controller'
 
 module DAV4Rack
-  VERSION = '0.1.0'
+  VERSION = '0.1.1'
 end
