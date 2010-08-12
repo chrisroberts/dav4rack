@@ -1,8 +1,11 @@
-0.1.1
+=== v0.1.2
+* Add sendfile support (currently only tested on nginx)
+
+=== v0.1.1
 * Add logging capability
 * Simplify Interceptor mappings (provide options in hash instead of explicit :options)
 
-0.1.0
+=== v0.1.0
 
 * Callbacks available for resources
 * RemoteFile more aligned with Rack::File
