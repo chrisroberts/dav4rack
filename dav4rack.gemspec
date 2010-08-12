@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__)) + '/lib/'
-require 'dav4rack'
+require 'dav4rack/version'
 Gem::Specification.new do |s|
   s.name = 'dav4rack'
   s.version = DAV4Rack::VERSION
@@ -30,6 +30,7 @@ lib/dav4rack/remote_file.rb
 lib/dav4rack/lock.rb
 lib/dav4rack/lock_store.rb
 lib/dav4rack/logger.rb
+lib/dav4rack/version.rb
 bin/dav4rack
 spec/handler_spec.rb
 README.rdoc
