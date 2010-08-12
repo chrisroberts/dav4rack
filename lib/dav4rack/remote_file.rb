@@ -56,7 +56,7 @@ module DAV4Rack
         do_redefines('remote')
         call(env)
       end
-      prefix = @args[:sendfile_prefix].to_s.sub(/^\//, '').sub(/\/$/, '')
+      prefix = (@args[:sendfile_prefix] || env['HTTP_X_ACCEL_REMOTE_MAPPING']).to_s.sub(/^\//, '').sub(/\/$/, '')
       [200, {
              "Last-Modified" => last_modified,
              "Content-Type" => content_type,
