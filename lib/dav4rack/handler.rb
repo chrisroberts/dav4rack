@@ -51,7 +51,7 @@ module DAV4Rack
       Logger.info "Processing WebDAV request: #{request.path} (for #{request.ip} at #{Time.now}) [#{request.request_method}]"
       Logger.info "Completed in: #{((Time.now.to_f - start.to_f) * 1000).to_i} ms | #{response.status} [#{request.url}]"
       
-      response.finish
+      response.body.is_a?(Rack::File) ? response.body.call(env) : response.finish
     end
     
   end
