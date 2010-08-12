@@ -11,44 +11,64 @@ module DAV4Rack
     
     alias :to_path :path
     
-    # path:: Path to remote file
-    # args:: Optional argument hash. Allowed keys: :size, :mime_type, :last_modified
-    # Create a reference to a remote file. 
-    # NOTE: HTTPError will be raised if path does not return 200 result
+    # path:: path to file (Actual path, preferably a URL since this is a *REMOTE* file)
+    # args:: Hash of arguments:
+    #         :size -> Integer - number of bytes
+    #         :mime_type -> String - mime type
+    #         :last_modified -> String/Time - Time of last modification
+    #         :sendfile -> True or String to define sendfile header variation
+    #         :cache_directory -> Where to store cached files
+    #         :cache_ref -> Reference to be used for cache file name (useful for changing URLs like S3)
+    #         :sendfile_prefix -> String directory prefix. Eg: 'webdav' will result in: /wedav/#{path.sub('http://', '')}
+    #         :sendfile_fail_gracefully -> Boolean if true will simply proxy if unable to determine proper sendfile
     def initialize(path, args={})
-      @fpath = args[:url]
-      @size = args[:size] || nil
-      @mime_type = args[:mime_type] || 'text/plain'
-      @modified = args[:last_modified] || nil
-      @cache = args[:cache_directory] || nil
-      cached_file = @cache + '/' + Digest::SHA1.hexdigest(@fpath)
-      if(File.exists?(cached_file))
+      @path = path
+      @args = args
+      @heads = {}
+      @cache_file = args[:cache_directory] ? cache_file_path : nil
+      @redefine_prefix = nil
+      if(File.exists?(@cache_file))
         @root = ''
-        @path_info = cached_file
+        @path_info = @cache_file
         @path = @path_info
+      elsif(args[:sendfile])
+        @redefine_prefix = 'sendfile'
+        @sendfile_header = args[:sendfile].is_a?(String) ? args[:sendfile] : nil
       else
-        begin
-          @cf = File.open(cached_file, 'w+')
-        rescue
-          @cf = nil
-        end
-        @uri = URI.parse(path)
-        @con = Net::HTTP.new(@uri.host, @uri.port)
-        @call_path = @uri.path + (@uri.query ? "?#{@uri.query}" : '')
-        res = @con.request_get(@call_path)
-        @heads = res.to_hash
-        res.value
-        @store = nil
-        self.public_methods.each do |method|
-          m = method.to_s.dup
-          next unless m.slice!(0,7) == 'remote_'
-          self.class.class_eval "undef :'#{m}'"
-          self.class.class_eval "alias :'#{m}' :'#{method}'"
-        end
+        setup_remote
       end
+      do_redefines(@redefine_prefix) if @redefine_prefix
+    end
+    
+    # env:: Environment variable hash
+    # Process the call
+    def call(env)
+      serving(env)
     end
 
-    def remote_serving
+    # env:: Environment variable hash
+    # Return an empty result with the proper header information
+    def sendfile_serving(env)
+      header = @sendfile_header || env['sendfile.type'] || env['HTTP_X_SENDFILE_TYPE']
+      unless(header)
+        raise 'Failed to determine proper sendfile header value' unless @args[:sendfile_fail_gracefully]
+        setup_remote
+        do_redefines('remote')
+        call(env)
+      end
+      prefix = @args[:sendfile_prefix].to_s.sub(/^\//, '').sub(/\/$/, '')
+      [200, {
+             "Last-Modified" => last_modified,
+             "Content-Type" => content_type,
+             "Content-Length" => size,
+             header => "/#{prefix}/#{URI.decode(@path.sub('http://', ''))}"
+            },
+      ['']]
+    end
+    
+    # env:: Environment variable hash
+    # Return self to be processed
+    def remote_serving(e)
       [200, {
              "Last-Modified"  => last_modified,
              "Content-Type"   => content_type,
@@ -56,15 +76,7 @@ module DAV4Rack
             }, self]
     end
     
-    
-    def remote_call(env)
-      dup._call(env)
-    end
-    
-    def remote__call(env)
-      serving
-    end
-    
+    # Get the remote file
     def remote_each
       if(@store)
         yield @store
@@ -78,19 +90,57 @@ module DAV4Rack
       end
     end
     
+    # Size based on remote headers or given size
     def size
       @heads['content-length'] || @size
     end
     
     private
     
+    # Content type based on provided or remote headers
     def content_type
       @mime_type || @heads['content-type']
     end
     
+    # Last modified type based on provided, remote headers or current time
     def last_modified
-      @heads['last-modified'] || @modified
+      @heads['last-modified'] || @modified || Time.now.httpdate
     end
 
+    # Builds the path for the cached file
+    def cache_file_path
+      raise IOError.new 'Write permission is required for cache directory' unless File.writable?(@args[:cache_directory])
+      "#{@args[:cache_directory]}/#{Digest::SHA1.hexdigest((@args[:cache_ref] || @path).to_s + size.to_s + last_modified.to_s)}.cache"
+    end
+    
+    # prefix:: prefix of methods to be redefined
+    # Redefine methods to do what we want in the proper situation
+    def do_redefines(prefix)
+      self.public_methods.each do |method|
+        m = method.to_s.dup
+        next unless m.slice!(0, prefix.to_s.length + 1) == "#{prefix}_"
+        self.class.class_eval "undef :'#{m}'"
+        self.class.class_eval "alias :'#{m}' :'#{method}'"
+      end
+    end
+    
+    # Sets up all the requirements for proxying a remote file
+    def setup_remote
+      if(@cache_file)
+        begin
+          @cf = File.open(@cache_file, 'w+')
+        rescue
+          @cf = nil
+        end
+      end
+      @uri = URI.parse(@path)
+      @con = Net::HTTP.new(@uri.host, @uri.port)
+      @call_path = @uri.path + (@uri.query ? "?#{@uri.query}" : '')
+      res = @con.request_get(@call_path)
+      @heads = res.to_hash
+      res.value
+      @store = nil
+      @redefine_prefix = 'remote'
+    end
   end
 end
