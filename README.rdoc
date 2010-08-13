@@ -2,9 +2,19 @@
 
 DAV4Rack is a framework for providing WebDAV via Rack allowing content
 authoring over HTTP. It is based off the {original RackDAV framework}[http://github.com/georgi/rack_dav]
-to provide better Resource support for building customized WebDAV resources
-completely abstracted from the filesystem. Support for authentication and
-locking has been added as well as a move from REXML to Nokogiri. Enjoy!
+adding some useful new features:
+
+* Better resource support for building fully virtualized resource structures
+* Generic locking as well as Resource level specific locking
+* Interceptor middleware to provide virtual mapping to resources
+* Mapped resource paths
+* Authentication support
+* Resource callbacks
+* Remote file proxying (including sendfile support for remote files)
+* Nokogiri based document parsing and building
+
+If you find issues, please create a new issue on github. If you have fixes, please fork the repo and send me
+a pull request with your modifications. If you are just here to use the library, enjoy!
 
 == Install
 
@@ -283,7 +293,7 @@ without getting stuck in a loop.
 
 === Unknown Issues
 
-Please use the issues at github: http://github.com/chrisroberts/dav4rack
+Please use the issues at github: http://github.com/chrisroberts/dav4rack/issues
 
 == License
 
