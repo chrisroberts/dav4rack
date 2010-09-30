@@ -42,7 +42,7 @@ module DAV4Rack
       response['Content-Length'] = response.body.to_s.length unless response['Content-Length'] || !response.body.is_a?(String)
       response.body = [response.body] if not response.body.respond_to? :each
       response.status = response.status ? response.status.to_i : 200
-      response.headers.dup.each_pair{|k,v| response[k] = v.to_s}
+      response.headers.keys.each{|k| response.headers[k] = response[k].to_s}
       
       # Apache wants the body dealt with, so just read it and junk it
       buf = true
