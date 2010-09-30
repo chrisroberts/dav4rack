@@ -6,12 +6,8 @@ module DAV4Rack
     
     include WEBrick::HTTPUtils
     
-    def authenticate(user, pass)
-      if(options[:username])
-        options[:username] == user && options[:password] == pass
-      else
-        true
-      end
+    before do |resource, method_name|
+      resource.send(:check_authentication)
     end
     
     # If this is a collection, return the child resources.
@@ -159,6 +155,29 @@ module DAV4Rack
     
     private
 
+    def check_authentication
+      valid = true
+      if(options[:username])
+        valid = false
+        if(request.env['HTTP_AUTHORIZATION'])
+          auth = Rack::Auth::Basic::Request.new(request.env)
+          if(auth.basic? && auth.credentials)
+            valid = options[:username] == auth.credentials[0] && options[:password] == auth.credentials[1]
+          end
+        end
+      end
+      raise Unauthorized unless valid
+      valid
+    end
+    
+    def authenticate(user, pass)
+      if(options[:username])
+        options[:username] == user && options[:password] == pass
+      else
+        true
+      end
+    end
+    
     def root
       @options[:root]
     end
