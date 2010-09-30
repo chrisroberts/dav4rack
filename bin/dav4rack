@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'dav4rack'
+require 'dav4rack/version'
 require 'getoptlong'
 
 def print_help_msg
@@ -52,6 +52,8 @@ opts.each do |opt,arg|
   end
 end
 
+require 'dav4rack'
+
 app = Rack::Builder.new do
   use Rack::ShowExceptions
   use Rack::CommonLogger
@@ -62,14 +64,28 @@ app = Rack::Builder.new do
 
 end.to_app
 
-begin
-  puts 'Attempting to start unicorn...'
+runners = []
+runners << lambda do |x|
+  print 'Looking for unicorn... '
   require 'unicorn'
-  Unicorn.run(app, :listeners => ["0.0.0.0:3000"])
-rescue => e
-  puts "Failed to start unicorn (#{e}). Starting mongrel..."
-  Rack::Handler::Mongrel.run(app, :Port => 3000)
-rescue => e
-  puts "Failed to start mongrel (#{e}). Falling back to WEBrick."
-  Rack::Handler::WEBrick.run(app, :Port => 3000)
+  puts 'OK'
+  Unicorn.run(x, :listeners => ["0.0.0.0:3000"])
+end
+runners << lambda do |x|
+  print 'Looking for mongrel... '
+  require 'mongrel'
+  puts 'OK'
+  Rack::Handler::Mongrel.run(x, :Port => 3000)
+end
+runners << lambda do |x|
+  puts 'Loading WEBrick'
+  Rack::Handler::WEBrick.run(x, :Port => 3000)
+end
+
+begin
+  runner = runners.shift
+  runner.call(app)
+rescue LoadError
+  puts 'FAILED'
+  retry unless runners.empty?
 end
