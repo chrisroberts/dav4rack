@@ -73,8 +73,7 @@ module DAV4Rack
         end
         response['Content-Length'] = response.body.size.to_s
       else
-        file = Rack::File.new(nil)
-        file.path = file_path
+        file = Rack::File.new(root)
         response.body = file
       end
       OK
