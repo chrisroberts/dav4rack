@@ -12,6 +12,8 @@ def print_help_msg
   puts " --username name      Set username"
   puts " --password pass      Set password"
   puts " --root /share/path   Set path to share directory"
+  puts " --log /path/to/log   Set path for logging file"
+  puts " --verbosity opt      Set logging verbosity. (Valid: debug,info,warn,fatal)"
 end
 
 def print_version_info
@@ -23,7 +25,9 @@ opts = GetoptLong.new(
   ['--password', '-p', GetoptLong::REQUIRED_ARGUMENT],
   ['--help', '-h', GetoptLong::NO_ARGUMENT],
   ['--version', '-v', GetoptLong::NO_ARGUMENT],
-  ['--root', '-r', GetoptLong::REQUIRED_ARGUMENT]
+  ['--root', '-r', GetoptLong::REQUIRED_ARGUMENT],
+  ['--log', '-l', GetoptLong::OPTIONAL_ARGUMENT],
+  ['--verbosity', '-V', GetoptLong::REQUIRED_ARGUMENT]
 )
 
 credentials = {}
@@ -46,6 +50,30 @@ opts.each do |opt,arg|
   when '--version'
     print_version_info
     exit(0)
+  when '--log'
+    require 'pathname'
+    require 'logger'
+    credentials[:log_to] = [nil, Logger::FATAL] unless credentials[:log_to]
+    if(arg && !arg.empty?)
+      dirname = Pathname.new(arg).dirname
+      if((File.exists?(arg) && File.writable?(arg)) || (File.exists?(dirname) && File.writable?(dirname)))
+        credentials[:log_to][0] = arg
+      else
+        puts "ERROR: Log file is not writable: #{arg}"
+        exit(-1)
+      end
+    else
+      credentials[:log_to][0] = $stdout
+    end
+  when '--verbosity'
+    require 'logger'
+    begin
+      credentials[:log_to] = [] unless credentials[:log_to]
+      credentials[:log_to][1] = Logger.const_get(arg.upcase)
+    rescue NameError
+      puts "ERROR: Unknown verbosity level given: #{arg}"
+      exit(-1)
+    end
   else
     puts "ERROR: Unknown option provided"
     exit(-1)
