@@ -362,9 +362,10 @@
     # Render XML and set Rack::Response#body= to final XML
     def render_xml(root_type)
       raise ArgumentError.new 'Expecting block' unless block_given?
-      doc = Nokogiri::XML::Builder.new do |xml|
-        xml.send(root_type.to_s, 'xmlns' => 'DAV:') do
-#           xml.parent.namespace = xml.parent.namespace_definitions.first
+      doc = Nokogiri::XML::Builder.new do |xml_base|
+        xml_base.send(root_type.to_s, 'xmlns:D' => 'DAV:') do
+          xml_base.parent.namespace = xml_base.parent.namespace_definitions.first
+          xml = xml_base['D']
           yield xml
         end
       end
@@ -402,7 +403,7 @@
       for name in names
         begin
           val = resource.get_property(name)
-          stats[OK].push [name, val] if val
+          stats[OK].push [name, val]
         rescue Unauthorized => u
           raise u
         rescue Status

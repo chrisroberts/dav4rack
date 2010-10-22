@@ -19,6 +19,8 @@ module DAV4Rack
       request = Rack::Request.new(env)
       response = Rack::Response.new
 
+      Logger.info "Processing WebDAV request: #{request.path} (for #{request.ip} at #{Time.now}) [#{request.request_method}]"
+      
       controller = nil
       begin
         controller = Controller.new(request, response, @options.dup)
@@ -48,7 +50,7 @@ module DAV4Rack
       buf = true
       buf = request.body.read(8192) while buf
 
-      Logger.info "Processing WebDAV request: #{request.path} (for #{request.ip} at #{Time.now}) [#{request.request_method}]"
+      Logger.debug "Response in string form. Outputting contents: \n#{response.body}" if response.body.is_a?(String)
       Logger.info "Completed in: #{((Time.now.to_f - start.to_f) * 1000).to_i} ms | #{response.status} [#{request.url}]"
       
       response.body.is_a?(Rack::File) ? response.body.call(env) : response.finish
