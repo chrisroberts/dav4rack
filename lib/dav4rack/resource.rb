@@ -196,14 +196,14 @@ module DAV4Rack
     # HTTP COPY request.
     #
     # Copy this resource to given destination resource.
-    def copy(dest)
+    def copy(dest, overwrite=false)
       raise NotImplementedError
     end
   
     # HTTP MOVE request.
     #
     # Move this resource to given destination resource.
-    def move(dest)
+    def move(dest, overwrite=false)
       raise NotImplemented
     end
     
