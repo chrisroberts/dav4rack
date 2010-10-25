@@ -109,7 +109,7 @@ module DAV4Rack
     # HTTP COPY request.
     #
     # Copy this resource to given destination resource.
-    def copy(dest)
+    def copy(dest, overwrite = false)
       if stat.directory?
         dest.make_collection
       else
