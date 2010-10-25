@@ -228,12 +228,12 @@
     # has defined an #authenticate method
     def authenticate
       authed = true
-      if(resource.respond_to?(:authenticate))
+      if(resource.respond_to?(:authenticate, true))
         authed = false
         if(request.env['HTTP_AUTHORIZATION'])
           auth = Rack::Auth::Basic::Request.new(request.env)
           if(auth.basic? && auth.credentials)
-            authed = resource.authenticate(auth.credentials[0], auth.credentials[1])
+            authed = resource.send(:authenticate, auth.credentials[0], auth.credentials[1])
           end
         end
       end
