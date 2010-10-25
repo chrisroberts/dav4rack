@@ -110,21 +110,29 @@ module DAV4Rack
     #
     # Copy this resource to given destination resource.
     def copy(dest, overwrite = false)
-      if stat.directory?
+      if(dest.path == path)
+        Conflict
+      elsif(stat.directory?)
         dest.make_collection
+        Created
       else
-        open(file_path, "rb") do |file|
-          dest.write(file)
+        exists = File.exists?(file_path)
+        if(exists && !overwrite)
+          PreconditionFailed
+        else
+          open(file_path, "rb") do |file|
+            dest.write(file)
+          end
+          exists ? NoContent : Created
         end
       end
-      OK
     end
   
     # HTTP MOVE request.
     #
     # Move this resource to given destination resource.
-    def move(dest)
-      copy(dest)
+    def move(*args)
+      copy(*args)
       delete
       OK
     end
