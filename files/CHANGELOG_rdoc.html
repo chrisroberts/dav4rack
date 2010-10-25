@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: CHANGELOG.rdoc [RDoc Documentation]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>CHANGELOG.rdoc</h1>
+        <div class='paths'>
+          CHANGELOG.rdoc
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Fri Oct 22 09:28:07 -0700 2010</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <h3>v0.1.4</h3>
+            <ul>
+            <li>Fix for Rack::File issue (thanks <a
+            href="http://github.com/clyfe">clyfe</a>)
+            
+            </li>
+            <li>Logging now optional on executable
+            
+            </li>
+            <li>Include propstats even if empty (this resolves an issue in cyberduck not
+            displaying files)
+            
+            </li>
+            </ul>
+            <h3>v0.1.3</h3>
+            <ul>
+            <li>Fix for Hash modification issues in Ruby 1.9.2 (thanks <a
+            href="http://github.com/antiloopgmbh">antiloopgmbh</a>)
+            
+            </li>
+            <li>Fix executable to properly fallback
+            
+            </li>
+            <li>Use callback authentication in FileResource to allow for no auth
+            
+            </li>
+            </ul>
+            <h3>v0.1.2</h3>
+            <ul>
+            <li>Add sendfile support (currently only tested on nginx)
+            
+            </li>
+            </ul>
+            <h3>v0.1.1</h3>
+            <ul>
+            <li>Add logging capability
+            
+            </li>
+            <li>Simplify Interceptor mappings (provide options in hash instead of explicit
+            :options)
+            
+            </li>
+            </ul>
+            <h3>v0.1.0</h3>
+            <ul>
+            <li>Callbacks available for resources
+            
+            </li>
+            <li>RemoteFile more aligned with Rack::File
+            
+            </li>
+            <li>Return multistatus responses PUT MKCOL and COPY/MOVE
+            
+            </li>
+            <li>Executable now uses Unicorn, Mongrel and WEBrick in that order
+            
+            </li>
+            <li>Simple resource locking enabled by default
+            
+            </li>
+            <li>Updated FileResource to work properly with new architecture
+            
+            </li>
+            </ul>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

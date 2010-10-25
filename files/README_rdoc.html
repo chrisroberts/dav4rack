@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: README.rdoc [RDoc Documentation]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>README.rdoc</h1>
+        <div class='paths'>
+          README.rdoc
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Thu Sep 30 10:53:02 -0700 2010</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <h2><a href="../classes/DAV4Rack.html">DAV4Rack</a> - Web Authoring for <a href="../classes/Rack.html">Rack</a></h2>
+            <p>
+            <a href="../classes/DAV4Rack.html">DAV4Rack</a> is a framework for
+            providing WebDAV via <a href="../classes/Rack.html">Rack</a> allowing
+            content authoring over HTTP. It is based off the <a
+            href="http://github.com/georgi/rack_dav">original RackDAV framework</a>
+            adding some useful new features:
+            </p>
+            <ul>
+            <li>Better resource support for building fully virtualized resource structures
+            
+            </li>
+            <li>Generic locking as well as Resource level specific locking
+            
+            </li>
+            <li>Interceptor middleware to provide virtual mapping to resources
+            
+            </li>
+            <li>Mapped resource paths
+            
+            </li>
+            <li>Authentication support
+            
+            </li>
+            <li>Resource callbacks
+            
+            </li>
+            <li>Remote file proxying (including sendfile support for remote files)
+            
+            </li>
+            <li>Nokogiri based document parsing and building
+            
+            </li>
+            </ul>
+            <p>
+            If you find issues, please create a new issue on github. If you have fixes,
+            please fork the repo and send me a pull request with your modifications. If
+            you are just here to use the library, enjoy!
+            </p>
+            <h2>Install</h2>
+            <h3>Via RubyGems</h3>
+            <pre>gem install dav4rack</pre>
+            <h2>Quickstart</h2>
+            <p>
+            If you just want to share a folder over WebDAV, you can just start a simple
+            server with:
+            </p>
+            <pre>dav4rack</pre>
+            <p>
+            This will start a Unicorn, Mongrel or WEBrick server on port 3000, which
+            you can connect to without authentication. Unicorn and Mongrel will be much
+            more responsive than WEBrick, so if you are having slowness issues, install
+            one of them and restart the dav4rack process. The simple file resource
+            allows very basic authentication which is used for an example. To enable
+            it:
+            </p>
+            <pre>dav4rack --username=user --password=pass</pre>
+            <h2><a href="../classes/Rack.html">Rack</a> Handler</h2>
+            <p>
+            Using <a href="../classes/DAV4Rack.html">DAV4Rack</a> within a rack
+            application is pretty simple. A very slim rackup script would look
+            something like this:
+            </p>
+            <pre>require 'rubygems'&#x000A;require 'dav4rack'&#x000A;&#x000A;use Rack::CommonLogger&#x000A;run DAV4Rack::Handler.new(:root =&gt; '/path/to/public/fileshare')</pre>
+            <p>
+            This will use the included FileResource and set the share path. However, <a
+            href="../classes/DAV4Rack.html">DAV4Rack</a> has some nifty little extras
+            that can be enabled in the rackup script. First, an example of how to use a
+            custom resource:
+            </p>
+            <pre>run DAV4Rack::Handler.new(:resource_class =&gt; CustomResource, :custom =&gt; 'options', :passed =&gt; 'to resource')</pre>
+            <p>
+            Next, lets venture into mapping a path for our WebDAV access. In this
+            example, we will use default FileResource like in the first example, but
+            instead of the WebDAV content being available at the root directory, we
+            will map it to a specific directory: /webdav/share/
+            </p>
+            <pre>require 'rubygems'&#x000A;require 'dav4rack'&#x000A;&#x000A;use Rack::CommonLogger&#x000A;&#x000A;app = Rack::Builder.new{&#x000A;  map '/webdav/share/' do&#x000A;    run DAV4Rack::Handler.new(:root =&gt; '/path/to/public/fileshare', :root_uri_path =&gt; '/webdav/share/')&#x000A;  end&#x000A;}.to_app&#x000A;run app</pre>
+            <p>
+            Aside from the Builder#map block, notice the new option passed to the
+            Handler&#8217;s initialization, :root_uri_path. When <a
+            href="../classes/DAV4Rack.html">DAV4Rack</a> receives a request, it will
+            automatically convert the request to the proper path and pass it to the
+            resource.
+            </p>
+            <p>
+            Another tool available when building the rackup script is the Interceptor.
+            The Interceptor&#8217;s job is to simply intecept WebDAV requests received
+            up the path hierarchy where no resources are currently mapped. For example,
+            lets continue with the last example but this time include the interceptor:
+            </p>
+            <pre>require 'rubygems'&#x000A;require 'dav4rack'&#x000A;&#x000A;use Rack::CommonLogger&#x000A;app = Rack::Builder.new{&#x000A;  map '/webdav/share/' do&#x000A;    run DAV4Rack::Handler.new(:root =&gt; '/path/to/public/fileshare', :root_uri_path =&gt; '/webdav/share/')&#x000A;  end&#x000A;  map '/webdav/share2/' do&#x000A;    run DAV4Rack::Handler.new(:resource_class =&gt; CustomResource, :root_uri_path =&gt; '/webdav/share2/')&#x000A;  end&#x000A;  map '/' do&#x000A;    use DAV4Rack::Interceptor, :mappings =&gt; {&#x000A;                                              '/webdav/share/' =&gt; {:resource_class =&gt; FileResource, :custom =&gt; 'option'},&#x000A;                                              '/webdav/share2/' =&gt; {:resource_class =&gt; CustomResource}&#x000A;                                            }&#x000A;    use Rails::Rack::Static&#x000A;    run ActionController::Dispatcher.new&#x000A;  end&#x000A;}.to_app&#x000A;run app</pre>
+            <p>
+            In this example we have two WebDAV resources restricted by path. This means
+            those resources will handle requests to /webdav/share/* and
+            /webdav/share2/* but nothing above that. To allow webdav to respond, we
+            provide the Interceptor. The Interceptor does not provide any
+            authentication support. It simply creates a virtual file system view to the
+            provided mapped paths. Once the actual resources have been reached,
+            authentication will be enforced based on the requirements defined by the
+            individual resource. Also note in the root map you can see we are running a
+            Rails application. This is how you can easily enable <a
+            href="../classes/DAV4Rack.html">DAV4Rack</a> with your Rails application.
+            </p>
+            <h3>Enabling Logging</h3>
+            <p>
+            <a href="../classes/DAV4Rack.html">DAV4Rack</a> provides some simple
+            logging in a Rails style format (simply for consistency) so the output
+            should look some what familiar.
+            </p>
+            <pre>DAV4Rack::Handler.new(:resource_class =&gt; CustomResource, :log_to =&gt; '/my/log/file')</pre>
+            <p>
+            You can even specify the level of logging:
+            </p>
+            <pre>DAV4Rack::Handler.new(:resource_class =&gt; CustomResource, :log_to =&gt; ['/my/log/file', Logger::DEBUG])</pre>
+            <h2>Custom Resources</h2>
+            <p>
+            Creating your own resource is easy. Simply inherit the <a
+            href="../classes/DAV4Rack/Resource.html">DAV4Rack::Resource</a> class, and
+            start redefining all the methods you want to customize. The <a
+            href="../classes/DAV4Rack/Resource.html">DAV4Rack::Resource</a> class only
+            has implementations for methods that can be provided extremely generically.
+            This means that most things will require at least some sort of
+            implementation. However, because the Resource is defined so generically,
+            and the Controller simply passes the request on to the Resource, it is easy
+            to create fully virtualized resources.
+            </p>
+            <h2>Helpers</h2>
+            <p>
+            There are some helpers worth mentioning that make things a little easier.
+            DAV4Rack::Resource#accept_redirect? method is available to Resources. If
+            true, the currently connected client will accept and properly use a 302
+            redirect for a GET request. Most clients do not properly support this,
+            which can be a real pain when working with virtualized files that may be
+            located some where else, like S3. To deal with those clients that
+            don&#8217;t support redirects, a helper has been provided so resources
+            don&#8217;t have to deal with proxying themselves. The <a
+            href="../classes/DAV4Rack/RemoteFile.html">DAV4Rack::RemoteFile</a> is a
+            modified Rack::File that can do some interesting things. First, lets look
+            at its most basic use:
+            </p>
+            <pre>class MyResource &lt; DAV4Rack::Resource&#x000A;  def setup&#x000A;    @item = method_to_fill_this_properly&#x000A;  end&#x000A;&#x000A;  def get&#x000A;    if(accept_redirect?)&#x000A;      response.redirect item[:url]&#x000A;    else&#x000A;      response.body = DAV4Rack::RemoteFile.new(item[:url], :size =&gt; content_length, :mime_type =&gt; content_type)&#x000A;      OK&#x000A;    end&#x000A;  end&#x000A;end</pre>
+            <p>
+            This is a simple proxy. When <a href="../classes/Rack.html">Rack</a>
+            receives the RemoteFile, it will pull a chunk of data from object, which in
+            turn pulls it from the socket, and sends it to the user over and over again
+            until the EOF is reached. This much the same method that Rack::File uses
+            but instead we are pulling from a socket rather than an actual file. Now,
+            instead of proxying these files from a remote server every time, lets cache
+            them:
+            </p>
+            <pre>response.body = DAV4Rack::RemoteFile.new(item[:url], :size =&gt; content_length, :mime_type =&gt; content_type, :cache_directory =&gt; '/tmp')</pre>
+            <p>
+            Providing the :cache_directory will let RemoteFile cache the items locally,
+            and then search for them on subsequent requests before heading out to the
+            network. The cached file name is based off the SHA1 hash of the file path,
+            size and last modified time. It is important to note that for services like
+            S3, the path will often change, making this cache pretty worthless. To
+            combat this, we can provide a reference to use instead:
+            </p>
+            <pre>response.body = DAV4Rack::RemoteFile.new(item[:url], :size =&gt; content_length, :mime_type =&gt; content_type, :cache_directory =&gt; '/tmp', :cache_ref =&gt; item[:static_url])</pre>
+            <p>
+            These methods will work just fine, but it would be really nice to just let
+            someone else deal with the proxying and let the process get back to dealing
+            with actual requests. RemoteFile will happily do that as long as the
+            frontend server is setup correctly. Using the sendfile approach will tell
+            the RemoteFile to simply pass the headers on and let the server deal with
+            doing the actual proxying. First, lets look at an implementation using all
+            the features, and then degrade that down to the bare minimum. These
+            examples are NGINX specific, but are based off the Rack::Sendfile
+            implementation and as such should be applicable to other servers. First, a
+            simplified NGINX server block:
+            </p>
+            <pre>server {&#x000A;  listen 80;&#x000A;  location / {&#x000A;    proxy_set_header X-Real-IP $remote_addr;&#x000A;    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;&#x000A;    proxy_set_header Host $http_host;&#x000A;    proxy_set_header X-Sendfile-Type X-Accel-Redirect;&#x000A;    proxy_set_header X-Accel-Remote-Mapping webdav_redirect&#x000A;    proxy_pass http://my_app_server;&#x000A;  }&#x000A;&#x000A;  location ~* /webdav_redirect/(.*?)/(.*) {&#x000A;    internal;&#x000A;    resolver 127.0.0.1;&#x000A;    set $re_host $1;&#x000A;    set $re_path $2;&#x000A;    set $re_url http://$re_host/$re_path?$args;&#x000A;    proxy_set_header Authorization '';&#x000A;    proxy_set_header Host $re_host;&#x000A;    proxy_max_temp_file_size 0;&#x000A;    proxy_pass $re_url;&#x000A;  }&#x000A;}</pre>
+            <p>
+            With this in place, the parameters for the RemoteFile change slightly:
+            </p>
+            <pre>response.body = DAV4Rack::RemoteFile.new(item[:url], :size =&gt; content_length, :mime_type =&gt; content_type, :sendfile =&gt; true)</pre>
+            <p>
+            The RemoteFile will automatically take care of building out the correct
+            path and sending the proper headers. If the X-Accel-Remote-Mapping header
+            is not available, you can simply pass the value:
+            </p>
+            <pre>response.body = DAV4Rack::RemoteFile.new(item[:url], :size =&gt; content_length, :mime_type =&gt; content_type, :sendfile =&gt; true, :sendfile_prefix =&gt; 'webdav_redirect')</pre>
+            <p>
+            And if you don&#8217;t have the X-Sendfile-Type header set, you can fix
+            that by changing the value of :sendfile:
+            </p>
+            <pre>response.body = DAV4Rack::RemoteFile.new(item[:url], :size =&gt; content_length, :mime_type =&gt; content_type, :sendfile =&gt; 'X-Accel-Redirect', :sendfile_prefix =&gt; 'webdav_redirect')</pre>
+            <p>
+            And if you have none of the above because your server hasn&#8217;t been
+            configured for sendfile support, your out of luck until it&#8217;s
+            configured.
+            </p>
+            <h2>Authentication</h2>
+            <p>
+            Authentication is performed on a per Resource basis. The Controller object
+            will check the Resource for a Resource#authenticate method. If it exists,
+            any authentication information will be passed to the method. Depending on
+            the result, the Controller will either continue on with the request, or
+            send a 401 Unauthorized response.
+            </p>
+            <p>
+            As a nicety, Resource#authentication_realm will be checked for existence
+            and the returning string will be used as the Realm.
+            Resource#authentication_error_msg will also be checked for existence and
+            the returning string will be passed in the response upon authentication
+            failure.
+            </p>
+            <p>
+            Authentication can also be implemented using callbacks, as discussed below.
+            </p>
+            <h2>Callbacks</h2>
+            <p>
+            Resources can make use of callbacks to easily apply permissions,
+            authentication or any other action that needs to be performed before or
+            after any or all actions. Callbacks are applied to all publicly available
+            methods. This is important for methods used internally within the resource.
+            Methods not meant to be called by the Controller, or anyone else, should be
+            scoped protected or private to reduce the interaction with callbacks.
+            </p>
+            <p>
+            Callbacks can be called before or after a method call. For example:
+            </p>
+            <pre>class MyResource &lt; DAV4Rack::Resource&#x000A;  before do |resource, method_name|&#x000A;    resource.send(:my_authentication_method)&#x000A;  end&#x000A;&#x000A;  after do |resource, method_name|&#x000A;    puts &quot;#{Time.now} -&gt; Completed: #{resource}##{method_name}&quot;&#x000A;  end&#x000A;&#x000A;  private&#x000A;&#x000A;  def my_authentication_method&#x000A;    true&#x000A;  end&#x000A;end</pre>
+            <p>
+            In this example MyResource#my_authentication_method will be called before
+            any public method is called. After any method has been called a status line
+            will be printed to STDOUT. Running callbacks before/after every method call
+            is a bit much in most cases, so callbacks can be applied to specific
+            methods:
+            </p>
+            <pre>class MyResource &lt; DAV4Rack::Resource&#x000A;  before_get do |resource|&#x000A;    puts &quot;#{Time.now} -&gt; Received GET request from resource: #{resource}&quot;&#x000A;  end&#x000A;end</pre>
+            <p>
+            In this example, a simple status line will be printed to STDOUT before the
+            MyResource#get method is called. The current resource object is always
+            provided to callbacks. The method name is only provided to the generic
+            before/after callbacks.
+            </p>
+            <p>
+            Something very handy for dealing with the mess of files OS X leaves on the
+            system:
+            </p>
+            <pre>class MyResource &lt; DAV4Rack::Resource&#x000A;  after_unlock do |resource|&#x000A;    resource.delete if resource.name[0,1] == '.'&#x000A;  end&#x000A;end</pre>
+            <p>
+            Because OS X implements locking correctly, we can wait until it releases
+            the lock on the file, and remove it if it&#8217;s a hidden file.
+            </p>
+            <p>
+            Callbacks are called in the order they are defined, so you can easily build
+            callbacks off each other. Like this example:
+            </p>
+            <pre>class MyResource &lt; DAV4Rack::Resource&#x000A;  before do |resource, method_name|&#x000A;    resource.DAV_authenticate unless resource.user.is_a?(User)&#x000A;    raise Unauthorized unless resource.user.is_a?(User)&#x000A;  end&#x000A;  before do |resource, method_name|&#x000A;    resource.user.allowed?(method_name)&#x000A;  end&#x000A;end</pre>
+            <p>
+            In this example, the second block checking User#allowed? can count on
+            Resource#user being defined because the blocks are called in order, and if
+            the Resource#user is not a User type, an exception is raised.
+            </p>
+            <h3>Avoiding callbacks</h3>
+            <p>
+            Something special to notice in the last example is the DAV_ prefix on
+            authenticate. Providing the DAV_ prefix will prevent any callbacks being
+            applied to the given method. This allows us to provide a public method that
+            the callback can access on the resource without getting stuck in a loop.
+            </p>
+            <h2>Issues/Bugs/Questions</h2>
+            <h3>Known Issues</h3>
+            <ul>
+            <li>OS X Finder PUT fails when using NGINX (this is due to NGINX&#8217;s lack
+            of chunked transfer encoding)
+            
+            </li>
+            <li>Windows WebDAV mini-redirector fails (this client is very broken. patches
+            welcome.)
+            
+            </li>
+            <li>Lots of unimplemented parts of the webdav spec (patches always welcome)
+            
+            </li>
+            </ul>
+            <h3>Unknown Issues</h3>
+            <p>
+            Please use the issues at github: <a
+            href="http://github.com/chrisroberts/dav4rack/issues">github.com/chrisroberts/dav4rack/issues</a>
+            </p>
+            <h2>License</h2>
+            <p>
+            Just like RackDAV before it, this software is distributed under the MIT
+            license.
+            </p>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

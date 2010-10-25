@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: handler_spec.rb [RDoc Documentation]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>handler_spec.rb</h1>
+        <div class='paths'>
+          spec/handler_spec.rb
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Thu Sep 30 10:53:02 -0700 2010</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>public instance</h3>
+            <ol>
+              <li><a href="#M000007">multistatus_response</a></li>
+              <li><a href="#M000008">propfind_xml</a></li>
+              <li><a href="#M000004">render</a></li>
+              <li><a href="#M000003">request</a></li>
+              <li><a href="#M000006">response_xml</a></li>
+              <li><a href="#M000005">url_escape</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+            <div id='requires'>
+              <h2>Required files</h2>
+              <ol>
+                <li>rubygems</li>
+                <li>rack_dav</li>
+                <li>fileutils</li>
+              </ol>
+            </div>
+          </div>
+          <div id='section'>
+            <div id='constants-list'>
+              <h2>Constants</h2>
+              <div class='name-list'>
+                <table summary='Constants'>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>DOC_ROOT</td>
+                    <td>=</td>
+                    <td class='context-item-value'>File.expand_path(File.dirname(__FILE__) + '/htdocs')</td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>METHODS</td>
+                    <td>=</td>
+                    <td class='context-item-value'>%w(GET PUT POST DELETE PROPFIND PROPPATCH MKCOL COPY MOVE OPTIONS HEAD LOCK UNLOCK)</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div id='methods'>
+              <h2>Public instance methods</h2>
+              <div class='method public-instance' id='method-M000007'>
+                <a name='M000007'></a>
+                <div class='synopsis'>
+                  <span class='name'>multistatus_response</span>
+                  <span class='arguments'>(pattern)</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000007-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 56</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">multistatus_response</span>(<span class="ruby-identifier">pattern</span>)&#x000A;    <span class="ruby-ivar">@response</span>.<span class="ruby-identifier">should</span> <span class="ruby-identifier">be_multi_status</span>&#x000A;    <span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span><span class="ruby-operator">::</span><span class="ruby-identifier">match</span>(<span class="ruby-identifier">response_xml</span>, <span class="ruby-value str">&quot;/multistatus/response&quot;</span>, <span class="ruby-value str">''</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'DAV:'</span>).<span class="ruby-identifier">should_not</span> <span class="ruby-identifier">be_empty</span>&#x000A;    <span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span><span class="ruby-operator">::</span><span class="ruby-identifier">match</span>(<span class="ruby-identifier">response_xml</span>, <span class="ruby-value str">&quot;/multistatus/response&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">pattern</span>, <span class="ruby-value str">''</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'DAV:'</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000008'>
+                <a name='M000008'></a>
+                <div class='synopsis'>
+                  <span class='name'>propfind_xml</span>
+                  <span class='arguments'>(*props)</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000008-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 62</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">propfind_xml</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">props</span>)&#x000A;    <span class="ruby-identifier">render</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">xml</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">propfind</span>(<span class="ruby-value str">'xmlns:d'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">&quot;DAV:&quot;</span>) <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">prop</span> <span class="ruby-keyword kw">do</span>&#x000A;          <span class="ruby-identifier">props</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">prop</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">tag!</span> <span class="ruby-identifier">prop</span>&#x000A;          <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000004'>
+                <a name='M000004'></a>
+                <div class='synopsis'>
+                  <span class='name'>render</span>
+                  <span class='arguments'>() {|xml| ...}</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000004-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000004-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 37</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">render</span>&#x000A;    <span class="ruby-identifier">xml</span> = <span class="ruby-constant">Builder</span><span class="ruby-operator">::</span><span class="ruby-constant">XmlMarkup</span>.<span class="ruby-identifier">new</span>&#x000A;    <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">instruct!</span> <span class="ruby-identifier">:xml</span>, <span class="ruby-identifier">:version</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">&quot;1.0&quot;</span>, <span class="ruby-identifier">:encoding</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">&quot;UTF-8&quot;</span>      &#x000A;    <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">namespace</span>(<span class="ruby-value str">'d'</span>) <span class="ruby-keyword kw">do</span>&#x000A;      <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">xml</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">target!</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000003'>
+                <a name='M000003'></a>
+                <div class='synopsis'>
+                  <span class='name'>request</span>
+                  <span class='arguments'>(method, uri, options={})</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000003-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000003-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 22</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">request</span>(<span class="ruby-identifier">method</span>, <span class="ruby-identifier">uri</span>, <span class="ruby-identifier">options</span>={})&#x000A;    <span class="ruby-identifier">options</span> = {&#x000A;      <span class="ruby-value str">'HTTP_HOST'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'localhost'</span>,&#x000A;      <span class="ruby-value str">'REMOTE_USER'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'manni'</span>&#x000A;    }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-identifier">request</span> = <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">MockRequest</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@controller</span>)&#x000A;    <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">request</span>(<span class="ruby-identifier">method</span>, <span class="ruby-identifier">uri</span>, <span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000006'>
+                <a name='M000006'></a>
+                <div class='synopsis'>
+                  <span class='name'>response_xml</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000006-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 52</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">response_xml</span>&#x000A;    <span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@response</span>.<span class="ruby-identifier">body</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000005'>
+                <a name='M000005'></a>
+                <div class='synopsis'>
+                  <span class='name'>url_escape</span>
+                  <span class='arguments'>(string)</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000005-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 46</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">url_escape</span>(<span class="ruby-identifier">string</span>)&#x000A;    <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/([^ a-zA-Z0-9_.-]+)/n</span>) <span class="ruby-keyword kw">do</span>&#x000A;      <span class="ruby-value str">'%'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">'H2'</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">join</span>(<span class="ruby-value str">'%'</span>).<span class="ruby-identifier">upcase</span>&#x000A;    <span class="ruby-keyword kw">end</span>.<span class="ruby-identifier">tr</span>(<span class="ruby-value str">' '</span>, <span class="ruby-value str">'+'</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

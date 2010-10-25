@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: dav4rack [RDoc Documentation]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>dav4rack</h1>
+        <div class='paths'>
+          bin/dav4rack
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Fri Oct 22 09:12:12 -0700 2010</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>public instance</h3>
+            <ol>
+              <li><a href="#M000001">print_help_msg</a></li>
+              <li><a href="#M000002">print_version_info</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+            <div id='requires'>
+              <h2>Required files</h2>
+              <ol>
+                <li>rubygems</li>
+                <li>dav4rack/version</li>
+                <li>getoptlong</li>
+                <li>pathname</li>
+                <li>logger</li>
+                <li>logger</li>
+                <li>dav4rack</li>
+                <li>unicorn</li>
+                <li>mongrel</li>
+              </ol>
+            </div>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public instance methods</h2>
+              <div class='method public-instance' id='method-M000001'>
+                <a name='M000001'></a>
+                <div class='synopsis'>
+                  <span class='name'>print_help_msg</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000001-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000001-source'><span class="ruby-comment cmt"># File bin/dav4rack, line 7</span>&#x000A;<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">print_help_msg</span>&#x000A;  <span class="ruby-identifier">print_version_info</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot;Usage: dav4rack [opts]&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; --help               Print help message&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; --version            Print version information&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; --username name      Set username&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; --password pass      Set password&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; --root /share/path   Set path to share directory&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; --log /path/to/log   Set path for logging file&quot;</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-value str">&quot; --verbosity opt      Set logging verbosity. (Valid: debug,info,warn,fatal)&quot;</span>&#x000A;<span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000002'>
+                <a name='M000002'></a>
+                <div class='synopsis'>
+                  <span class='name'>print_version_info</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000002-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000002-source'><span class="ruby-comment cmt"># File bin/dav4rack, line 19</span>&#x000A;<span class="ruby-keyword kw">def</span> <span class="ruby-identifier">print_version_info</span>&#x000A;  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;DAV 4 Rack - Rack based WebDAV Framework - Version: #{DAV4Rack::VERSION}&quot;</span>&#x000A;<span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
