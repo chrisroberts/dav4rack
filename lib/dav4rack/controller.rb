@@ -233,12 +233,16 @@
       authed = true
       if(resource.respond_to?(:authenticate, true))
         authed = false
+        uname = nil
+        password = nil
         if(request.env['HTTP_AUTHORIZATION'])
           auth = Rack::Auth::Basic::Request.new(request.env)
           if(auth.basic? && auth.credentials)
-            authed = resource.send(:authenticate, auth.credentials[0], auth.credentials[1])
+            uname = auth.credentials[0]
+            password = auth.credentials[1]
           end
         end
+        authed = resource.send(:authenticate, uname, password)
       end
       raise Unauthorized unless authed
     end
