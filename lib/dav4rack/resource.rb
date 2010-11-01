@@ -394,6 +394,7 @@ module DAV4Rack
     end
 
     # Does client allow GET redirection
+    # TODO: Get a comprehensive list in here. Especially now that trasmit added support
     def allows_redirect?
       %w(cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.to_s.downcase : request.env['HTTP_USER_AGENT'].to_s.downcase) =~ /#{Regexp.escape(x)}/}
     end
