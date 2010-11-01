@@ -94,9 +94,9 @@ lets continue with the last example but this time include the interceptor:
     end
     map '/' do
       use DAV4Rack::Interceptor, :mappings => {
-                                                '/webdav/share/' => {:resource_class => FileResource, :custom => 'option'},
-                                                '/webdav/share2/' => {:resource_class => CustomResource}
-                                              }
+        '/webdav/share/' => {:resource_class => FileResource, :custom => 'option'},
+        '/webdav/share2/' => {:resource_class => CustomResource}
+      }
       use Rails::Rack::Static
       run ActionController::Dispatcher.new
     end
