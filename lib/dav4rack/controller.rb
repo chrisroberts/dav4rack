@@ -127,8 +127,8 @@
       response['Location'] = "#{scheme}://#{host}:#{port}#{dest.public_path}" if status == Created
       multistatus do |xml|
         xml.response do
-          xml.href "#{scheme}://#{host}:#{port}#{dest.public_path}"
-          xml.status = "#{http_version} #{status.status_line}"
+          xml.href "#{scheme}://#{host}:#{port}#{status == Created ? dest.public_path : resource.public_path}"
+          xml.status "#{http_version} #{status.status_line}"
         end
       end
     end
@@ -201,6 +201,9 @@
               xml.timeout lock_time ? "Second-#{lock_time}" : 'infinity'
               xml.locktoken do
                 xml.href locktoken
+              end
+              if(asked[:owner])
+                xml.owner asked[:owner]
               end
             end
           end
@@ -320,17 +323,17 @@
     end
 
     # Find resources at depth requested
-    def find_resources
+    def find_resources(with_current_resource=true)
       ary = nil
       case depth
       when 0
-        ary = [resource]
+        ary = []
       when 1
         ary = resource.children
       else
         ary = resource.descendants
       end
-      ary ? ary : []
+      with_current_resource ? [resource] + ary : ary
     end
     
     # XML parsed request
