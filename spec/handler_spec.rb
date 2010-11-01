@@ -1,16 +1,17 @@
 $:.unshift(File.expand_path(File.dirname(__FILE__) + '/../lib'))
 
 require 'rubygems'
-require 'rack_dav'
+require 'dav4rack'
 require 'fileutils'
+require 'nokogiri'
 
-describe RackDAV::Handler do
+describe DAV4Rack::Handler do
   DOC_ROOT = File.expand_path(File.dirname(__FILE__) + '/htdocs')
   METHODS = %w(GET PUT POST DELETE PROPFIND PROPPATCH MKCOL COPY MOVE OPTIONS HEAD LOCK UNLOCK)  
   
   before do
     FileUtils.mkdir(DOC_ROOT) unless File.exists?(DOC_ROOT)
-    @controller = RackDAV::Handler.new(:root => DOC_ROOT)
+    @controller = DAV4Rack::Handler.new(:root => DOC_ROOT)
   end
 
   after do
@@ -22,7 +23,7 @@ describe RackDAV::Handler do
   def request(method, uri, options={})
     options = {
       'HTTP_HOST' => 'localhost',
-      'REMOTE_USER' => 'manni'
+      'REMOTE_USER' => 'user'
     }.merge(options)
     request = Rack::MockRequest.new(@controller)
     @response = request.request(method, uri, options)
@@ -34,13 +35,16 @@ describe RackDAV::Handler do
     end
   end  
   
-  def render
-    xml = Builder::XmlMarkup.new
-    xml.instruct! :xml, :version => "1.0", :encoding => "UTF-8"      
-    xml.namespace('d') do
-      yield xml
+  def render(root_type)
+    raise ArgumentError.new 'Expecting block' unless block_given?
+    doc = Nokogiri::XML::Builder.new do |xml_base|
+      xml_base.send(root_type.to_s, 'xmlns:D' => 'D:') do
+        xml_base.parent.namespace = xml_base.parent.namespace_definitions.first
+        xml = xml_base['D']
+        yield xml
+      end
     end
-    xml.target!
+    doc.to_xml
   end
  
   def url_escape(string)
@@ -50,22 +54,35 @@ describe RackDAV::Handler do
   end
   
   def response_xml
-    REXML::Document.new(@response.body)
+    Nokogiri.XML(@response.body)
   end
   
   def multistatus_response(pattern)
     @response.should be_multi_status
-    REXML::XPath::match(response_xml, "/multistatus/response", '' => 'DAV:').should_not be_empty
-    REXML::XPath::match(response_xml, "/multistatus/response" + pattern, '' => 'DAV:')
+    response_xml.xpath('//D:multistatus/D:response', response_xml.root.namespaces).should_not be_empty
+    response_xml.xpath("//D:multistatus/D:response#{pattern}", response_xml.root.namespaces)
   end
 
+  def multi_status_created
+    response_xml.xpath('//D:multistatus/D:response/D:status').should_not be_empty
+    response_xml.xpath('//D:multistatus/D:response/D:status').text.should =~ /Created/
+  end
+  
+  def multi_status_ok
+    response_xml.xpath('//D:multistatus/D:response/D:status').should_not be_empty
+    response_xml.xpath('//D:multistatus/D:response/D:status').text.should =~ /OK/
+  end
+  
+  def multi_status_no_content
+    response_xml.xpath('//D:multistatus/D:response/D:status').should_not be_empty
+    response_xml.xpath('//D:multistatus/D:response/D:status').text.should =~ /No Content/
+  end
+  
   def propfind_xml(*props)
-    render do |xml|
-      xml.propfind('xmlns:d' => "DAV:") do
-        xml.prop do
-          props.each do |prop|
-          xml.tag! prop
-          end
+    render(:propfind) do |xml|
+      xml.prop do
+        props.each do |prop|
+        xml.send(prop.to_sym)
         end
       end
     end
@@ -80,7 +97,8 @@ describe RackDAV::Handler do
   end
   
   it 'should return headers' do
-    put('/test.html', :input => '<html/>').should be_ok
+    put('/test.html', :input => '<html/>')
+    multi_status_ok.should eq true
     head('/test.html').should be_ok
     
     response.headers['etag'].should_not be_nil
@@ -97,25 +115,31 @@ describe RackDAV::Handler do
   end
   
   it 'should create a resource and allow its retrieval' do
-    put('/test', :input => 'body').should be_ok    
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
     get('/test').should be_ok
     response.body.should == 'body'
   end
   it 'should create and find a url with escaped characters' do
-    put(url_escape('/a b'), :input => 'body').should be_ok    
+    put(url_escape('/a b'), :input => 'body')
+    multi_status_ok.should eq true
     get(url_escape('/a b')).should be_ok
     response.body.should == 'body'
   end
   
   it 'should delete a single resource' do
-    put('/test', :input => 'body').should be_ok
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
     delete('/test').should be_no_content
   end
   
   it 'should delete recursively' do
-    mkcol('/folder').should be_created
-    put('/folder/a', :input => 'body').should be_ok
-    put('/folder/b', :input => 'body').should be_ok
+    mkcol('/folder')
+    multi_status_created.should eq true
+    put('/folder/a', :input => 'body')
+    multi_status_ok.should eq true
+    put('/folder/b', :input => 'body')
+    multi_status_ok.should eq true
     
     delete('/folder').should be_no_content
     get('/folder').should be_not_found
@@ -124,79 +148,94 @@ describe RackDAV::Handler do
   end
 
   it 'should not allow copy to another domain' do
-    put('/test', :input => 'body').should be_ok
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
     copy('http://localhost/', 'HTTP_DESTINATION' => 'http://another/').should be_bad_gateway
   end
 
   it 'should not allow copy to the same resource' do
-    put('/test', :input => 'body').should be_ok
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
     copy('/test', 'HTTP_DESTINATION' => '/test').should be_forbidden
   end
 
-  it 'should not allow an invalid destination uri' do
-    put('/test', :input => 'body').should be_ok
-    copy('/test', 'HTTP_DESTINATION' => '%').should be_bad_request
-  end
-
   it 'should copy a single resource' do
-    put('/test', :input => 'body').should be_ok
-    copy('/test', 'HTTP_DESTINATION' => '/copy').should be_created
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
+    copy('/test', 'HTTP_DESTINATION' => '/copy')
+    multi_status_no_content.should eq true
     get('/copy').body.should == 'body'
   end
 
   it 'should copy a resource with escaped characters' do
-    put(url_escape('/a b'), :input => 'body').should be_ok
-    copy(url_escape('/a b'), 'HTTP_DESTINATION' => url_escape('/a c')).should be_created
+    put(url_escape('/a b'), :input => 'body')
+    multi_status_ok.should eq true
+    copy(url_escape('/a b'), 'HTTP_DESTINATION' => url_escape('/a c'))
+    multi_status_no_content.should eq true
     get(url_escape('/a c')).should be_ok
     response.body.should == 'body'
   end
   
   it 'should deny a copy without overwrite' do
-    put('/test', :input => 'body').should be_ok
-    put('/copy', :input => 'copy').should be_ok
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
+    put('/copy', :input => 'copy')
+    multi_status_ok.should eq true
     copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'F')
     
-    multistatus_response('/href').first.text.should == 'http://localhost/test'
-    multistatus_response('/status').first.text.should match(/412 Precondition Failed/)
+    multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/test/
+    multistatus_response('/D:status').first.text.should match(/412 Precondition Failed/)
     
     get('/copy').body.should == 'copy'
   end
   
   it 'should allow a copy with overwrite' do
-    put('/test', :input => 'body').should be_ok
-    put('/copy', :input => 'copy').should be_ok
-    copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'T').should be_no_content
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
+    put('/copy', :input => 'copy')
+    multi_status_ok.should eq true
+    copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'T')
+    multi_status_no_content.should eq true
     get('/copy').body.should == 'body'
   end
   
-  it 'should copy a collection' do
-    mkcol('/folder').should be_created
-    copy('/folder', 'HTTP_DESTINATION' => '/copy').should be_created
+  it 'should copy a collection' do  
+    mkcol('/folder')
+    multi_status_created.should eq true
+    copy('/folder', 'HTTP_DESTINATION' => '/copy')
+    multi_status_ok.should eq true
     propfind('/copy', :input => propfind_xml(:resourcetype))
-    multistatus_response('/propstat/prop/resourcetype/collection').should_not be_empty
+    multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
   end
 
   it 'should copy a collection resursively' do
-    mkcol('/folder').should be_created
-    put('/folder/a', :input => 'A').should be_ok
-    put('/folder/b', :input => 'B').should be_ok
+    mkcol('/folder')
+    multi_status_created.should eq true
+    put('/folder/a', :input => 'A')
+    multi_status_ok.should eq true
+    put('/folder/b', :input => 'B')
+    multi_status_ok.should eq true
     
-    copy('/folder', 'HTTP_DESTINATION' => '/copy').should be_created
+    copy('/folder', 'HTTP_DESTINATION' => '/copy')
+    multi_status_ok.should eq true
     propfind('/copy', :input => propfind_xml(:resourcetype))
-    multistatus_response('/propstat/prop/resourcetype/collection').should_not be_empty    
-    
+    multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
     get('/copy/a').body.should == 'A'
     get('/copy/b').body.should == 'B'
   end
   
   it 'should move a collection recursively' do
-    mkcol('/folder').should be_created
-    put('/folder/a', :input => 'A').should be_ok
-    put('/folder/b', :input => 'B').should be_ok
+    mkcol('/folder')
+    multi_status_created.should eq true
+    put('/folder/a', :input => 'A')
+    multi_status_ok.should eq true
+    put('/folder/b', :input => 'B')
+    multi_status_ok.should eq true
     
-    move('/folder', 'HTTP_DESTINATION' => '/move').should be_created
+    move('/folder', 'HTTP_DESTINATION' => '/move')
+    multi_status_ok.should eq true
     propfind('/move', :input => propfind_xml(:resourcetype))
-    multistatus_response('/propstat/prop/resourcetype/collection').should_not be_empty    
+    multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty    
     
     get('/move/a').body.should == 'A'
     get('/move/b').body.should == 'B'
@@ -205,9 +244,10 @@ describe RackDAV::Handler do
   end
   
   it 'should create a collection' do
-    mkcol('/folder').should be_created
+    mkcol('/folder')
+    multi_status_created.should eq true
     propfind('/folder', :input => propfind_xml(:resourcetype))
-    multistatus_response('/propstat/prop/resourcetype/collection').should_not be_empty
+    multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
   end
   
   it 'should not find properties for nonexistent resources' do
@@ -215,56 +255,54 @@ describe RackDAV::Handler do
   end
   
   it 'should find all properties' do
-    xml = render do |xml|
-      xml.propfind('xmlns:d' => "DAV:") do
-        xml.allprop
-      end
+    xml = render(:propfind) do |xml|
+      xml.allprop
     end
     
     propfind('http://localhost/', :input => xml)
     
-    multistatus_response('/href').first.text.strip.should == 'http://localhost/'
+    multistatus_response('/D:href').first.text.strip.should =~ /http:\/\/localhost(:\d+)?\//
 
     props = %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength)
     props.each do |prop|
-      multistatus_response('/propstat/prop/' + prop).should_not be_empty
+      multistatus_response("/D:propstat/D:prop/D:#{prop}").should_not be_empty
     end
   end
   
   it 'should find named properties' do
-    put('/test.html', :input => '<html/>').should be_ok    
+    put('/test.html', :input => '<html/>')
+    multi_status_ok.should eq true
     propfind('/test.html', :input => propfind_xml(:getcontenttype, :getcontentlength))
    
-    multistatus_response('/propstat/prop/getcontenttype').first.text.should == 'text/html'
-    multistatus_response('/propstat/prop/getcontentlength').first.text.should == '7'
+    multistatus_response('/D:propstat/D:prop/D:getcontenttype').first.text.should == 'text/html'
+    multistatus_response('/D:propstat/D:prop/D:getcontentlength').first.text.should == '7'
   end
 
   it 'should lock a resource' do
-    put('/test', :input => 'body').should be_ok
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
     
-    xml = render do |xml|
-      xml.lockinfo('xmlns:d' => "DAV:") do
-        xml.lockscope { xml.exclusive }
-        xml.locktype { xml.write }
-        xml.owner { xml.href "http://test.de/" }
-      end      
+    xml = render(:lockinfo) do |xml|
+      xml.lockscope { xml.exclusive }
+      xml.locktype { xml.write }
+      xml.owner { xml.href "http://test.de/" }
     end
 
     lock('/test', :input => xml)
     
     response.should be_ok
-
+    
     match = lambda do |pattern|
-      REXML::XPath::match(response_xml, "/prop/lockdiscovery/activelock" + pattern, '' => 'DAV:')
+      response_xml.xpath "/D:prop/D:lockdiscovery/D:activelock#{pattern}"
     end
     
     match[''].should_not be_empty
 
-    match['/locktype'].should_not be_empty
-    match['/lockscope'].should_not be_empty
-    match['/depth'].should_not be_empty
-    match['/owner'].should_not be_empty
-    match['/timeout'].should_not be_empty
-    match['/locktoken'].should_not be_empty
+    match['/D:locktype'].should_not be_empty
+    match['/D:lockscope'].should_not be_empty
+    match['/D:depth'].should_not be_empty
+    match['/D:timeout'].should_not be_empty
+    match['/D:locktoken'].should_not be_empty
+    match['/D:owner'].should_not be_empty
   end
 end
