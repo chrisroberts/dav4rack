@@ -39,7 +39,7 @@
       response["Allow"] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
       response["Dav"] = "2"
       response["Ms-Author-Via"] = "DAV"
-      NoContent
+      OK
     end
     
     # Return response to HEAD
@@ -48,7 +48,7 @@
       response['Etag'] = resource.etag
       response['Content-Type'] = resource.content_type
       response['Last-Modified'] = resource.last_modified.httpdate
-      NoContent
+      OK
     end
     
     # Return response to GET
