@@ -21,6 +21,10 @@ a pull request with your modifications. If you are just here to use the library,
 === Via RubyGems
 
     gem install dav4rack
+    
+== Documentation
+
+* {DAV4Rack documentation}[http://chrisroberts.github.com/dav4rack]
 
 == Quickstart
 
