@@ -299,7 +299,7 @@ without getting stuck in a loop.
 
 Please use the issues at github: http://github.com/chrisroberts/dav4rack/issues
 
-=== Contributors
+== Contributors
 
 A big thanks to everyone contributing to help make this project better.
 
