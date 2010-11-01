@@ -206,7 +206,7 @@ And if you don't have the X-Sendfile-Type header set, you can fix that by changi
 
   response.body = DAV4Rack::RemoteFile.new(item[:url], :size => content_length, :mime_type => content_type, :sendfile => 'X-Accel-Redirect', :sendfile_prefix => 'webdav_redirect')
 
-And if you have none of the above because your server hasn't been configured for sendfile support, your out of luck until it's configured.
+And if you have none of the above because your server hasn't been configured for sendfile support, you're out of luck until it's configured.
 
 == Authentication
 
@@ -298,6 +298,13 @@ without getting stuck in a loop.
 === Unknown Issues
 
 Please use the issues at github: http://github.com/chrisroberts/dav4rack/issues
+
+=== Contributors
+
+A big thanks to everyone contributing to help make this project better.
+
+* {clyfe}[http://github.com/clyfe]
+* {antiloopgmbh}[http://github.com/antiloopgmbh]
 
 == License
 
