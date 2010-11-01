@@ -80,7 +80,7 @@ module DAV4Rack
     # Save the content of the request.body.
     def put(request, response)
       write(request.body)
-      Created
+      OK
     end
     
     # HTTP POST request.
@@ -95,7 +95,7 @@ module DAV4Rack
     # Delete this resource.
     def delete
       if stat.directory?
-        Dir.rmdir(file_path)
+        FileUtils.rm_rf(file_path)
       else
         File.unlink(file_path)
       end
@@ -110,7 +110,8 @@ module DAV4Rack
         Conflict
       elsif(stat.directory?)
         dest.make_collection
-        Created
+        FileUtils.cp_r("#{file_path}/.", "#{dest.send(:file_path)}/")
+        OK
       else
         exists = File.exists?(file_path)
         if(exists && !overwrite)
@@ -138,7 +139,7 @@ module DAV4Rack
     # Create this resource as collection.
     def make_collection
       Dir.mkdir(file_path)
-      NoContent
+      Created
     end
   
     # Write to this resource from given IO.
@@ -158,13 +159,13 @@ module DAV4Rack
     
     private
 
-    def authenticate(user, pass)
-      if(options[:username])
-        options[:username] == user && options[:password] == pass
-      else
-        true
-      end
-    end
+#     def authenticate(user, pass)
+#       if(options[:username])
+#         options[:username] == user && options[:password] == pass
+#       else
+#         true
+#       end
+#     end
     
     def root
       @options[:root]
