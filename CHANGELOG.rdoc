@@ -1,3 +1,13 @@
+=== v0.1.5
+* Remove support for options[:delete_dotfiles]
+* Allow HTTP methods to be ignored within interceptor
+* Add owner information to lock response
+* Initial update of spec to work with DAV4Rack
+* Copy and delete recursively
+* Add expected overwrite for copy/move on resource (thanks {clyfe}[http://github.com/clyfe])
+* Add overwrite logic for copy/move on FileResource
+* Removed callback authentication from FileResource (uses simple controller based auth)
+
 === v0.1.4
 * Fix for Rack::File issue (thanks {clyfe}[http://github.com/clyfe])
 * Logging now optional on executable
