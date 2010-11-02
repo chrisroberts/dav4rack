@@ -287,7 +287,6 @@ module DAV4Rack
       raise Forbidden unless lock && lock.user == @user
       raise Conflict unless lock.path =~ /^#{Regexp.escape(@path)}.*$/
       lock.destroy
-      delete if name[0,1] == '.' && @options[:delete_dotfiles]
       NoContent
     end
     
