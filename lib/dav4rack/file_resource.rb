@@ -159,13 +159,13 @@ module DAV4Rack
     
     private
 
-#     def authenticate(user, pass)
-#       if(options[:username])
-#         options[:username] == user && options[:password] == pass
-#       else
-#         true
-#       end
-#     end
+    def authenticate(user, pass)
+      if(options[:username])
+        options[:username] == user && options[:password] == pass
+      else
+        true
+      end
+    end
     
     def root
       @options[:root]
