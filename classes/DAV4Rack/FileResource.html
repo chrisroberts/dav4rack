@@ -45,23 +45,23 @@
             <h2>Methods</h2>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000021">children</a></li>
-              <li><a href="#M000022">collection?</a></li>
-              <li><a href="#M000029">content_length</a></li>
-              <li><a href="#M000028">content_type</a></li>
-              <li><a href="#M000034">copy</a></li>
-              <li><a href="#M000024">creation_date</a></li>
-              <li><a href="#M000033">delete</a></li>
-              <li><a href="#M000027">etag</a></li>
-              <li><a href="#M000023">exist?</a></li>
-              <li><a href="#M000030">get</a></li>
-              <li><a href="#M000025">last_modified</a></li>
-              <li><a href="#M000026">last_modified=</a></li>
-              <li><a href="#M000036">make_collection</a></li>
-              <li><a href="#M000035">move</a></li>
-              <li><a href="#M000032">post</a></li>
-              <li><a href="#M000031">put</a></li>
-              <li><a href="#M000037">write</a></li>
+              <li><a href="#M000024">children</a></li>
+              <li><a href="#M000025">collection?</a></li>
+              <li><a href="#M000032">content_length</a></li>
+              <li><a href="#M000031">content_type</a></li>
+              <li><a href="#M000037">copy</a></li>
+              <li><a href="#M000027">creation_date</a></li>
+              <li><a href="#M000036">delete</a></li>
+              <li><a href="#M000030">etag</a></li>
+              <li><a href="#M000026">exist?</a></li>
+              <li><a href="#M000033">get</a></li>
+              <li><a href="#M000028">last_modified</a></li>
+              <li><a href="#M000029">last_modified=</a></li>
+              <li><a href="#M000039">make_collection</a></li>
+              <li><a href="#M000038">move</a></li>
+              <li><a href="#M000035">post</a></li>
+              <li><a href="#M000034">put</a></li>
+              <li><a href="#M000040">write</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -75,8 +75,8 @@
           <div id='section'>
             <div id='methods'>
               <h2>Public instance methods</h2>
-              <div class='method public-instance' id='method-M000021'>
-                <a name='M000021'></a>
+              <div class='method public-instance' id='method-M000024'>
+                <a name='M000024'></a>
                 <div class='synopsis'>
                   <span class='name'>children</span>
                   <span class='arguments'>()</span>
@@ -87,14 +87,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000021-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000024-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000021-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 14</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">children</span>&#x000A;      <span class="ruby-constant">Dir</span>[<span class="ruby-identifier">file_path</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'/*'</span>].<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">child</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">path</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000024-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 10</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">children</span>&#x000A;      <span class="ruby-constant">Dir</span>[<span class="ruby-identifier">file_path</span> <span class="ruby-operator">+</span> <span class="ruby-value str">'/*'</span>].<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">child</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">path</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000022'>
-                <a name='M000022'></a>
+              <div class='method public-instance' id='method-M000025'>
+                <a name='M000025'></a>
                 <div class='synopsis'>
                   <span class='name'>collection?</span>
                   <span class='arguments'>()</span>
@@ -105,14 +105,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000022-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000025-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000022-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 21</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">collection?</span>&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">file_path</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000025-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 17</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">collection?</span>&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">file_path</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000029'>
-                <a name='M000029'></a>
+              <div class='method public-instance' id='method-M000032'>
+                <a name='M000032'></a>
                 <div class='synopsis'>
                   <span class='name'>content_length</span>
                   <span class='arguments'>()</span>
@@ -123,14 +123,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000029-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000032-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000029-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 60</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content_length</span>&#x000A;      <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000032-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 56</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content_length</span>&#x000A;      <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000028'>
-                <a name='M000028'></a>
+              <div class='method public-instance' id='method-M000031'>
+                <a name='M000031'></a>
                 <div class='synopsis'>
                   <span class='name'>content_type</span>
                   <span class='arguments'>()</span>
@@ -141,17 +141,17 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000028-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000031-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000028-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 51</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content_type</span>&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">directory?</span>&#x000A;        <span class="ruby-value str">&quot;text/html&quot;</span>&#x000A;      <span class="ruby-keyword kw">else</span> &#x000A;        <span class="ruby-identifier">mime_type</span>(<span class="ruby-identifier">file_path</span>, <span class="ruby-constant">DefaultMimeTypes</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000031-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 47</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content_type</span>&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">directory?</span>&#x000A;        <span class="ruby-value str">&quot;text/html&quot;</span>&#x000A;      <span class="ruby-keyword kw">else</span> &#x000A;        <span class="ruby-identifier">mime_type</span>(<span class="ruby-identifier">file_path</span>, <span class="ruby-constant">DefaultMimeTypes</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000034'>
-                <a name='M000034'></a>
+              <div class='method public-instance' id='method-M000037'>
+                <a name='M000037'></a>
                 <div class='synopsis'>
                   <span class='name'>copy</span>
-                  <span class='arguments'>(dest)</span>
+                  <span class='arguments'>(dest, overwrite = false)</span>
                 </div>
                 <div class='description'>
                   <p>
@@ -162,14 +162,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000034-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000037-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000034-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 112</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">copy</span>(<span class="ruby-identifier">dest</span>)&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">directory?</span>&#x000A;        <span class="ruby-identifier">dest</span>.<span class="ruby-identifier">make_collection</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">open</span>(<span class="ruby-identifier">file_path</span>, <span class="ruby-value str">&quot;rb&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">dest</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">file</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-constant">OK</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000037-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 108</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">copy</span>(<span class="ruby-identifier">dest</span>, <span class="ruby-identifier">overwrite</span> = <span class="ruby-keyword kw">false</span>)&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">dest</span>.<span class="ruby-identifier">path</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">path</span>)&#x000A;        <span class="ruby-constant">Conflict</span>&#x000A;      <span class="ruby-keyword kw">elsif</span>(<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">directory?</span>)&#x000A;        <span class="ruby-identifier">dest</span>.<span class="ruby-identifier">make_collection</span>&#x000A;        <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">cp_r</span>(<span class="ruby-node">&quot;#{file_path}/.&quot;</span>, <span class="ruby-node">&quot;#{dest.send(:file_path)}/&quot;</span>)&#x000A;        <span class="ruby-constant">OK</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">exists</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">file_path</span>)&#x000A;        <span class="ruby-keyword kw">if</span>(<span class="ruby-identifier">exists</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">overwrite</span>)&#x000A;          <span class="ruby-constant">PreconditionFailed</span>&#x000A;        <span class="ruby-keyword kw">else</span>&#x000A;          <span class="ruby-identifier">open</span>(<span class="ruby-identifier">file_path</span>, <span class="ruby-value str">&quot;rb&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;            <span class="ruby-identifier">dest</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">file</span>)&#x000A;          <span class="ruby-keyword kw">end</span>&#x000A;          <span class="ruby-identifier">exists</span> <span class="ruby-value">? </span><span class="ruby-constant">NoContent</span> <span class="ruby-operator">:</span> <span class="ruby-constant">Created</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000024'>
-                <a name='M000024'></a>
+              <div class='method public-instance' id='method-M000027'>
+                <a name='M000027'></a>
                 <div class='synopsis'>
                   <span class='name'>creation_date</span>
                   <span class='arguments'>()</span>
@@ -180,14 +180,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000024-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000027-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000024-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 31</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">creation_date</span>&#x000A;      <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">ctime</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000027-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 27</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">creation_date</span>&#x000A;      <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">ctime</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000033'>
-                <a name='M000033'></a>
+              <div class='method public-instance' id='method-M000036'>
+                <a name='M000036'></a>
                 <div class='synopsis'>
                   <span class='name'>delete</span>
                   <span class='arguments'>()</span>
@@ -201,14 +201,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000033-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000036-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000033-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 100</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">delete</span>&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">directory?</span>&#x000A;        <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">rmdir</span>(<span class="ruby-identifier">file_path</span>)&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span>(<span class="ruby-identifier">file_path</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-constant">NoContent</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000036-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 96</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">delete</span>&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">directory?</span>&#x000A;        <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span>(<span class="ruby-identifier">file_path</span>)&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span>(<span class="ruby-identifier">file_path</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-constant">NoContent</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000027'>
-                <a name='M000027'></a>
+              <div class='method public-instance' id='method-M000030'>
+                <a name='M000030'></a>
                 <div class='synopsis'>
                   <span class='name'>etag</span>
                   <span class='arguments'>()</span>
@@ -219,14 +219,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000027-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000030-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000027-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 46</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">etag</span>&#x000A;      <span class="ruby-identifier">sprintf</span>(<span class="ruby-value str">'%x-%x-%x'</span>, <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">ino</span>, <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>, <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">mtime</span>.<span class="ruby-identifier">to_i</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000030-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 42</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">etag</span>&#x000A;      <span class="ruby-identifier">sprintf</span>(<span class="ruby-value str">'%x-%x-%x'</span>, <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">ino</span>, <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">size</span>, <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">mtime</span>.<span class="ruby-identifier">to_i</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000023'>
-                <a name='M000023'></a>
+              <div class='method public-instance' id='method-M000026'>
+                <a name='M000026'></a>
                 <div class='synopsis'>
                   <span class='name'>exist?</span>
                   <span class='arguments'>()</span>
@@ -237,14 +237,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000023-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000026-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000023-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 26</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">exist?</span>&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">file_path</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000026-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 22</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">exist?</span>&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">file_path</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000030'>
-                <a name='M000030'></a>
+              <div class='method public-instance' id='method-M000033'>
+                <a name='M000033'></a>
                 <div class='synopsis'>
                   <span class='name'>get</span>
                   <span class='arguments'>(request, response)</span>
@@ -258,14 +258,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000030-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000033-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000030-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 67</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotFound</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">exist?</span>&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">directory?</span>&#x000A;        <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-value str">&quot;&quot;</span>&#x000A;        <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Directory</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">root</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">env</span>)[<span class="ruby-value">2</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">line</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-identifier">response</span>[<span class="ruby-value str">'Content-Length'</span>] = <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">size</span>.<span class="ruby-identifier">to_s</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">file</span> = <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">root</span>)&#x000A;        <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-identifier">file</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-constant">OK</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000033-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 63</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">get</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-constant">NotFound</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">exist?</span>&#x000A;      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">directory?</span>&#x000A;        <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-value str">&quot;&quot;</span>&#x000A;        <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Directory</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">root</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">env</span>)[<span class="ruby-value">2</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">line</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-identifier">response</span>[<span class="ruby-value str">'Content-Length'</span>] = <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">size</span>.<span class="ruby-identifier">to_s</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">file</span> = <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">root</span>)&#x000A;        <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-identifier">file</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-constant">OK</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000025'>
-                <a name='M000025'></a>
+              <div class='method public-instance' id='method-M000028'>
+                <a name='M000028'></a>
                 <div class='synopsis'>
                   <span class='name'>last_modified</span>
                   <span class='arguments'>()</span>
@@ -276,14 +276,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000025-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000028-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000025-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 36</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">last_modified</span>&#x000A;      <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">mtime</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000028-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 32</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">last_modified</span>&#x000A;      <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">mtime</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000026'>
-                <a name='M000026'></a>
+              <div class='method public-instance' id='method-M000029'>
+                <a name='M000029'></a>
                 <div class='synopsis'>
                   <span class='name'>last_modified=</span>
                   <span class='arguments'>(time)</span>
@@ -294,14 +294,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000026-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000029-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000026-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 41</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">last_modified=</span>(<span class="ruby-identifier">time</span>)&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">utime</span>(<span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>, <span class="ruby-identifier">time</span>, <span class="ruby-identifier">file_path</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000029-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 37</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">last_modified=</span>(<span class="ruby-identifier">time</span>)&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">utime</span>(<span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>, <span class="ruby-identifier">time</span>, <span class="ruby-identifier">file_path</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000036'>
-                <a name='M000036'></a>
+              <div class='method public-instance' id='method-M000039'>
+                <a name='M000039'></a>
                 <div class='synopsis'>
                   <span class='name'>make_collection</span>
                   <span class='arguments'>()</span>
@@ -315,17 +315,17 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000036-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000039-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000036-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 135</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">make_collection</span>&#x000A;      <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span>(<span class="ruby-identifier">file_path</span>)&#x000A;      <span class="ruby-constant">NoContent</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000039-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 140</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">make_collection</span>&#x000A;      <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span>(<span class="ruby-identifier">file_path</span>)&#x000A;      <span class="ruby-constant">Created</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000035'>
-                <a name='M000035'></a>
+              <div class='method public-instance' id='method-M000038'>
+                <a name='M000038'></a>
                 <div class='synopsis'>
                   <span class='name'>move</span>
-                  <span class='arguments'>(dest)</span>
+                  <span class='arguments'>(*args)</span>
                 </div>
                 <div class='description'>
                   <p>
@@ -336,14 +336,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000035-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000038-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000035-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 126</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">move</span>(<span class="ruby-identifier">dest</span>)&#x000A;      <span class="ruby-identifier">copy</span>(<span class="ruby-identifier">dest</span>)&#x000A;      <span class="ruby-identifier">delete</span>&#x000A;      <span class="ruby-constant">OK</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000038-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 131</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">move</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;      <span class="ruby-identifier">copy</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;      <span class="ruby-identifier">delete</span>&#x000A;      <span class="ruby-constant">OK</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000032'>
-                <a name='M000032'></a>
+              <div class='method public-instance' id='method-M000035'>
+                <a name='M000035'></a>
                 <div class='synopsis'>
                   <span class='name'>post</span>
                   <span class='arguments'>(request, response)</span>
@@ -357,14 +357,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000032-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000035-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000032-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 93</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">post</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-constant">HTTPStatus</span><span class="ruby-operator">::</span><span class="ruby-constant">Forbidden</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000035-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 89</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">post</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-constant">HTTPStatus</span><span class="ruby-operator">::</span><span class="ruby-constant">Forbidden</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000031'>
-                <a name='M000031'></a>
+              <div class='method public-instance' id='method-M000034'>
+                <a name='M000034'></a>
                 <div class='synopsis'>
                   <span class='name'>put</span>
                   <span class='arguments'>(request, response)</span>
@@ -378,14 +378,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000031-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000034-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000031-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 85</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">put</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)&#x000A;      <span class="ruby-identifier">write</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">body</span>)&#x000A;      <span class="ruby-constant">Created</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000034-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 81</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">put</span>(<span class="ruby-identifier">request</span>, <span class="ruby-identifier">response</span>)&#x000A;      <span class="ruby-identifier">write</span>(<span class="ruby-identifier">request</span>.<span class="ruby-identifier">body</span>)&#x000A;      <span class="ruby-constant">OK</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000037'>
-                <a name='M000037'></a>
+              <div class='method public-instance' id='method-M000040'>
+                <a name='M000040'></a>
                 <div class='synopsis'>
                   <span class='name'>write</span>
                   <span class='arguments'>(io)</span>
@@ -396,10 +396,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000037-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000040-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000037-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 141</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write</span>(<span class="ruby-identifier">io</span>)&#x000A;      <span class="ruby-identifier">tempfile</span> = <span class="ruby-node">&quot;#{file_path}.#{Process.pid}.#{object_id}&quot;</span>&#x000A;      &#x000A;      <span class="ruby-identifier">open</span>(<span class="ruby-identifier">tempfile</span>, <span class="ruby-value str">&quot;wb&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">part</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">8192</span>)&#x000A;          <span class="ruby-identifier">file</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">part</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">rename</span>(<span class="ruby-identifier">tempfile</span>, <span class="ruby-identifier">file_path</span>)      &#x000A;    <span class="ruby-keyword kw">ensure</span>&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span>(<span class="ruby-identifier">tempfile</span>) <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000040-source'><span class="ruby-comment cmt"># File lib/dav4rack/file_resource.rb, line 146</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">write</span>(<span class="ruby-identifier">io</span>)&#x000A;      <span class="ruby-identifier">tempfile</span> = <span class="ruby-node">&quot;#{file_path}.#{Process.pid}.#{object_id}&quot;</span>&#x000A;      &#x000A;      <span class="ruby-identifier">open</span>(<span class="ruby-identifier">tempfile</span>, <span class="ruby-value str">&quot;wb&quot;</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">part</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">8192</span>)&#x000A;          <span class="ruby-identifier">file</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">part</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">rename</span>(<span class="ruby-identifier">tempfile</span>, <span class="ruby-identifier">file_path</span>)      &#x000A;    <span class="ruby-keyword kw">ensure</span>&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span>(<span class="ruby-identifier">tempfile</span>) <span class="ruby-keyword kw">rescue</span> <span class="ruby-keyword kw">nil</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

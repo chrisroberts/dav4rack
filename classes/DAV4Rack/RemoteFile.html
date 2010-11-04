@@ -45,15 +45,15 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000062">new</a></li>
+              <li><a href="#M000065">new</a></li>
             </ol>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000063">call</a></li>
-              <li><a href="#M000066">remote_each</a></li>
-              <li><a href="#M000065">remote_serving</a></li>
-              <li><a href="#M000064">sendfile_serving</a></li>
-              <li><a href="#M000067">size</a></li>
+              <li><a href="#M000066">call</a></li>
+              <li><a href="#M000069">remote_each</a></li>
+              <li><a href="#M000068">remote_serving</a></li>
+              <li><a href="#M000067">sendfile_serving</a></li>
+              <li><a href="#M000070">size</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -83,8 +83,8 @@
             </div>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='method public-class' id='method-M000062'>
-                <a name='M000062'></a>
+              <div class='method public-class' id='method-M000065'>
+                <a name='M000065'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
                   <span class='arguments'>(path, args={})</span>
@@ -102,15 +102,15 @@
                   </table>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000062-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000065-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000062-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 24</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">path</span>, <span class="ruby-identifier">args</span>={})&#x000A;      <span class="ruby-ivar">@path</span> = <span class="ruby-identifier">path</span>&#x000A;      <span class="ruby-ivar">@args</span> = <span class="ruby-identifier">args</span>&#x000A;      <span class="ruby-ivar">@heads</span> = {}&#x000A;      <span class="ruby-ivar">@cache_file</span> = <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:cache_directory</span>] <span class="ruby-operator">?</span> <span class="ruby-identifier">cache_file_path</span> <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-ivar">@redefine_prefix</span> = <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@cache_file</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-ivar">@cache_file</span>))&#x000A;        <span class="ruby-ivar">@root</span> = <span class="ruby-value str">''</span>&#x000A;        <span class="ruby-ivar">@path_info</span> = <span class="ruby-ivar">@cache_file</span>&#x000A;        <span class="ruby-ivar">@path</span> = <span class="ruby-ivar">@path_info</span>&#x000A;      <span class="ruby-keyword kw">elsif</span>(<span class="ruby-identifier">args</span>[<span class="ruby-identifier">:sendfile</span>])&#x000A;        <span class="ruby-ivar">@redefine_prefix</span> = <span class="ruby-value str">'sendfile'</span>&#x000A;        <span class="ruby-ivar">@sendfile_header</span> = <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:sendfile</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:sendfile</span>] <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">setup_remote</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">do_redefines</span>(<span class="ruby-ivar">@redefine_prefix</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@redefine_prefix</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000065-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 24</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">path</span>, <span class="ruby-identifier">args</span>={})&#x000A;      <span class="ruby-ivar">@path</span> = <span class="ruby-identifier">path</span>&#x000A;      <span class="ruby-ivar">@args</span> = <span class="ruby-identifier">args</span>&#x000A;      <span class="ruby-ivar">@heads</span> = {}&#x000A;      <span class="ruby-ivar">@cache_file</span> = <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:cache_directory</span>] <span class="ruby-operator">?</span> <span class="ruby-identifier">cache_file_path</span> <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-ivar">@redefine_prefix</span> = <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@cache_file</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-ivar">@cache_file</span>))&#x000A;        <span class="ruby-ivar">@root</span> = <span class="ruby-value str">''</span>&#x000A;        <span class="ruby-ivar">@path_info</span> = <span class="ruby-ivar">@cache_file</span>&#x000A;        <span class="ruby-ivar">@path</span> = <span class="ruby-ivar">@path_info</span>&#x000A;      <span class="ruby-keyword kw">elsif</span>(<span class="ruby-identifier">args</span>[<span class="ruby-identifier">:sendfile</span>])&#x000A;        <span class="ruby-ivar">@redefine_prefix</span> = <span class="ruby-value str">'sendfile'</span>&#x000A;        <span class="ruby-ivar">@sendfile_header</span> = <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:sendfile</span>].<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:sendfile</span>] <span class="ruby-operator">:</span> <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">setup_remote</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">do_redefines</span>(<span class="ruby-ivar">@redefine_prefix</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@redefine_prefix</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <h2>Public instance methods</h2>
-              <div class='method public-instance' id='method-M000063'>
-                <a name='M000063'></a>
+              <div class='method public-instance' id='method-M000066'>
+                <a name='M000066'></a>
                 <div class='synopsis'>
                   <span class='name'>call</span>
                   <span class='arguments'>(env)</span>
@@ -126,14 +126,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000063-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000066-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000063-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 45</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;      <span class="ruby-identifier">serving</span>(<span class="ruby-identifier">env</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000066-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 45</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;      <span class="ruby-identifier">serving</span>(<span class="ruby-identifier">env</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000066'>
-                <a name='M000066'></a>
+              <div class='method public-instance' id='method-M000069'>
+                <a name='M000069'></a>
                 <div class='synopsis'>
                   <span class='name'>remote_each</span>
                   <span class='arguments'>() {|@store| ...}</span>
@@ -144,14 +144,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000066-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000069-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000066-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 80</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remote_each</span>&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@store</span>)&#x000A;        <span class="ruby-keyword kw">yield</span> <span class="ruby-ivar">@store</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-ivar">@con</span>.<span class="ruby-identifier">request_get</span>(<span class="ruby-ivar">@call_path</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">res</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">res</span>.<span class="ruby-identifier">read_body</span>(<span class="ruby-ivar">@store</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">part</span><span class="ruby-operator">|</span>&#x000A;            <span class="ruby-ivar">@cf</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">part</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@cf</span>&#x000A;            <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">part</span>&#x000A;          <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000069-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 80</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remote_each</span>&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@store</span>)&#x000A;        <span class="ruby-keyword kw">yield</span> <span class="ruby-ivar">@store</span>&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-ivar">@con</span>.<span class="ruby-identifier">request_get</span>(<span class="ruby-ivar">@call_path</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">res</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">res</span>.<span class="ruby-identifier">read_body</span>(<span class="ruby-ivar">@store</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">part</span><span class="ruby-operator">|</span>&#x000A;            <span class="ruby-ivar">@cf</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">part</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@cf</span>&#x000A;            <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">part</span>&#x000A;          <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000065'>
-                <a name='M000065'></a>
+              <div class='method public-instance' id='method-M000068'>
+                <a name='M000068'></a>
                 <div class='synopsis'>
                   <span class='name'>remote_serving</span>
                   <span class='arguments'>(e)</span>
@@ -167,14 +167,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000065-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000068-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000065-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 71</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remote_serving</span>(<span class="ruby-identifier">e</span>)&#x000A;      [<span class="ruby-value">200</span>, {&#x000A;             <span class="ruby-value str">&quot;Last-Modified&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">last_modified</span>,&#x000A;             <span class="ruby-value str">&quot;Content-Type&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">content_type</span>,&#x000A;             <span class="ruby-value str">&quot;Content-Length&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">size</span>&#x000A;            }, <span class="ruby-keyword kw">self</span>]&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000068-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 71</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remote_serving</span>(<span class="ruby-identifier">e</span>)&#x000A;      [<span class="ruby-value">200</span>, {&#x000A;             <span class="ruby-value str">&quot;Last-Modified&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">last_modified</span>,&#x000A;             <span class="ruby-value str">&quot;Content-Type&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">content_type</span>,&#x000A;             <span class="ruby-value str">&quot;Content-Length&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">size</span>&#x000A;            }, <span class="ruby-keyword kw">self</span>]&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000064'>
-                <a name='M000064'></a>
+              <div class='method public-instance' id='method-M000067'>
+                <a name='M000067'></a>
                 <div class='synopsis'>
                   <span class='name'>sendfile_serving</span>
                   <span class='arguments'>(env)</span>
@@ -190,14 +190,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000064-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000067-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000064-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 51</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sendfile_serving</span>(<span class="ruby-identifier">env</span>)&#x000A;      <span class="ruby-identifier">header</span> = <span class="ruby-ivar">@sendfile_header</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">env</span>[<span class="ruby-value str">'sendfile.type'</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">env</span>[<span class="ruby-value str">'HTTP_X_SENDFILE_TYPE'</span>]&#x000A;      <span class="ruby-keyword kw">unless</span>(<span class="ruby-identifier">header</span>)&#x000A;        <span class="ruby-identifier">raise</span> <span class="ruby-value str">'Failed to determine proper sendfile header value'</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:sendfile_fail_gracefully</span>]&#x000A;        <span class="ruby-identifier">setup_remote</span>&#x000A;        <span class="ruby-identifier">do_redefines</span>(<span class="ruby-value str">'remote'</span>)&#x000A;        <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">prefix</span> = (<span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:sendfile_prefix</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">env</span>[<span class="ruby-value str">'HTTP_X_ACCEL_REMOTE_MAPPING'</span>]).<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-regexp re">/^\//</span>, <span class="ruby-value str">''</span>).<span class="ruby-identifier">sub</span>(<span class="ruby-regexp re">/\/$/</span>, <span class="ruby-value str">''</span>)&#x000A;      [<span class="ruby-value">200</span>, {&#x000A;             <span class="ruby-value str">&quot;Last-Modified&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">last_modified</span>,&#x000A;             <span class="ruby-value str">&quot;Content-Type&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">content_type</span>,&#x000A;             <span class="ruby-value str">&quot;Content-Length&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">size</span>,&#x000A;             <span class="ruby-identifier">header</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;/#{prefix}/#{URI.decode(@path.sub('http://', ''))}&quot;</span>&#x000A;            },&#x000A;      [<span class="ruby-value str">''</span>]]&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000067-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 51</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">sendfile_serving</span>(<span class="ruby-identifier">env</span>)&#x000A;      <span class="ruby-identifier">header</span> = <span class="ruby-ivar">@sendfile_header</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">env</span>[<span class="ruby-value str">'sendfile.type'</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">env</span>[<span class="ruby-value str">'HTTP_X_SENDFILE_TYPE'</span>]&#x000A;      <span class="ruby-keyword kw">unless</span>(<span class="ruby-identifier">header</span>)&#x000A;        <span class="ruby-identifier">raise</span> <span class="ruby-value str">'Failed to determine proper sendfile header value'</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:sendfile_fail_gracefully</span>]&#x000A;        <span class="ruby-identifier">setup_remote</span>&#x000A;        <span class="ruby-identifier">do_redefines</span>(<span class="ruby-value str">'remote'</span>)&#x000A;        <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">prefix</span> = (<span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:sendfile_prefix</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">env</span>[<span class="ruby-value str">'HTTP_X_ACCEL_REMOTE_MAPPING'</span>]).<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-regexp re">/^\//</span>, <span class="ruby-value str">''</span>).<span class="ruby-identifier">sub</span>(<span class="ruby-regexp re">/\/$/</span>, <span class="ruby-value str">''</span>)&#x000A;      [<span class="ruby-value">200</span>, {&#x000A;             <span class="ruby-value str">&quot;Last-Modified&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">last_modified</span>,&#x000A;             <span class="ruby-value str">&quot;Content-Type&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">content_type</span>,&#x000A;             <span class="ruby-value str">&quot;Content-Length&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">size</span>,&#x000A;             <span class="ruby-identifier">header</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;/#{prefix}/#{URI.decode(@path.sub('http://', ''))}&quot;</span>&#x000A;            },&#x000A;      [<span class="ruby-value str">''</span>]]&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000067'>
-                <a name='M000067'></a>
+              <div class='method public-instance' id='method-M000070'>
+                <a name='M000070'></a>
                 <div class='synopsis'>
                   <span class='name'>size</span>
                   <span class='arguments'>()</span>
@@ -208,10 +208,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000067-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000070-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000067-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 94</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">size</span>&#x000A;      <span class="ruby-ivar">@heads</span>[<span class="ruby-value str">'content-length'</span>] <span class="ruby-operator">||</span> <span class="ruby-ivar">@size</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000070-source'><span class="ruby-comment cmt"># File lib/dav4rack/remote_file.rb, line 94</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">size</span>&#x000A;      <span class="ruby-ivar">@heads</span>[<span class="ruby-value str">'content-length'</span>] <span class="ruby-operator">||</span> <span class="ruby-ivar">@size</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

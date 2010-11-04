@@ -45,41 +45,41 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000132">new</a></li>
+              <li><a href="#M000135">new</a></li>
             </ol>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000133">call</a></li>
+              <li><a href="#M000136">call</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='method public-class' id='method-M000132'>
-                <a name='M000132'></a>
+              <div class='method public-class' id='method-M000135'>
+                <a name='M000135'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
                   <span class='arguments'>(app, args={})</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000132-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000135-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000132-source'><span class="ruby-comment cmt"># File lib/dav4rack/interceptor.rb, line 4</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">app</span>, <span class="ruby-identifier">args</span>={})&#x000A;      <span class="ruby-ivar">@roots</span> = <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:mappings</span>].<span class="ruby-identifier">keys</span>&#x000A;      <span class="ruby-ivar">@args</span> = <span class="ruby-identifier">args</span>&#x000A;      <span class="ruby-ivar">@app</span> = <span class="ruby-identifier">app</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000135-source'><span class="ruby-comment cmt"># File lib/dav4rack/interceptor.rb, line 4</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">app</span>, <span class="ruby-identifier">args</span>={})&#x000A;      <span class="ruby-ivar">@roots</span> = <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:mappings</span>].<span class="ruby-identifier">keys</span>&#x000A;      <span class="ruby-ivar">@args</span> = <span class="ruby-identifier">args</span>&#x000A;      <span class="ruby-ivar">@app</span> = <span class="ruby-identifier">app</span>&#x000A;      <span class="ruby-ivar">@intercept_methods</span> = <span class="ruby-node">%w(OPTIONS PROPFIND PROPPATCH MKCOL COPY MOVE LOCK UNLOCK)</span>&#x000A;      <span class="ruby-ivar">@intercept_methods</span> <span class="ruby-operator">-=</span> <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:ignore_methods</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">args</span>[<span class="ruby-identifier">:ignore_methods</span>]&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <h2>Public instance methods</h2>
-              <div class='method public-instance' id='method-M000133'>
-                <a name='M000133'></a>
+              <div class='method public-instance' id='method-M000136'>
+                <a name='M000136'></a>
                 <div class='synopsis'>
                   <span class='name'>call</span>
                   <span class='arguments'>(env)</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000133-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000136-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000133-source'><span class="ruby-comment cmt"># File lib/dav4rack/interceptor.rb, line 10</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;      <span class="ruby-identifier">path</span> = <span class="ruby-identifier">env</span>[<span class="ruby-value str">'PATH_INFO'</span>].<span class="ruby-identifier">downcase</span>&#x000A;      <span class="ruby-identifier">method</span> = <span class="ruby-identifier">env</span>[<span class="ruby-value str">'REQUEST_METHOD'</span>].<span class="ruby-identifier">upcase</span>&#x000A;      <span class="ruby-identifier">app</span> = <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@roots</span>.<span class="ruby-identifier">detect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">=~</span> <span class="ruby-node">/^#{Regexp.escape(x.downcase)}\/?/</span>}.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-node">%w(OPTIONS PUT PROPFIND PROPPATCH MKCOL COPY MOVE LOCK UNLOCK)</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>))&#x000A;        <span class="ruby-identifier">app</span> = <span class="ruby-constant">DAV4Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Handler</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">:resource_class</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">InterceptorResource</span>, <span class="ruby-identifier">:mappings</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:mappings</span>], <span class="ruby-identifier">:log_to</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:log_to</span>])&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">app</span> <span class="ruby-value">? </span><span class="ruby-identifier">app</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>) <span class="ruby-operator">:</span> <span class="ruby-ivar">@app</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000136-source'><span class="ruby-comment cmt"># File lib/dav4rack/interceptor.rb, line 12</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;      <span class="ruby-identifier">path</span> = <span class="ruby-identifier">env</span>[<span class="ruby-value str">'PATH_INFO'</span>].<span class="ruby-identifier">downcase</span>&#x000A;      <span class="ruby-identifier">method</span> = <span class="ruby-identifier">env</span>[<span class="ruby-value str">'REQUEST_METHOD'</span>].<span class="ruby-identifier">upcase</span>&#x000A;      <span class="ruby-identifier">app</span> = <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@roots</span>.<span class="ruby-identifier">detect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">x</span><span class="ruby-operator">|</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">=~</span> <span class="ruby-node">/^#{Regexp.escape(x.downcase)}\/?/</span>}.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@intercept_methods</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">method</span>))&#x000A;        <span class="ruby-identifier">app</span> = <span class="ruby-constant">DAV4Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Handler</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">:resource_class</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">InterceptorResource</span>, <span class="ruby-identifier">:mappings</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:mappings</span>], <span class="ruby-identifier">:log_to</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:log_to</span>])&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-identifier">app</span> <span class="ruby-value">? </span><span class="ruby-identifier">app</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>) <span class="ruby-operator">:</span> <span class="ruby-ivar">@app</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

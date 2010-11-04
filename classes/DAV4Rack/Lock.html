@@ -45,97 +45,97 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000015">new</a></li>
+              <li><a href="#M000018">new</a></li>
             </ol>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000018">destroy</a></li>
-              <li><a href="#M000020">method_missing</a></li>
-              <li><a href="#M000019">remaining_timeout</a></li>
-              <li><a href="#M000016">store</a></li>
-              <li><a href="#M000017">store=</a></li>
+              <li><a href="#M000021">destroy</a></li>
+              <li><a href="#M000023">method_missing</a></li>
+              <li><a href="#M000022">remaining_timeout</a></li>
+              <li><a href="#M000019">store</a></li>
+              <li><a href="#M000020">store=</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='method public-class' id='method-M000015'>
-                <a name='M000015'></a>
+              <div class='method public-class' id='method-M000018'>
+                <a name='M000018'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
                   <span class='arguments'>(args={})</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000015-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000018-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000015-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 4</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">args</span>={})&#x000A;      <span class="ruby-ivar">@args</span> = <span class="ruby-identifier">args</span>&#x000A;      <span class="ruby-ivar">@store</span> = <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:created_at</span>] = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>&#x000A;      <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:updated_at</span>] = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000018-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 4</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">args</span>={})&#x000A;      <span class="ruby-ivar">@args</span> = <span class="ruby-identifier">args</span>&#x000A;      <span class="ruby-ivar">@store</span> = <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:created_at</span>] = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>&#x000A;      <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:updated_at</span>] = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <h2>Public instance methods</h2>
-              <div class='method public-instance' id='method-M000018'>
-                <a name='M000018'></a>
+              <div class='method public-instance' id='method-M000021'>
+                <a name='M000021'></a>
                 <div class='synopsis'>
                   <span class='name'>destroy</span>
                   <span class='arguments'>()</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000018-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000021-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000018-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 20</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destroy</span>&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@store</span>)&#x000A;        <span class="ruby-ivar">@store</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-keyword kw">self</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000021-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 20</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">destroy</span>&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@store</span>)&#x000A;        <span class="ruby-ivar">@store</span>.<span class="ruby-identifier">remove</span>(<span class="ruby-keyword kw">self</span>)&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000020'>
-                <a name='M000020'></a>
+              <div class='method public-instance' id='method-M000023'>
+                <a name='M000023'></a>
                 <div class='synopsis'>
                   <span class='name'>method_missing</span>
                   <span class='arguments'>(*args)</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000020-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000023-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000020-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 30</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@args</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_sym</span>))&#x000A;        <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_sym</span>]&#x000A;      <span class="ruby-keyword kw">elsif</span>(<span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_s</span>[<span class="ruby-value">-1</span>,<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">'='</span>)&#x000A;        <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_s</span>[<span class="ruby-value">0</span>, <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>].<span class="ruby-identifier">to_sym</span>] = <span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>]&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">raise</span> <span class="ruby-constant">NoMethodError</span>.<span class="ruby-identifier">new</span> <span class="ruby-node">&quot;Undefined method #{args.first} for #{self}&quot;</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000023-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 30</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;      <span class="ruby-keyword kw">if</span>(<span class="ruby-ivar">@args</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_sym</span>))&#x000A;        <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_sym</span>]&#x000A;      <span class="ruby-keyword kw">elsif</span>(<span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_s</span>[<span class="ruby-value">-1</span>,<span class="ruby-value">1</span>] <span class="ruby-operator">==</span> <span class="ruby-value str">'='</span>)&#x000A;        <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_s</span>[<span class="ruby-value">0</span>, <span class="ruby-identifier">args</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>].<span class="ruby-identifier">to_sym</span>] = <span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>]&#x000A;      <span class="ruby-keyword kw">else</span>&#x000A;        <span class="ruby-identifier">raise</span> <span class="ruby-constant">NoMethodError</span>.<span class="ruby-identifier">new</span> <span class="ruby-node">&quot;Undefined method #{args.first} for #{self}&quot;</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000022'>
+                <a name='M000022'></a>
+                <div class='synopsis'>
+                  <span class='name'>remaining_timeout</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000022-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000022-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 26</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remaining_timeout</span>&#x000A;      <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:timeout</span>].<span class="ruby-identifier">to_i</span> <span class="ruby-operator">-</span> (<span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span> <span class="ruby-operator">-</span> <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:created_at</span>].<span class="ruby-identifier">to_i</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-M000019'>
                 <a name='M000019'></a>
                 <div class='synopsis'>
-                  <span class='name'>remaining_timeout</span>
+                  <span class='name'>store</span>
                   <span class='arguments'>()</span>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('M000019-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000019-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 26</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remaining_timeout</span>&#x000A;      <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:timeout</span>].<span class="ruby-identifier">to_i</span> <span class="ruby-operator">-</span> (<span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span> <span class="ruby-operator">-</span> <span class="ruby-ivar">@args</span>[<span class="ruby-identifier">:created_at</span>].<span class="ruby-identifier">to_i</span>)&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000019-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 11</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">store</span>&#x000A;      <span class="ruby-ivar">@store</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000016'>
-                <a name='M000016'></a>
-                <div class='synopsis'>
-                  <span class='name'>store</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000016-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='M000016-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 11</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">store</span>&#x000A;      <span class="ruby-ivar">@store</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-M000017'>
-                <a name='M000017'></a>
+              <div class='method public-instance' id='method-M000020'>
+                <a name='M000020'></a>
                 <div class='synopsis'>
                   <span class='name'>store=</span>
                   <span class='arguments'>(s)</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000017-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000020-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000017-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 15</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">store=</span>(<span class="ruby-identifier">s</span>)&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-constant">TypeError</span>.<span class="ruby-identifier">new</span> <span class="ruby-value str">'Expecting LockStore'</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">respond_to?</span> <span class="ruby-identifier">:remove</span>&#x000A;      <span class="ruby-ivar">@store</span> = <span class="ruby-identifier">s</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000020-source'><span class="ruby-comment cmt"># File lib/dav4rack/lock.rb, line 15</span>&#x000A;    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">store=</span>(<span class="ruby-identifier">s</span>)&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-constant">TypeError</span>.<span class="ruby-identifier">new</span> <span class="ruby-value str">'Expecting LockStore'</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">respond_to?</span> <span class="ruby-identifier">:remove</span>&#x000A;      <span class="ruby-ivar">@store</span> = <span class="ruby-identifier">s</span>&#x000A;    <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

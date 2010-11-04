@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Thu Sep 30 10:53:02 -0700 2010</span>
+          <span class='datetime'>Thu Nov 04 08:26:51 -0700 2010</span>
         </div>
       </div>
       <div id='content'>
@@ -79,6 +79,13 @@
             <h2>Install</h2>
             <h3>Via RubyGems</h3>
             <pre>gem install dav4rack</pre>
+            <h2>Documentation</h2>
+            <ul>
+            <li><a href="http://chrisroberts.github.com/dav4rack">DAV4Rack
+            documentation</a>
+            
+            </li>
+            </ul>
             <h2>Quickstart</h2>
             <p>
             If you just want to share a folder over WebDAV, you can just start a simple
@@ -128,7 +135,7 @@
             up the path hierarchy where no resources are currently mapped. For example,
             lets continue with the last example but this time include the interceptor:
             </p>
-            <pre>require 'rubygems'&#x000A;require 'dav4rack'&#x000A;&#x000A;use Rack::CommonLogger&#x000A;app = Rack::Builder.new{&#x000A;  map '/webdav/share/' do&#x000A;    run DAV4Rack::Handler.new(:root =&gt; '/path/to/public/fileshare', :root_uri_path =&gt; '/webdav/share/')&#x000A;  end&#x000A;  map '/webdav/share2/' do&#x000A;    run DAV4Rack::Handler.new(:resource_class =&gt; CustomResource, :root_uri_path =&gt; '/webdav/share2/')&#x000A;  end&#x000A;  map '/' do&#x000A;    use DAV4Rack::Interceptor, :mappings =&gt; {&#x000A;                                              '/webdav/share/' =&gt; {:resource_class =&gt; FileResource, :custom =&gt; 'option'},&#x000A;                                              '/webdav/share2/' =&gt; {:resource_class =&gt; CustomResource}&#x000A;                                            }&#x000A;    use Rails::Rack::Static&#x000A;    run ActionController::Dispatcher.new&#x000A;  end&#x000A;}.to_app&#x000A;run app</pre>
+            <pre>require 'rubygems'&#x000A;require 'dav4rack'&#x000A;&#x000A;use Rack::CommonLogger&#x000A;app = Rack::Builder.new{&#x000A;  map '/webdav/share/' do&#x000A;    run DAV4Rack::Handler.new(:root =&gt; '/path/to/public/fileshare', :root_uri_path =&gt; '/webdav/share/')&#x000A;  end&#x000A;  map '/webdav/share2/' do&#x000A;    run DAV4Rack::Handler.new(:resource_class =&gt; CustomResource, :root_uri_path =&gt; '/webdav/share2/')&#x000A;  end&#x000A;  map '/' do&#x000A;    use DAV4Rack::Interceptor, :mappings =&gt; {&#x000A;      '/webdav/share/' =&gt; {:resource_class =&gt; FileResource, :custom =&gt; 'option'},&#x000A;      '/webdav/share2/' =&gt; {:resource_class =&gt; CustomResource}&#x000A;    }&#x000A;    use Rails::Rack::Static&#x000A;    run ActionController::Dispatcher.new&#x000A;  end&#x000A;}.to_app&#x000A;run app</pre>
             <p>
             In this example we have two WebDAV resources restricted by path. This means
             those resources will handle requests to /webdav/share/* and
@@ -228,7 +235,7 @@
             <pre>response.body = DAV4Rack::RemoteFile.new(item[:url], :size =&gt; content_length, :mime_type =&gt; content_type, :sendfile =&gt; 'X-Accel-Redirect', :sendfile_prefix =&gt; 'webdav_redirect')</pre>
             <p>
             And if you have none of the above because your server hasn&#8217;t been
-            configured for sendfile support, your out of luck until it&#8217;s
+            configured for sendfile support, you&#8217;re out of luck until it&#8217;s
             configured.
             </p>
             <h2>Authentication</h2>
@@ -322,6 +329,18 @@
             Please use the issues at github: <a
             href="http://github.com/chrisroberts/dav4rack/issues">github.com/chrisroberts/dav4rack/issues</a>
             </p>
+            <h2>Contributors</h2>
+            <p>
+            A big thanks to everyone contributing to help make this project better.
+            </p>
+            <ul>
+            <li><a href="http://github.com/clyfe">clyfe</a>
+            
+            </li>
+            <li><a href="http://github.com/antiloopgmbh">antiloopgmbh</a>
+            
+            </li>
+            </ul>
             <h2>License</h2>
             <p>
             Just like RackDAV before it, this software is distributed under the MIT

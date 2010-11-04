@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Thu Sep 30 10:53:02 -0700 2010</span>
+          <span class='datetime'>Thu Nov 04 08:26:52 -0700 2010</span>
         </div>
       </div>
       <div id='content'>
@@ -40,8 +40,11 @@
             <h2>Methods</h2>
             <h3>public instance</h3>
             <ol>
+              <li><a href="#M000008">multi_status_created</a></li>
+              <li><a href="#M000010">multi_status_no_content</a></li>
+              <li><a href="#M000009">multi_status_ok</a></li>
               <li><a href="#M000007">multistatus_response</a></li>
-              <li><a href="#M000008">propfind_xml</a></li>
+              <li><a href="#M000011">propfind_xml</a></li>
               <li><a href="#M000004">render</a></li>
               <li><a href="#M000003">request</a></li>
               <li><a href="#M000006">response_xml</a></li>
@@ -53,8 +56,9 @@
               <h2>Required files</h2>
               <ol>
                 <li>rubygems</li>
-                <li>rack_dav</li>
+                <li>dav4rack</li>
                 <li>fileutils</li>
+                <li>nokogiri</li>
               </ol>
             </div>
           </div>
@@ -78,6 +82,45 @@
             </div>
             <div id='methods'>
               <h2>Public instance methods</h2>
+              <div class='method public-instance' id='method-M000008'>
+                <a name='M000008'></a>
+                <div class='synopsis'>
+                  <span class='name'>multi_status_created</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000008-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 66</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">multi_status_created</span>&#x000A;    <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">xpath</span>(<span class="ruby-value str">'//D:multistatus/D:response/D:status'</span>).<span class="ruby-identifier">should_not</span> <span class="ruby-identifier">be_empty</span>&#x000A;    <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">xpath</span>(<span class="ruby-value str">'//D:multistatus/D:response/D:status'</span>).<span class="ruby-identifier">text</span>.<span class="ruby-identifier">should</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/Created/</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000010'>
+                <a name='M000010'></a>
+                <div class='synopsis'>
+                  <span class='name'>multi_status_no_content</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000010-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 76</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">multi_status_no_content</span>&#x000A;    <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">xpath</span>(<span class="ruby-value str">'//D:multistatus/D:response/D:status'</span>).<span class="ruby-identifier">should_not</span> <span class="ruby-identifier">be_empty</span>&#x000A;    <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">xpath</span>(<span class="ruby-value str">'//D:multistatus/D:response/D:status'</span>).<span class="ruby-identifier">text</span>.<span class="ruby-identifier">should</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/No Content/</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000009'>
+                <a name='M000009'></a>
+                <div class='synopsis'>
+                  <span class='name'>multi_status_ok</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000009-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 71</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">multi_status_ok</span>&#x000A;    <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">xpath</span>(<span class="ruby-value str">'//D:multistatus/D:response/D:status'</span>).<span class="ruby-identifier">should_not</span> <span class="ruby-identifier">be_empty</span>&#x000A;    <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">xpath</span>(<span class="ruby-value str">'//D:multistatus/D:response/D:status'</span>).<span class="ruby-identifier">text</span>.<span class="ruby-identifier">should</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/OK/</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
               <div class='method public-instance' id='method-M000007'>
                 <a name='M000007'></a>
                 <div class='synopsis'>
@@ -88,33 +131,33 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000007-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000007-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 56</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">multistatus_response</span>(<span class="ruby-identifier">pattern</span>)&#x000A;    <span class="ruby-ivar">@response</span>.<span class="ruby-identifier">should</span> <span class="ruby-identifier">be_multi_status</span>&#x000A;    <span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span><span class="ruby-operator">::</span><span class="ruby-identifier">match</span>(<span class="ruby-identifier">response_xml</span>, <span class="ruby-value str">&quot;/multistatus/response&quot;</span>, <span class="ruby-value str">''</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'DAV:'</span>).<span class="ruby-identifier">should_not</span> <span class="ruby-identifier">be_empty</span>&#x000A;    <span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">XPath</span><span class="ruby-operator">::</span><span class="ruby-identifier">match</span>(<span class="ruby-identifier">response_xml</span>, <span class="ruby-value str">&quot;/multistatus/response&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">pattern</span>, <span class="ruby-value str">''</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'DAV:'</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000007-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 60</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">multistatus_response</span>(<span class="ruby-identifier">pattern</span>)&#x000A;    <span class="ruby-ivar">@response</span>.<span class="ruby-identifier">should</span> <span class="ruby-identifier">be_multi_status</span>&#x000A;    <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">xpath</span>(<span class="ruby-value str">'//D:multistatus/D:response'</span>, <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">namespaces</span>).<span class="ruby-identifier">should_not</span> <span class="ruby-identifier">be_empty</span>&#x000A;    <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">xpath</span>(<span class="ruby-node">&quot;//D:multistatus/D:response#{pattern}&quot;</span>, <span class="ruby-identifier">response_xml</span>.<span class="ruby-identifier">root</span>.<span class="ruby-identifier">namespaces</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000008'>
-                <a name='M000008'></a>
+              <div class='method public-instance' id='method-M000011'>
+                <a name='M000011'></a>
                 <div class='synopsis'>
                   <span class='name'>propfind_xml</span>
                   <span class='arguments'>(*props)</span>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000008-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000011-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000008-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 62</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">propfind_xml</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">props</span>)&#x000A;    <span class="ruby-identifier">render</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">xml</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">propfind</span>(<span class="ruby-value str">'xmlns:d'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">&quot;DAV:&quot;</span>) <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">prop</span> <span class="ruby-keyword kw">do</span>&#x000A;          <span class="ruby-identifier">props</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">prop</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">tag!</span> <span class="ruby-identifier">prop</span>&#x000A;          <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000011-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 81</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">propfind_xml</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">props</span>)&#x000A;    <span class="ruby-identifier">render</span>(<span class="ruby-identifier">:propfind</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">xml</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">prop</span> <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-identifier">props</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">prop</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">prop</span>.<span class="ruby-identifier">to_sym</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-M000004'>
                 <a name='M000004'></a>
                 <div class='synopsis'>
                   <span class='name'>render</span>
-                  <span class='arguments'>() {|xml| ...}</span>
+                  <span class='arguments'>(root_type) {|xml| ...}</span>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('M000004-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000004-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 37</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">render</span>&#x000A;    <span class="ruby-identifier">xml</span> = <span class="ruby-constant">Builder</span><span class="ruby-operator">::</span><span class="ruby-constant">XmlMarkup</span>.<span class="ruby-identifier">new</span>&#x000A;    <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">instruct!</span> <span class="ruby-identifier">:xml</span>, <span class="ruby-identifier">:version</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">&quot;1.0&quot;</span>, <span class="ruby-identifier">:encoding</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">&quot;UTF-8&quot;</span>      &#x000A;    <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">namespace</span>(<span class="ruby-value str">'d'</span>) <span class="ruby-keyword kw">do</span>&#x000A;      <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">xml</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">target!</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000004-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 38</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">render</span>(<span class="ruby-identifier">root_type</span>)&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span> <span class="ruby-value str">'Expecting block'</span> <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">block_given?</span>&#x000A;    <span class="ruby-identifier">doc</span> = <span class="ruby-constant">Nokogiri</span><span class="ruby-operator">::</span><span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Builder</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">xml_base</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">xml_base</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">root_type</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-value str">'xmlns:D'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'D:'</span>) <span class="ruby-keyword kw">do</span>&#x000A;        <span class="ruby-identifier">xml_base</span>.<span class="ruby-identifier">parent</span>.<span class="ruby-identifier">namespace</span> = <span class="ruby-identifier">xml_base</span>.<span class="ruby-identifier">parent</span>.<span class="ruby-identifier">namespace_definitions</span>.<span class="ruby-identifier">first</span>&#x000A;        <span class="ruby-identifier">xml</span> = <span class="ruby-identifier">xml_base</span>[<span class="ruby-value str">'D'</span>]&#x000A;        <span class="ruby-keyword kw">yield</span> <span class="ruby-identifier">xml</span>&#x000A;      <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-keyword kw">end</span>&#x000A;    <span class="ruby-identifier">doc</span>.<span class="ruby-identifier">to_xml</span>&#x000A;  <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-M000003'>
@@ -127,7 +170,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000003-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000003-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 22</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">request</span>(<span class="ruby-identifier">method</span>, <span class="ruby-identifier">uri</span>, <span class="ruby-identifier">options</span>={})&#x000A;    <span class="ruby-identifier">options</span> = {&#x000A;      <span class="ruby-value str">'HTTP_HOST'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'localhost'</span>,&#x000A;      <span class="ruby-value str">'REMOTE_USER'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'manni'</span>&#x000A;    }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-identifier">request</span> = <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">MockRequest</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@controller</span>)&#x000A;    <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">request</span>(<span class="ruby-identifier">method</span>, <span class="ruby-identifier">uri</span>, <span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000003-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 23</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">request</span>(<span class="ruby-identifier">method</span>, <span class="ruby-identifier">uri</span>, <span class="ruby-identifier">options</span>={})&#x000A;    <span class="ruby-identifier">options</span> = {&#x000A;      <span class="ruby-value str">'HTTP_HOST'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'localhost'</span>,&#x000A;      <span class="ruby-value str">'REMOTE_USER'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'user'</span>&#x000A;    }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-identifier">request</span> = <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">MockRequest</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@controller</span>)&#x000A;    <span class="ruby-ivar">@response</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">request</span>(<span class="ruby-identifier">method</span>, <span class="ruby-identifier">uri</span>, <span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-M000006'>
@@ -140,7 +183,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000006-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000006-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 52</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">response_xml</span>&#x000A;    <span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@response</span>.<span class="ruby-identifier">body</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000006-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 56</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">response_xml</span>&#x000A;    <span class="ruby-constant">Nokogiri</span>.<span class="ruby-constant">XML</span>(<span class="ruby-ivar">@response</span>.<span class="ruby-identifier">body</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-M000005'>
@@ -153,7 +196,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000005-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000005-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 46</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">url_escape</span>(<span class="ruby-identifier">string</span>)&#x000A;    <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/([^ a-zA-Z0-9_.-]+)/n</span>) <span class="ruby-keyword kw">do</span>&#x000A;      <span class="ruby-value str">'%'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">'H2'</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">join</span>(<span class="ruby-value str">'%'</span>).<span class="ruby-identifier">upcase</span>&#x000A;    <span class="ruby-keyword kw">end</span>.<span class="ruby-identifier">tr</span>(<span class="ruby-value str">' '</span>, <span class="ruby-value str">'+'</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000005-source'><span class="ruby-comment cmt"># File spec/handler_spec.rb, line 50</span>&#x000A;  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">url_escape</span>(<span class="ruby-identifier">string</span>)&#x000A;    <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/([^ a-zA-Z0-9_.-]+)/n</span>) <span class="ruby-keyword kw">do</span>&#x000A;      <span class="ruby-value str">'%'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">'H2'</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">join</span>(<span class="ruby-value str">'%'</span>).<span class="ruby-identifier">upcase</span>&#x000A;    <span class="ruby-keyword kw">end</span>.<span class="ruby-identifier">tr</span>(<span class="ruby-value str">' '</span>, <span class="ruby-value str">'+'</span>)&#x000A;  <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

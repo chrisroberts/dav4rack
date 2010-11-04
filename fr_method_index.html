@@ -4331,143 +4331,146 @@
         
         Element.addMethods();
         var search_index = [
-          { method: '==', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000102"><span class="method_name">==</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: '==', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000055"><span class="method_name">==</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'add', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000069"><span class="method_name">add</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'add_failure', module: 'dav4rack::lockfailure', html: '<a href="classes/DAV4Rack/LockFailure.html#M000061"><span class="method_name">add_failure</span> <span class="module_name">(DAV4Rack::LockFailure)</span></a>' },
-          { method: 'allows_redirect?', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000113"><span class="method_name">allows_redirect?</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'auth_credentials', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000114"><span class="method_name">auth_credentials</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'authenticate', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000131"><span class="method_name">authenticate</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'call', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000063"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
-          { method: 'call', module: 'dav4rack::handler', html: '<a href="classes/DAV4Rack/Handler.html#M000137"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::Handler)</span></a>' },
-          { method: 'call', module: 'dav4rack::interceptor', html: '<a href="classes/DAV4Rack/Interceptor.html#M000133"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::Interceptor)</span></a>' },
-          { method: 'child', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000109"><span class="method_name">child</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'child', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000058"><span class="method_name">child</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'children', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000021"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'children', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000081"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'children', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000039"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'code', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000010"><span class="method_name">code</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
-          { method: 'collection?', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000040"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'collection?', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000022"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'collection?', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000082"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'content_length', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000047"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'content_length', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000091"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'content_length', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000029"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'content_type', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000046"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'content_type', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000028"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'content_type', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000090"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'copy', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000052"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'copy', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000096"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'copy', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000125"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'copy', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000034"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'create', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000068"><span class="method_name">create</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'creation_date', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000024"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'creation_date', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000085"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'creation_date', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000042"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'delete', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000033"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'delete', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000051"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'delete', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000123"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'delete', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000095"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'descendants', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000059"><span class="method_name">descendants</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'descendants', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000111"><span class="method_name">descendants</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'destroy', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000018"><span class="method_name">destroy</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
-          { method: 'display_name', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000057"><span class="method_name">display_name</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'display_name', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000104"><span class="method_name">display_name</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'etag', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000045"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'etag', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000027"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'etag', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000088"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'exist?', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000083"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'exist?', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000023"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'exist?', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000041"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'explicit_locks', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000073"><span class="method_name">explicit_locks</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'explicitly_locked?', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000075"><span class="method_name">explicitly_locked?</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'find_by_path', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000071"><span class="method_name">find_by_path</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'find_by_token', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000072"><span class="method_name">find_by_token</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'generate', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000077"><span class="method_name">generate</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'get', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000092"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'get', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000030"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'get', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000120"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'get', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000048"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'get_property', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000106"><span class="method_name">get_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'head', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000119"><span class="method_name">head</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'implicit_locks', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000074"><span class="method_name">implicit_locks</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'implicitly_locked?', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000076"><span class="method_name">implicitly_locked?</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'index_page', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000112"><span class="method_name">index_page</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'last_modified', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000086"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'last_modified', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000043"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'last_modified', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000025"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'last_modified=', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000044"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'last_modified=', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000087"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'last_modified=', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000026"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'lock', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000129"><span class="method_name">lock</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'lock', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000098"><span class="method_name">lock</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'lock_check', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000099"><span class="method_name">lock_check</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'make_collection', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000101"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'make_collection', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000036"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'make_collection', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000054"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'method_missing', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000020"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
-          { method: 'method_missing', module: 'dav4rack::logger', html: '<a href="classes/DAV4Rack/Logger.html#M000135"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Logger)</span></a>' },
-          { method: 'method_missing', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000080"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'method_missing', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000078"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'mkcol', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000124"><span class="method_name">mkcol</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'move', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000097"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'move', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000053"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'move', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000126"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'move', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000035"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: '==', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000105"><span class="method_name">==</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: '==', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000058"><span class="method_name">==</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'add', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000072"><span class="method_name">add</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'add_failure', module: 'dav4rack::lockfailure', html: '<a href="classes/DAV4Rack/LockFailure.html#M000064"><span class="method_name">add_failure</span> <span class="module_name">(DAV4Rack::LockFailure)</span></a>' },
+          { method: 'allows_redirect?', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000116"><span class="method_name">allows_redirect?</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'auth_credentials', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000117"><span class="method_name">auth_credentials</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'authenticate', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000134"><span class="method_name">authenticate</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'call', module: 'dav4rack::interceptor', html: '<a href="classes/DAV4Rack/Interceptor.html#M000136"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::Interceptor)</span></a>' },
+          { method: 'call', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000066"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
+          { method: 'call', module: 'dav4rack::handler', html: '<a href="classes/DAV4Rack/Handler.html#M000140"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::Handler)</span></a>' },
+          { method: 'child', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000112"><span class="method_name">child</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'child', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000061"><span class="method_name">child</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'children', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000024"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'children', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000084"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'children', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000042"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'code', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000013"><span class="method_name">code</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
+          { method: 'collection?', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000085"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'collection?', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000043"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'collection?', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000025"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'content_length', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000050"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'content_length', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000094"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'content_length', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000032"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'content_type', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000093"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'content_type', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000031"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'content_type', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000049"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'copy', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000128"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'copy', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000099"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'copy', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000055"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'copy', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000037"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'create', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000071"><span class="method_name">create</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'creation_date', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000027"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'creation_date', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000088"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'creation_date', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000045"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'delete', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000098"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'delete', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000126"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'delete', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000054"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'delete', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000036"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'descendants', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000062"><span class="method_name">descendants</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'descendants', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000114"><span class="method_name">descendants</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'destroy', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000021"><span class="method_name">destroy</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
+          { method: 'display_name', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000060"><span class="method_name">display_name</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'display_name', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000107"><span class="method_name">display_name</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'etag', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000091"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'etag', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000048"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'etag', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000030"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'exist?', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000044"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'exist?', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000026"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'exist?', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000086"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'explicit_locks', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000076"><span class="method_name">explicit_locks</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'explicitly_locked?', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000078"><span class="method_name">explicitly_locked?</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'find_by_path', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000074"><span class="method_name">find_by_path</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'find_by_token', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000075"><span class="method_name">find_by_token</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'generate', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000080"><span class="method_name">generate</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'get', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000033"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'get', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000095"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'get', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000051"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'get', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000123"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'get_property', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000109"><span class="method_name">get_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'head', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000122"><span class="method_name">head</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'implicit_locks', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000077"><span class="method_name">implicit_locks</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'implicitly_locked?', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000079"><span class="method_name">implicitly_locked?</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'index_page', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000115"><span class="method_name">index_page</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'last_modified', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000089"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'last_modified', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000046"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'last_modified', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000028"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'last_modified=', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000047"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'last_modified=', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000029"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'last_modified=', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000090"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'lock', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000132"><span class="method_name">lock</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'lock', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000101"><span class="method_name">lock</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'lock_check', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000102"><span class="method_name">lock_check</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'make_collection', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000104"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'make_collection', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000039"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'make_collection', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000057"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'method_missing', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000083"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'method_missing', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000081"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'method_missing', module: 'dav4rack::logger', html: '<a href="classes/DAV4Rack/Logger.html#M000138"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Logger)</span></a>' },
+          { method: 'method_missing', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000023"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
+          { method: 'mkcol', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000127"><span class="method_name">mkcol</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'move', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000038"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'move', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000100"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'move', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000129"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'move', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000056"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'multi_status_created', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000008"><span class="method_name">multi_status_created</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
+          { method: 'multi_status_no_content', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000010"><span class="method_name">multi_status_no_content</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
+          { method: 'multi_status_ok', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000009"><span class="method_name">multi_status_ok</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
           { method: 'multistatus_response', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000007"><span class="method_name">multistatus_response</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
-          { method: 'name', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000056"><span class="method_name">name</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'name', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000103"><span class="method_name">name</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'new', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000038"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'new', module: 'dav4rack::handler', html: '<a href="classes/DAV4Rack/Handler.html#M000136"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Handler)</span></a>' },
-          { method: 'new', module: 'dav4rack::interceptor', html: '<a href="classes/DAV4Rack/Interceptor.html#M000132"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Interceptor)</span></a>' },
-          { method: 'new', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000079"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'new', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000115"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'new', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000062"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
-          { method: 'new', module: 'dav4rack::lockfailure', html: '<a href="classes/DAV4Rack/LockFailure.html#M000060"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::LockFailure)</span></a>' },
-          { method: 'new', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000015"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
-          { method: 'options', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000118"><span class="method_name">options</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'parent', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000110"><span class="method_name">parent</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'parent_exists?', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000084"><span class="method_name">parent_exists?</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'post', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000032"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'post', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000122"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'post', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000050"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'post', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000094"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'name', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000106"><span class="method_name">name</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'name', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000059"><span class="method_name">name</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'new', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000065"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
+          { method: 'new', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000118"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'new', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000041"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'new', module: 'dav4rack::interceptor', html: '<a href="classes/DAV4Rack/Interceptor.html#M000135"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Interceptor)</span></a>' },
+          { method: 'new', module: 'dav4rack::handler', html: '<a href="classes/DAV4Rack/Handler.html#M000139"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Handler)</span></a>' },
+          { method: 'new', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000082"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'new', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000018"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
+          { method: 'new', module: 'dav4rack::lockfailure', html: '<a href="classes/DAV4Rack/LockFailure.html#M000063"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::LockFailure)</span></a>' },
+          { method: 'options', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000121"><span class="method_name">options</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'parent', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000113"><span class="method_name">parent</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'parent_exists?', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000087"><span class="method_name">parent_exists?</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'post', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000125"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'post', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000035"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'post', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000097"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'post', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000053"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
           { method: 'print_help_msg', module: 'bin/dav4rack', html: '<a href="files/bin/dav4rack.html#M000001"><span class="method_name">print_help_msg</span> <span class="module_name">(bin/dav4rack)</span></a>' },
           { method: 'print_version_info', module: 'bin/dav4rack', html: '<a href="files/bin/dav4rack.html#M000002"><span class="method_name">print_version_info</span> <span class="module_name">(bin/dav4rack)</span></a>' },
-          { method: 'property_names', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000105"><span class="method_name">property_names</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'propfind', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000127"><span class="method_name">propfind</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'propfind_xml', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000008"><span class="method_name">propfind_xml</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
-          { method: 'proppatch', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000128"><span class="method_name">proppatch</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'put', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000031"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
-          { method: 'put', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000093"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'put', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000121"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'put', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000049"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
-          { method: 'reason_phrase', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000012"><span class="method_name">reason_phrase</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
-          { method: 'remaining_timeout', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000019"><span class="method_name">remaining_timeout</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
-          { method: 'remote_each', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000066"><span class="method_name">remote_each</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
-          { method: 'remote_serving', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000065"><span class="method_name">remote_serving</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
-          { method: 'remove', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000070"><span class="method_name">remove</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
-          { method: 'remove_property', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000108"><span class="method_name">remove_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'property_names', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000108"><span class="method_name">property_names</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'propfind', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000130"><span class="method_name">propfind</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'propfind_xml', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000011"><span class="method_name">propfind_xml</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
+          { method: 'proppatch', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000131"><span class="method_name">proppatch</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'put', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000034"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'put', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000096"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'put', module: 'dav4rack::interceptorresource', html: '<a href="classes/DAV4Rack/InterceptorResource.html#M000052"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a>' },
+          { method: 'put', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000124"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'reason_phrase', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000015"><span class="method_name">reason_phrase</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
+          { method: 'remaining_timeout', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000022"><span class="method_name">remaining_timeout</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
+          { method: 'remote_each', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000069"><span class="method_name">remote_each</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
+          { method: 'remote_serving', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000068"><span class="method_name">remote_serving</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
+          { method: 'remove', module: 'dav4rack::lockstore', html: '<a href="classes/DAV4Rack/LockStore.html#M000073"><span class="method_name">remove</span> <span class="module_name">(DAV4Rack::LockStore)</span></a>' },
+          { method: 'remove_property', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000111"><span class="method_name">remove_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
           { method: 'render', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000004"><span class="method_name">render</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
           { method: 'request', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000003"><span class="method_name">request</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
-          { method: 'resource_type', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000089"><span class="method_name">resource_type</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'resource_type', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000092"><span class="method_name">resource_type</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
           { method: 'response_xml', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000006"><span class="method_name">response_xml</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
-          { method: 'sendfile_serving', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000064"><span class="method_name">sendfile_serving</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
-          { method: 'set', module: 'dav4rack::logger', html: '<a href="classes/DAV4Rack/Logger.html#M000134"><span class="method_name">set</span> <span class="module_name">(DAV4Rack::Logger)</span></a>' },
-          { method: 'set_property', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000107"><span class="method_name">set_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
-          { method: 'size', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000067"><span class="method_name">size</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
-          { method: 'status_line', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000009"><span class="method_name">status_line</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
-          { method: 'status_line', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000013"><span class="method_name">status_line</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
-          { method: 'store', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000016"><span class="method_name">store</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
-          { method: 'store=', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000017"><span class="method_name">store=</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
+          { method: 'sendfile_serving', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000067"><span class="method_name">sendfile_serving</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
+          { method: 'set', module: 'dav4rack::logger', html: '<a href="classes/DAV4Rack/Logger.html#M000137"><span class="method_name">set</span> <span class="module_name">(DAV4Rack::Logger)</span></a>' },
+          { method: 'set_property', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000110"><span class="method_name">set_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'size', module: 'dav4rack::remotefile', html: '<a href="classes/DAV4Rack/RemoteFile.html#M000070"><span class="method_name">size</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a>' },
+          { method: 'status_line', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000012"><span class="method_name">status_line</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
+          { method: 'status_line', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000016"><span class="method_name">status_line</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
+          { method: 'store', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000019"><span class="method_name">store</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
+          { method: 'store=', module: 'dav4rack::lock', html: '<a href="classes/DAV4Rack/Lock.html#M000020"><span class="method_name">store=</span> <span class="module_name">(DAV4Rack::Lock)</span></a>' },
           { method: 'to_i', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000014"><span class="method_name">to_i</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
-          { method: 'to_i', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000011"><span class="method_name">to_i</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
-          { method: 'unlock', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000130"><span class="method_name">unlock</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'unlock', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000100"><span class="method_name">unlock</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
+          { method: 'to_i', module: 'dav4rack::httpstatus::status', html: '<a href="classes/DAV4Rack/HTTPStatus/Status.html#M000017"><span class="method_name">to_i</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a>' },
+          { method: 'unlock', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000133"><span class="method_name">unlock</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'unlock', module: 'dav4rack::resource', html: '<a href="classes/DAV4Rack/Resource.html#M000103"><span class="method_name">unlock</span> <span class="module_name">(DAV4Rack::Resource)</span></a>' },
           { method: 'url_escape', module: 'spec/handler_spec.rb', html: '<a href="files/spec/handler_spec_rb.html#M000005"><span class="method_name">url_escape</span> <span class="module_name">(spec/handler_spec.rb)</span></a>' },
-          { method: 'url_escape', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000116"><span class="method_name">url_escape</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'url_unescape', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000117"><span class="method_name">url_unescape</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
-          { method: 'write', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000037"><span class="method_name">write</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
+          { method: 'url_escape', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000119"><span class="method_name">url_escape</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'url_unescape', module: 'dav4rack::controller', html: '<a href="classes/DAV4Rack/Controller.html#M000120"><span class="method_name">url_unescape</span> <span class="module_name">(DAV4Rack::Controller)</span></a>' },
+          { method: 'write', module: 'dav4rack::fileresource', html: '<a href="classes/DAV4Rack/FileResource.html#M000040"><span class="method_name">write</span> <span class="module_name">(DAV4Rack::FileResource)</span></a>' },
         ]
         $(document).observe('dom:loaded', function() {
         	// Setup search-during-typing.
@@ -4538,143 +4541,146 @@
       </form>
       <ol class='methods' id='search-results' style='display: none'></ol>
       <ol class='methods' id='index-entries'>
-        <li><a href="classes/DAV4Rack/Resource.html#M000102"><span class="method_name">==</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000055"><span class="method_name">==</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000069"><span class="method_name">add</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockFailure.html#M000061"><span class="method_name">add_failure</span> <span class="module_name">(DAV4Rack::LockFailure)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000113"><span class="method_name">allows_redirect?</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000114"><span class="method_name">auth_credentials</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000131"><span class="method_name">authenticate</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/RemoteFile.html#M000063"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
-        <li><a href="classes/DAV4Rack/Handler.html#M000137"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::Handler)</span></a></li>
-        <li><a href="classes/DAV4Rack/Interceptor.html#M000133"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::Interceptor)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000109"><span class="method_name">child</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000058"><span class="method_name">child</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000021"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000081"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000039"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000010"><span class="method_name">code</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000040"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000022"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000082"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000047"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000091"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000029"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000046"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000028"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000090"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000052"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000096"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000125"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000034"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000068"><span class="method_name">create</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000024"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000085"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000042"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000033"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000051"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000123"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000095"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000059"><span class="method_name">descendants</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000111"><span class="method_name">descendants</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Lock.html#M000018"><span class="method_name">destroy</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000057"><span class="method_name">display_name</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000104"><span class="method_name">display_name</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000045"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000027"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000088"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000083"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000023"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000041"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000073"><span class="method_name">explicit_locks</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000075"><span class="method_name">explicitly_locked?</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000071"><span class="method_name">find_by_path</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000072"><span class="method_name">find_by_token</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000077"><span class="method_name">generate</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000092"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000030"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000120"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000048"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000106"><span class="method_name">get_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000119"><span class="method_name">head</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000074"><span class="method_name">implicit_locks</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000076"><span class="method_name">implicitly_locked?</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000112"><span class="method_name">index_page</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000086"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000043"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000025"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000044"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000087"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000026"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000129"><span class="method_name">lock</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000098"><span class="method_name">lock</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000099"><span class="method_name">lock_check</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000101"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000036"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000054"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Lock.html#M000020"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
-        <li><a href="classes/DAV4Rack/Logger.html#M000135"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Logger)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000080"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000078"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000124"><span class="method_name">mkcol</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000097"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000053"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000126"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000035"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000105"><span class="method_name">==</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000058"><span class="method_name">==</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000072"><span class="method_name">add</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockFailure.html#M000064"><span class="method_name">add_failure</span> <span class="module_name">(DAV4Rack::LockFailure)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000116"><span class="method_name">allows_redirect?</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000117"><span class="method_name">auth_credentials</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000134"><span class="method_name">authenticate</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/Interceptor.html#M000136"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::Interceptor)</span></a></li>
+        <li><a href="classes/DAV4Rack/RemoteFile.html#M000066"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
+        <li><a href="classes/DAV4Rack/Handler.html#M000140"><span class="method_name">call</span> <span class="module_name">(DAV4Rack::Handler)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000112"><span class="method_name">child</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000061"><span class="method_name">child</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000024"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000084"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000042"><span class="method_name">children</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000013"><span class="method_name">code</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000085"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000043"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000025"><span class="method_name">collection?</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000050"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000094"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000032"><span class="method_name">content_length</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000093"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000031"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000049"><span class="method_name">content_type</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000128"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000099"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000055"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000037"><span class="method_name">copy</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000071"><span class="method_name">create</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000027"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000088"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000045"><span class="method_name">creation_date</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000098"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000126"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000054"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000036"><span class="method_name">delete</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000062"><span class="method_name">descendants</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000114"><span class="method_name">descendants</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Lock.html#M000021"><span class="method_name">destroy</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000060"><span class="method_name">display_name</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000107"><span class="method_name">display_name</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000091"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000048"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000030"><span class="method_name">etag</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000044"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000026"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000086"><span class="method_name">exist?</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000076"><span class="method_name">explicit_locks</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000078"><span class="method_name">explicitly_locked?</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000074"><span class="method_name">find_by_path</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000075"><span class="method_name">find_by_token</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000080"><span class="method_name">generate</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000033"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000095"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000051"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000123"><span class="method_name">get</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000109"><span class="method_name">get_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000122"><span class="method_name">head</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000077"><span class="method_name">implicit_locks</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000079"><span class="method_name">implicitly_locked?</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000115"><span class="method_name">index_page</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000089"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000046"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000028"><span class="method_name">last_modified</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000047"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000029"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000090"><span class="method_name">last_modified=</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000132"><span class="method_name">lock</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000101"><span class="method_name">lock</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000102"><span class="method_name">lock_check</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000104"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000039"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000057"><span class="method_name">make_collection</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000083"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000081"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Logger.html#M000138"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Logger)</span></a></li>
+        <li><a href="classes/DAV4Rack/Lock.html#M000023"><span class="method_name">method_missing</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000127"><span class="method_name">mkcol</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000038"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000100"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000129"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000056"><span class="method_name">move</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="files/spec/handler_spec_rb.html#M000008"><span class="method_name">multi_status_created</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
+        <li><a href="files/spec/handler_spec_rb.html#M000010"><span class="method_name">multi_status_no_content</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
+        <li><a href="files/spec/handler_spec_rb.html#M000009"><span class="method_name">multi_status_ok</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
         <li><a href="files/spec/handler_spec_rb.html#M000007"><span class="method_name">multistatus_response</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000056"><span class="method_name">name</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000103"><span class="method_name">name</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000038"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Handler.html#M000136"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Handler)</span></a></li>
-        <li><a href="classes/DAV4Rack/Interceptor.html#M000132"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Interceptor)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000079"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000115"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/RemoteFile.html#M000062"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockFailure.html#M000060"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::LockFailure)</span></a></li>
-        <li><a href="classes/DAV4Rack/Lock.html#M000015"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000118"><span class="method_name">options</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000110"><span class="method_name">parent</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000084"><span class="method_name">parent_exists?</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000032"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000122"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000050"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000094"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000106"><span class="method_name">name</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000059"><span class="method_name">name</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/RemoteFile.html#M000065"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000118"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000041"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Interceptor.html#M000135"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Interceptor)</span></a></li>
+        <li><a href="classes/DAV4Rack/Handler.html#M000139"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Handler)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000082"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Lock.html#M000018"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockFailure.html#M000063"><span class="method_name">new</span> <span class="module_name">(DAV4Rack::LockFailure)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000121"><span class="method_name">options</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000113"><span class="method_name">parent</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000087"><span class="method_name">parent_exists?</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000125"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000035"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000097"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000053"><span class="method_name">post</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
         <li><a href="files/bin/dav4rack.html#M000001"><span class="method_name">print_help_msg</span> <span class="module_name">(bin/dav4rack)</span></a></li>
         <li><a href="files/bin/dav4rack.html#M000002"><span class="method_name">print_version_info</span> <span class="module_name">(bin/dav4rack)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000105"><span class="method_name">property_names</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000127"><span class="method_name">propfind</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="files/spec/handler_spec_rb.html#M000008"><span class="method_name">propfind_xml</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000128"><span class="method_name">proppatch</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000031"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000093"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000121"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000049"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
-        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000012"><span class="method_name">reason_phrase</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
-        <li><a href="classes/DAV4Rack/Lock.html#M000019"><span class="method_name">remaining_timeout</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
-        <li><a href="classes/DAV4Rack/RemoteFile.html#M000066"><span class="method_name">remote_each</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
-        <li><a href="classes/DAV4Rack/RemoteFile.html#M000065"><span class="method_name">remote_serving</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
-        <li><a href="classes/DAV4Rack/LockStore.html#M000070"><span class="method_name">remove</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000108"><span class="method_name">remove_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000108"><span class="method_name">property_names</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000130"><span class="method_name">propfind</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="files/spec/handler_spec_rb.html#M000011"><span class="method_name">propfind_xml</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000131"><span class="method_name">proppatch</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000034"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000096"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/InterceptorResource.html#M000052"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::InterceptorResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000124"><span class="method_name">put</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000015"><span class="method_name">reason_phrase</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
+        <li><a href="classes/DAV4Rack/Lock.html#M000022"><span class="method_name">remaining_timeout</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
+        <li><a href="classes/DAV4Rack/RemoteFile.html#M000069"><span class="method_name">remote_each</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
+        <li><a href="classes/DAV4Rack/RemoteFile.html#M000068"><span class="method_name">remote_serving</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
+        <li><a href="classes/DAV4Rack/LockStore.html#M000073"><span class="method_name">remove</span> <span class="module_name">(DAV4Rack::LockStore)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000111"><span class="method_name">remove_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
         <li><a href="files/spec/handler_spec_rb.html#M000004"><span class="method_name">render</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
         <li><a href="files/spec/handler_spec_rb.html#M000003"><span class="method_name">request</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000089"><span class="method_name">resource_type</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000092"><span class="method_name">resource_type</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
         <li><a href="files/spec/handler_spec_rb.html#M000006"><span class="method_name">response_xml</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
-        <li><a href="classes/DAV4Rack/RemoteFile.html#M000064"><span class="method_name">sendfile_serving</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
-        <li><a href="classes/DAV4Rack/Logger.html#M000134"><span class="method_name">set</span> <span class="module_name">(DAV4Rack::Logger)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000107"><span class="method_name">set_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
-        <li><a href="classes/DAV4Rack/RemoteFile.html#M000067"><span class="method_name">size</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
-        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000009"><span class="method_name">status_line</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
-        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000013"><span class="method_name">status_line</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
-        <li><a href="classes/DAV4Rack/Lock.html#M000016"><span class="method_name">store</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
-        <li><a href="classes/DAV4Rack/Lock.html#M000017"><span class="method_name">store=</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
+        <li><a href="classes/DAV4Rack/RemoteFile.html#M000067"><span class="method_name">sendfile_serving</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
+        <li><a href="classes/DAV4Rack/Logger.html#M000137"><span class="method_name">set</span> <span class="module_name">(DAV4Rack::Logger)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000110"><span class="method_name">set_property</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/RemoteFile.html#M000070"><span class="method_name">size</span> <span class="module_name">(DAV4Rack::RemoteFile)</span></a></li>
+        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000012"><span class="method_name">status_line</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
+        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000016"><span class="method_name">status_line</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
+        <li><a href="classes/DAV4Rack/Lock.html#M000019"><span class="method_name">store</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
+        <li><a href="classes/DAV4Rack/Lock.html#M000020"><span class="method_name">store=</span> <span class="module_name">(DAV4Rack::Lock)</span></a></li>
         <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000014"><span class="method_name">to_i</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
-        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000011"><span class="method_name">to_i</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000130"><span class="method_name">unlock</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/Resource.html#M000100"><span class="method_name">unlock</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
+        <li><a href="classes/DAV4Rack/HTTPStatus/Status.html#M000017"><span class="method_name">to_i</span> <span class="module_name">(DAV4Rack::HTTPStatus::Status)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000133"><span class="method_name">unlock</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/Resource.html#M000103"><span class="method_name">unlock</span> <span class="module_name">(DAV4Rack::Resource)</span></a></li>
         <li><a href="files/spec/handler_spec_rb.html#M000005"><span class="method_name">url_escape</span> <span class="module_name">(spec/handler_spec.rb)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000116"><span class="method_name">url_escape</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/Controller.html#M000117"><span class="method_name">url_unescape</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
-        <li><a href="classes/DAV4Rack/FileResource.html#M000037"><span class="method_name">write</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000119"><span class="method_name">url_escape</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/Controller.html#M000120"><span class="method_name">url_unescape</span> <span class="module_name">(DAV4Rack::Controller)</span></a></li>
+        <li><a href="classes/DAV4Rack/FileResource.html#M000040"><span class="method_name">write</span> <span class="module_name">(DAV4Rack::FileResource)</span></a></li>
       </ol>
     </div>
   </body>

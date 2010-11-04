@@ -45,15 +45,15 @@
             <h2>Methods</h2>
             <h3>public class</h3>
             <ol>
-              <li><a href="#M000009">status_line</a></li>
+              <li><a href="#M000012">status_line</a></li>
             </ol>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000010">code</a></li>
-              <li><a href="#M000012">reason_phrase</a></li>
-              <li><a href="#M000013">status_line</a></li>
-              <li><a href="#M000011">to_i</a></li>
+              <li><a href="#M000013">code</a></li>
+              <li><a href="#M000015">reason_phrase</a></li>
+              <li><a href="#M000016">status_line</a></li>
               <li><a href="#M000014">to_i</a></li>
+              <li><a href="#M000017">to_i</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -76,69 +76,57 @@
             </div>
             <div id='methods'>
               <h2>Public class methods</h2>
-              <div class='method public-class' id='method-M000009'>
-                <a name='M000009'></a>
-                <div class='synopsis'>
-                  <span class='name'>status_line</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000009-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='M000009-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 11</span>&#x000A;        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">status_line</span>&#x000A;          <span class="ruby-node">&quot;#{code} #{reason_phrase}&quot;</span>&#x000A;        <span class="ruby-keyword kw">end</span></pre>
-                </div>
-              </div>
-              <h2>Public instance methods</h2>
-              <div class='method public-instance' id='method-M000010'>
-                <a name='M000010'></a>
-                <div class='synopsis'>
-                  <span class='name'>code</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000010-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='M000010-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 17</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">code</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">code</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-M000012'>
+              <div class='method public-class' id='method-M000012'>
                 <a name='M000012'></a>
                 <div class='synopsis'>
-                  <span class='name'>reason_phrase</span>
+                  <span class='name'>status_line</span>
                   <span class='arguments'>()</span>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('M000012-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000012-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 21</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reason_phrase</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">reason_phrase</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000012-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 11</span>&#x000A;        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">status_line</span>&#x000A;          <span class="ruby-node">&quot;#{code} #{reason_phrase}&quot;</span>&#x000A;        <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
+              <h2>Public instance methods</h2>
               <div class='method public-instance' id='method-M000013'>
                 <a name='M000013'></a>
                 <div class='synopsis'>
-                  <span class='name'>status_line</span>
+                  <span class='name'>code</span>
                   <span class='arguments'>()</span>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('M000013-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000013-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 25</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">status_line</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">status_line</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000013-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 17</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">code</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">code</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-M000011'>
-                <a name='M000011'></a>
+              <div class='method public-instance' id='method-M000015'>
+                <a name='M000015'></a>
                 <div class='synopsis'>
-                  <span class='name'>to_i</span>
+                  <span class='name'>reason_phrase</span>
                   <span class='arguments'>()</span>
                 </div>
-                <div class='description'>
-                  <p>
-                  Alias for <a href="Status.html#M000010">code</a>
-                  </p>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000015-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000015-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 21</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reason_phrase</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">reason_phrase</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000016'>
+                <a name='M000016'></a>
+                <div class='synopsis'>
+                  <span class='name'>status_line</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000016-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000016-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 25</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">status_line</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">status_line</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-M000014'>
@@ -147,11 +135,23 @@
                   <span class='name'>to_i</span>
                   <span class='arguments'>()</span>
                 </div>
+                <div class='description'>
+                  <p>
+                  Alias for <a href="Status.html#M000013">code</a>
+                  </p>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-M000017'>
+                <a name='M000017'></a>
+                <div class='synopsis'>
+                  <span class='name'>to_i</span>
+                  <span class='arguments'>()</span>
+                </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000014-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000017-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000014-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 29</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_i</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_i</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000017-source'><span class="ruby-comment cmt"># File lib/dav4rack/http_status.rb, line 29</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_i</span>&#x000A;        <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_i</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>
