@@ -1,3 +1,6 @@
+=== v0.1.6
+* Add DAV4Rack::File that overloads just enough of Rack::File to allow explicit path setting
+
 === v0.1.5
 * Remove support for options[:delete_dotfiles]
 * Allow HTTP methods to be ignored within interceptor
