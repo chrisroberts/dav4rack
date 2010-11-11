@@ -28,6 +28,7 @@ lib/dav4rack/resource.rb
 lib/dav4rack/interceptor.rb
 lib/dav4rack/interceptor_resource.rb
 lib/dav4rack/remote_file.rb
+lib/dav4rack/file.rb
 lib/dav4rack/lock.rb
 lib/dav4rack/lock_store.rb
 lib/dav4rack/logger.rb
