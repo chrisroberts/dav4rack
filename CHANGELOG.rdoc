@@ -1,3 +1,6 @@
+=== v0.1.7
+* Fix in interceptor to use correct File
+
 === v0.1.6
 * Add DAV4Rack::File that overloads just enough of Rack::File to allow explicit path setting
 
@@ -29,7 +32,6 @@
 * Simplify Interceptor mappings (provide options in hash instead of explicit :options)
 
 === v0.1.0
-
 * Callbacks available for resources
 * RemoteFile more aligned with Rack::File
 * Return multistatus responses PUT MKCOL and COPY/MOVE

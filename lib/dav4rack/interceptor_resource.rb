@@ -81,11 +81,11 @@ module DAV4Rack
     end
 
     def name
-      File.basename(path)
+      ::File.basename(path)
     end
 
     def display_name
-      File.basename(path.to_s)
+      ::File.basename(path.to_s)
     end
     
     def child(name, option={})

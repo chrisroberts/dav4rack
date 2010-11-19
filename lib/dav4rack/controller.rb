@@ -1,4 +1,4 @@
-  module DAV4Rack
+module DAV4Rack
   
   class Controller
     include DAV4Rack::HTTPStatus
