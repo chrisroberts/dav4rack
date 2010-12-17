@@ -1,3 +1,7 @@
+=== v0.1.8
+* Better exception handling for error logging
+* Send overwrite flag to Resource#move
+
 === v0.1.7
 * Fix in interceptor to use correct File
 
