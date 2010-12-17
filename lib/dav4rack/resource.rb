@@ -1,4 +1,5 @@
 require 'uuidtools'
+require 'dav4rack/http_status'
 
 module DAV4Rack
   
