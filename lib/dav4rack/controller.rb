@@ -122,7 +122,7 @@ module DAV4Rack
         status = resource.copy(dest, overwrite)
       else
         raise Conflict unless depth.is_a?(Symbol) || depth > 1
-        status = resource.move(dest)
+        status = resource.move(dest, overwrite)
       end
       response['Location'] = "#{scheme}://#{host}:#{port}#{dest.public_path}" if status == Created
       multistatus do |xml|
