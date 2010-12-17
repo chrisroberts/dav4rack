@@ -1,4 +1,6 @@
 .*
+!.gitignore
+*.gem
 *~
 doc/*
 pkg/*
