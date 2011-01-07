@@ -1,3 +1,6 @@
+=== v0.2.0
+* Update to remote URL is passed to NGINX for proxying. Use headers instead of request
+
 === v0.1.8
 * Better exception handling for error logging
 * Send overwrite flag to Resource#move
