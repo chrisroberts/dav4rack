@@ -61,7 +61,9 @@ module DAV4Rack
              "Last-Modified" => last_modified,
              "Content-Type" => content_type,
              "Content-Length" => size,
-             header => "/#{prefix}/#{URI.decode(@path.sub('http://', ''))}"
+             "Redirect-URL" => @path,
+             "Redirect-Host" => @path.scan(%r{^https?://([^/\?]+)}).first.first,
+             header => "/webdav_redirect"
             },
       ['']]
     end
