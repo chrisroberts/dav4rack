@@ -180,16 +180,13 @@ and as such should be applicable to other servers. First, a simplified NGINX ser
       proxy_pass http://my_app_server;
     }
 
-    location ~* /webdav_redirect/(.*?)/(.*) {
+    location ~* /webdav_redirect {
       internal;
       resolver 127.0.0.1;
-      set $re_host $1;
-      set $re_path $2;
-      set $re_url http://$re_host/$re_path?$args;
       proxy_set_header Authorization '';
-      proxy_set_header Host $re_host;
+      proxy_set_header Host $upstream_http_redirect_host;
       proxy_max_temp_file_size 0;
-      proxy_pass $re_url;
+      proxy_pass $upstream_http_redirect_url;
     }
   }
 
