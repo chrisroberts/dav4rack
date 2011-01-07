@@ -394,9 +394,16 @@ module DAV4Rack
     end
 
     # Does client allow GET redirection
-    # TODO: Get a comprehensive list in here. Especially now that trasmit added support
+    # TODO: Get a comprehensive list in here.
+    # TODO: Allow this to be dynamic so users can add regexes to match if they know of a client
+    # that can be supported that is not listed.
     def allows_redirect?
-      %w(cyberduck konqueror).any?{|x| (request.respond_to?(:user_agent) ? request.user_agent.to_s.downcase : request.env['HTTP_USER_AGENT'].to_s.downcase) =~ /#{Regexp.escape(x)}/}
+      [
+        %r{cyberduck}i,
+        %r{konqueror}i
+      ].any? do |regexp|
+        (request.respond_to?(:user_agent) ? request.user_agent : request.env['HTTP_USER_AGENT']) =~ regexp
+      end
     end
     
     # Returns authentication credentials if available in form of [username,password]
