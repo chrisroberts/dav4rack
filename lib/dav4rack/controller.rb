@@ -112,9 +112,9 @@ module DAV4Rack
     def move(*args)
       raise NotFound unless resource.exist?
       resource.lock_check unless args.include?(:copy)
-      dest_uri = URI.parse(env['HTTP_DESTINATION'])
-      destination = url_unescape(dest_uri.path)
-      raise BadGateway if dest_uri.host and dest_uri.host != request.host
+      destination = url_unescape(env['HTTP_DESTINATION'].sub(%r{https?://([^/]+)}, ''))
+      dest_host = $1
+      raise BadGateway if dest_host and dest_host != request.host
       raise Forbidden if destination == resource.public_path
       dest = resource_class.new(destination, clean_path(destination), @request, @response, @options.merge(:user => resource.user))
       status = nil
