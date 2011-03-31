@@ -183,10 +183,12 @@ and as such should be applicable to other servers. First, a simplified NGINX ser
     location ~* /webdav_redirect {
       internal;
       resolver 127.0.0.1;
+      set $r_host $upstream_http_redirect_host;
+      set $r_url $upstream_http_redirect_url;
       proxy_set_header Authorization '';
-      proxy_set_header Host $upstream_http_redirect_host;
+      proxy_set_header Host $r_host;
       proxy_max_temp_file_size 0;
-      proxy_pass $upstream_http_redirect_url;
+      proxy_pass $r_url;
     }
   }
 
@@ -302,6 +304,7 @@ A big thanks to everyone contributing to help make this project better.
 
 * {clyfe}[http://github.com/clyfe]
 * {antiloopgmbh}[http://github.com/antiloopgmbh]
+* {krug}[http://github.com/krug]
 
 == License
 

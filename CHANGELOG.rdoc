@@ -1,3 +1,6 @@
+=== v0.2.2
+* Fix for port numbers in host (thanks {krug}[http://github.com/krug])
+
 === v0.2.1
 * Fix for better handling of MOVEs with badly encoded URLS
 
