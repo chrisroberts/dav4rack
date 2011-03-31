@@ -114,7 +114,7 @@ module DAV4Rack
       resource.lock_check unless args.include?(:copy)
       destination = url_unescape(env['HTTP_DESTINATION'].sub(%r{https?://([^/]+)}, ''))
       dest_host = $1
-      raise BadGateway if dest_host and dest_host.gsub(/:\d{2,4}$/,'') != request.host
+      raise BadGateway if dest_host and dest_host.gsub(/:\d{2,5}$/,'') != request.host
       raise Forbidden if destination == resource.public_path
       dest = resource_class.new(destination, clean_path(destination), @request, @response, @options.merge(:user => resource.user))
       status = nil
