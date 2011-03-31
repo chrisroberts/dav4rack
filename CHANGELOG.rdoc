@@ -1,3 +1,6 @@
+=== v0.2.3
+* Completing missed step in last packaging
+
 === v0.2.2
 * Fix for port numbers in host (thanks {krug}[http://github.com/krug])
 
