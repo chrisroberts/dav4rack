@@ -468,19 +468,7 @@ module DAV4Rack
     # element:: Nokogiri::XML::Element
     # Converts element into proper text
     def xml_convert(xml, element)
-      if element.children.empty?
-        if element.text?
-          xml.send(element.name, element.text, element.attributes)
-        else
-          xml.send(element.name, element.attributes)
-        end
-      else
-        xml.send(element.name, element.attributes) do
-          element.elements.each do |child|
-            xml_convert(xml, child)
-          end
-        end
-      end
+      xml.doc.root.add_child(element)
     end
 
   end
