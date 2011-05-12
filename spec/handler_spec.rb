@@ -120,6 +120,13 @@ describe DAV4Rack::Handler do
     get('/test').should be_ok
     response.body.should == 'body'
   end
+  
+  it 'should return an absolute url after a put request' do
+    put('/test', :input => 'body')
+    multi_status_ok.should eq true
+    multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/test/
+  end
+  
   it 'should create and find a url with escaped characters' do
     put(url_escape('/a b'), :input => 'body')
     multi_status_ok.should eq true
@@ -250,6 +257,14 @@ describe DAV4Rack::Handler do
     multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
   end
   
+  it 'should return full urls after creating a collection' do
+    mkcol('/folder')
+    multi_status_created.should eq true
+    propfind('/folder', :input => propfind_xml(:resourcetype))
+    multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
+    multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/folder/
+  end
+  
   it 'should not find properties for nonexistent resources' do
     propfind('/non').should be_not_found
   end
@@ -304,5 +319,19 @@ describe DAV4Rack::Handler do
     match['/D:timeout'].should_not be_empty
     match['/D:locktoken'].should_not be_empty
     match['/D:owner'].should_not be_empty
+  end
+  
+  context "when mapping a path" do
+    
+    before do
+      @controller = DAV4Rack::Handler.new(:root => DOC_ROOT, :root_uri_path => '/webdav/')
+    end
+    
+    it "should return correct urls" do
+      # FIXME: a put to '/test' works, too -- should it?
+      put('/webdav/test', :input => 'body')
+      multi_status_ok.should eq true
+      multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/webdav\/test/
+    end
   end
 end

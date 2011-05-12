@@ -71,7 +71,7 @@ module DAV4Rack
       status = resource.put(request, response)
       multistatus do |xml|
         xml.response do
-          xml.href resource.path
+          xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
           xml.status "#{http_version} #{status.status_line}"
         end
       end
@@ -95,7 +95,7 @@ module DAV4Rack
       status = resource.make_collection
       multistatus do |xml|
         xml.response do
-          xml.href resource.path
+          xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
           xml.status "#{http_version} #{status.status_line}"
         end
       end
