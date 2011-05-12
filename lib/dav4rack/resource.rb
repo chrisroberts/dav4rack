@@ -234,7 +234,7 @@ module DAV4Rack
         lock.scope = args[:scope]
         lock.kind = args[:type]
         lock.owner = args[:owner]
-        lock.depth = args[:depth].to_i
+        lock.depth = args[:depth] == :infinity ? args[:depth] : args[:depth].to_i
         if(args[:timeout])
           lock.timeout = args[:timeout] <= @max_timeout && args[:timeout] > 0 ? args[:timeout] : @max_timeout
         else
