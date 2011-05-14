@@ -1,3 +1,8 @@
+=== v0.2.4
+* Return absolute URI from #mkcol and #put (thanks {teefax}[http://github.com/teefax])
+* Nodes with text children properly serialized (pointed out by {jeffhos}[http://github.com/jeffhos])
+* Fixed bug in file locking (pointed out by {clyfe}[http://github.com/clyfe] with fix provided by {teefax}[http://github.com/teefax])
+
 === v0.2.3
 * Completing missed step in last packaging
 
