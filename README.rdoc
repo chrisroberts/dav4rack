@@ -305,6 +305,7 @@ A big thanks to everyone contributing to help make this project better.
 * {clyfe}[http://github.com/clyfe]
 * {antiloopgmbh}[http://github.com/antiloopgmbh]
 * {krug}[http://github.com/krug]
+* {teefax}[http://github.com/teefax]
 
 == License
 
