@@ -37,7 +37,7 @@ module DAV4Rack
     # Return response to OPTIONS
     def options
       response["Allow"] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
-      response["Dav"] = "2"
+      response["Dav"] = "1, 2"
       response["Ms-Author-Via"] = "DAV"
       OK
     end
@@ -67,14 +67,11 @@ module DAV4Rack
     # Return response to PUT
     def put
       raise Forbidden if resource.collection?
+      raise Conflict unless resource.parent_exists? && resource.parent.collection?
       resource.lock_check
       status = resource.put(request, response)
-      multistatus do |xml|
-        xml.response do
-          xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
-          xml.status "#{http_version} #{status.status_line}"
-        end
-      end
+      response['Content-Location'] = "#{scheme}://#{host}:#{port}#{resource.public_path}" if status == Created
+      status
     end
 
     # Return response to POST
