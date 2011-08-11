@@ -37,7 +37,7 @@ module DAV4Rack
     # Return response to OPTIONS
     def options
       response["Allow"] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
-      response["Dav"] = "2"
+      response["Dav"] = "1, 2"
       response["Ms-Author-Via"] = "DAV"
       OK
     end
