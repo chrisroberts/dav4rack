@@ -5,10 +5,14 @@ module DAV4Rack
   # to log messages from the library.
   class Logger
     class << self
-      # args:: Arguments for Logger -> [path, level] (level is optional)
+      # args:: Arguments for Logger -> [path, level] (level is optional) or a Logger instance
       # Set the path to the log file.
       def set(*args)
-        @@logger = ::Logger.new(args.first, 'weekly')
+        if(args.first.is_a?(Logger))
+          @@logger = args.first
+        else
+          @@logger = ::Logger.new(args.first, 'weekly')
+        end
         if(args.size > 1)
           @@logger.level = args[1]
         end
