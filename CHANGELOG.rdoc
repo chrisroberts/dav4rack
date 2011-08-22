@@ -1,3 +1,9 @@
+=== v0.2.5
+* Return Created response in favor of current multi status response on PUT (thanks {buffym}[https://github.com/buffym])
+* Show class 1 compliance to be in accordance with WebDAV spec (thanks {buffym}[https://github.com/buffym])
+* Adds setup method to skip alias list for resources (thanks {jbangert}[https://github.com/jbangert])
+* Allow existing logger instance to be provided
+
 === v0.2.4
 * Return absolute URI from #mkcol and #put (thanks {teefax}[http://github.com/teefax])
 * Nodes with text children properly serialized (pointed out by {jeffhos}[http://github.com/jeffhos])
