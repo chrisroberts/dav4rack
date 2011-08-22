@@ -63,7 +63,12 @@ module DAV4Rack
     # NOTE: Customized Resources should not use initialize for setup. Instead
     #       use the #setup method
     def initialize(public_path, path, request, response, options)
-      @skip_alias = [:authenticate, :authentication_error_msg, :authentication_realm, :path, :options, :public_path, :request, :response, :user, :user=]
+      @skip_alias = [
+        :authenticate, :authentication_error_msg, 
+        :authentication_realm, :path, :options, 
+        :public_path, :request, :response, :user, 
+        :user=, :setup
+      ]
       @public_path = public_path.dup
       @path = path.dup
       @request = request
