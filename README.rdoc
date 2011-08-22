@@ -306,6 +306,8 @@ A big thanks to everyone contributing to help make this project better.
 * {antiloopgmbh}[http://github.com/antiloopgmbh]
 * {krug}[http://github.com/krug]
 * {teefax}[http://github.com/teefax]
+* {buffym}[https://github.com/buffym]
+* {jbangert}[https://github.com/jbangert]
 
 == License
 
