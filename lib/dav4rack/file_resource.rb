@@ -80,7 +80,7 @@ module DAV4Rack
     # Save the content of the request.body.
     def put(request, response)
       write(request.body)
-      OK
+      Created
     end
     
     # HTTP POST request.

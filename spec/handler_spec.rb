@@ -97,8 +97,7 @@ describe DAV4Rack::Handler do
   end
   
   it 'should return headers' do
-    put('/test.html', :input => '<html/>')
-    multi_status_ok.should eq true
+    put('/test.html', :input => '<html/>').should be_created
     head('/test.html').should be_ok
     
     response.headers['etag'].should_not be_nil
@@ -115,38 +114,32 @@ describe DAV4Rack::Handler do
   end
   
   it 'should create a resource and allow its retrieval' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
+    put('/test', :input => 'body').should be_created
     get('/test').should be_ok
     response.body.should == 'body'
   end
-  
+
   it 'should return an absolute url after a put request' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
-    multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/test/
+    put('/test', :input => 'body').should be_created
+    response['content-location'].should =~ /http:\/\/localhost(:\d+)?\/test/
   end
   
   it 'should create and find a url with escaped characters' do
-    put(url_escape('/a b'), :input => 'body')
-    multi_status_ok.should eq true
+    put(url_escape('/a b'), :input => 'body').should be_created
     get(url_escape('/a b')).should be_ok
     response.body.should == 'body'
   end
   
   it 'should delete a single resource' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
+    put('/test', :input => 'body').should be_created
     delete('/test').should be_no_content
   end
   
   it 'should delete recursively' do
     mkcol('/folder')
     multi_status_created.should eq true
-    put('/folder/a', :input => 'body')
-    multi_status_ok.should eq true
-    put('/folder/b', :input => 'body')
-    multi_status_ok.should eq true
+    put('/folder/a', :input => 'body').should be_created
+    put('/folder/b', :input => 'body').should be_created
     
     delete('/folder').should be_no_content
     get('/folder').should be_not_found
@@ -155,28 +148,24 @@ describe DAV4Rack::Handler do
   end
 
   it 'should not allow copy to another domain' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
+    put('/test', :input => 'body').should be_created
     copy('http://localhost/', 'HTTP_DESTINATION' => 'http://another/').should be_bad_gateway
   end
 
   it 'should not allow copy to the same resource' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
+    put('/test', :input => 'body').should be_created
     copy('/test', 'HTTP_DESTINATION' => '/test').should be_forbidden
   end
 
   it 'should copy a single resource' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
+    put('/test', :input => 'body').should be_created
     copy('/test', 'HTTP_DESTINATION' => '/copy')
     multi_status_no_content.should eq true
     get('/copy').body.should == 'body'
   end
 
   it 'should copy a resource with escaped characters' do
-    put(url_escape('/a b'), :input => 'body')
-    multi_status_ok.should eq true
+    put(url_escape('/a b'), :input => 'body').should be_created
     copy(url_escape('/a b'), 'HTTP_DESTINATION' => url_escape('/a c'))
     multi_status_no_content.should eq true
     get(url_escape('/a c')).should be_ok
@@ -184,10 +173,8 @@ describe DAV4Rack::Handler do
   end
   
   it 'should deny a copy without overwrite' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
-    put('/copy', :input => 'copy')
-    multi_status_ok.should eq true
+    put('/test', :input => 'body').should be_created
+    put('/copy', :input => 'copy').should be_created
     copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'F')
     
     multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/test/
@@ -197,10 +184,8 @@ describe DAV4Rack::Handler do
   end
   
   it 'should allow a copy with overwrite' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
-    put('/copy', :input => 'copy')
-    multi_status_ok.should eq true
+    put('/test', :input => 'body').should be_created
+    put('/copy', :input => 'copy').should be_created
     copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'T')
     multi_status_no_content.should eq true
     get('/copy').body.should == 'body'
@@ -218,10 +203,8 @@ describe DAV4Rack::Handler do
   it 'should copy a collection resursively' do
     mkcol('/folder')
     multi_status_created.should eq true
-    put('/folder/a', :input => 'A')
-    multi_status_ok.should eq true
-    put('/folder/b', :input => 'B')
-    multi_status_ok.should eq true
+    put('/folder/a', :input => 'A').should be_created
+    put('/folder/b', :input => 'B').should be_created
     
     copy('/folder', 'HTTP_DESTINATION' => '/copy')
     multi_status_ok.should eq true
@@ -234,10 +217,8 @@ describe DAV4Rack::Handler do
   it 'should move a collection recursively' do
     mkcol('/folder')
     multi_status_created.should eq true
-    put('/folder/a', :input => 'A')
-    multi_status_ok.should eq true
-    put('/folder/b', :input => 'B')
-    multi_status_ok.should eq true
+    put('/folder/a', :input => 'A').should be_created
+    put('/folder/b', :input => 'B').should be_created
     
     move('/folder', 'HTTP_DESTINATION' => '/move')
     multi_status_ok.should eq true
@@ -285,8 +266,7 @@ describe DAV4Rack::Handler do
   end
   
   it 'should find named properties' do
-    put('/test.html', :input => '<html/>')
-    multi_status_ok.should eq true
+    put('/test.html', :input => '<html/>').should be_created
     propfind('/test.html', :input => propfind_xml(:getcontenttype, :getcontentlength))
    
     multistatus_response('/D:propstat/D:prop/D:getcontenttype').first.text.should == 'text/html'
@@ -294,8 +274,7 @@ describe DAV4Rack::Handler do
   end
 
   it 'should lock a resource' do
-    put('/test', :input => 'body')
-    multi_status_ok.should eq true
+    put('/test', :input => 'body').should be_created
     
     xml = render(:lockinfo) do |xml|
       xml.lockscope { xml.exclusive }
@@ -329,9 +308,8 @@ describe DAV4Rack::Handler do
     
     it "should return correct urls" do
       # FIXME: a put to '/test' works, too -- should it?
-      put('/webdav/test', :input => 'body')
-      multi_status_ok.should eq true
-      multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/webdav\/test/
+      put('/webdav/test', :input => 'body').should be_created
+      response.headers['content-location'].should =~ /http:\/\/localhost(:\d+)?\/webdav\/test/
     end
   end
 end
