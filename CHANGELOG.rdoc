@@ -1,3 +1,6 @@
+=== v0.2.6
+* Update response header from PUT to use Location
+
 === v0.2.5
 * Return Created response in favor of current multi status response on PUT (thanks {buffym}[https://github.com/buffym])
 * Show class 1 compliance to be in accordance with WebDAV spec (thanks {buffym}[https://github.com/buffym])
