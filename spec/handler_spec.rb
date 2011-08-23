@@ -121,7 +121,7 @@ describe DAV4Rack::Handler do
 
   it 'should return an absolute url after a put request' do
     put('/test', :input => 'body').should be_created
-    response['content-location'].should =~ /http:\/\/localhost(:\d+)?\/test/
+    response['location'].should =~ /http:\/\/localhost(:\d+)?\/test/
   end
   
   it 'should create and find a url with escaped characters' do
@@ -309,7 +309,7 @@ describe DAV4Rack::Handler do
     it "should return correct urls" do
       # FIXME: a put to '/test' works, too -- should it?
       put('/webdav/test', :input => 'body').should be_created
-      response.headers['content-location'].should =~ /http:\/\/localhost(:\d+)?\/webdav\/test/
+      response.headers['location'].should =~ /http:\/\/localhost(:\d+)?\/webdav\/test/
     end
   end
 end

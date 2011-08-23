@@ -70,7 +70,7 @@ module DAV4Rack
       raise Conflict unless resource.parent_exists? && resource.parent.collection?
       resource.lock_check
       status = resource.put(request, response)
-      response['Content-Location'] = "#{scheme}://#{host}:#{port}#{resource.public_path}" if status == Created
+      response['Location'] = "#{scheme}://#{host}:#{port}#{resource.public_path}" if status == Created
       status
     end
 
