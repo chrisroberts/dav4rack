@@ -40,7 +40,7 @@ module DAV4Rack
         # enumerable, however.
         
         response['Content-Length'] = response.body.to_s.length unless response['Content-Length'] || !response.body.is_a?(String)
-        response.body = [response.body] if not response.body.respond_to? :each
+        response.body = [response.body] unless response.body.respond_to? :each
         response.status = response.status ? response.status.to_i : 200
         response.headers.keys.each{|k| response.headers[k] = response[k].to_s}
         
