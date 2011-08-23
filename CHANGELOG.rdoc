@@ -1,3 +1,6 @@
+=== v0.2.7
+* Include location content within PUT response body (fixes issue described in {#20}[https://github.com/chrisroberts/dav4rack/issues/20])
+
 === v0.2.6
 * Update response header from PUT to use Location
 
