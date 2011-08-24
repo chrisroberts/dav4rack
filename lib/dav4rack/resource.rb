@@ -117,17 +117,17 @@ module DAV4Rack
     
     # If this is a collection, return the child resources.
     def children
-      raise NotImplementedError
+      NotImplemented
     end
 
     # Is this resource a collection?
     def collection?
-      raise NotImplementedError
+      NotImplemented
     end
 
     # Does this resource exist?
     def exist?
-      raise NotImplementedError
+      NotImplemented
     end
     
     # Does the parent resource exist?
@@ -137,22 +137,22 @@ module DAV4Rack
     
     # Return the creation time.
     def creation_date
-      raise NotImplementedError
+      NotImplemented
     end
 
     # Return the time of last modification.
     def last_modified
-      raise NotImplementedError
+      NotImplemented
     end
     
     # Set the time of last modification.
     def last_modified=(time)
-      raise NotImplementedError
+      NotImplemented
     end
 
     # Return an Etag, an unique hash value for this resource.
     def etag
-      raise NotImplementedError
+      NotImplemented
     end
 
     # Return the resource type. Generally only used to specify
@@ -163,54 +163,54 @@ module DAV4Rack
 
     # Return the mime type of this resource.
     def content_type
-      raise NotImplementedError
+      NotImplemented
     end
 
     # Return the size in bytes for this resource.
     def content_length
-      raise NotImplementedError
+      NotImplemented
     end
 
     # HTTP GET request.
     #
     # Write the content of the resource to the response.body.
     def get(request, response)
-      raise NotImplementedError
+      NotImplemented
     end
 
     # HTTP PUT request.
     #
     # Save the content of the request.body.
     def put(request, response)
-      raise NotImplementedError
+      NotImplemented
     end
     
     # HTTP POST request.
     #
     # Usually forbidden.
     def post(request, response)
-      raise NotImplementedError
+      NotImplemented
     end
     
     # HTTP DELETE request.
     #
     # Delete this resource.
     def delete
-      raise NotImplementedError
+      NotImplemented
     end
     
     # HTTP COPY request.
     #
     # Copy this resource to given destination resource.
     def copy(dest, overwrite=false)
-      raise NotImplementedError
+      NotImplemented
     end
   
     # HTTP MOVE request.
     #
     # Move this resource to given destination resource.
     def move(dest, overwrite=false)
-      raise NotImplemented
+      NotImplemented
     end
     
     # args:: Hash of lock arguments
@@ -229,31 +229,39 @@ module DAV4Rack
     # (http://www.webdav.org/specs/rfc4918.html#rfc.section.9.10)
     
     def lock(args)
-      raise NotImplementedError if @lock_class.nil?
-      raise Conflict unless parent_exists?
-      lock_check(args[:scope])
-      lock = @lock_class.explicit_locks(@path).find{|l| l.scope == args[:scope] && l.kind == args[:type] && l.user == @user}
-      unless(lock)
-        token = UUIDTools::UUID.random_create.to_s
-        lock = @lock_class.generate(@path, @user, token)
-        lock.scope = args[:scope]
-        lock.kind = args[:type]
-        lock.owner = args[:owner]
-        lock.depth = args[:depth].is_a?(Symbol) ? args[:depth] : args[:depth].to_i
-        if(args[:timeout])
-          lock.timeout = args[:timeout] <= @max_timeout && args[:timeout] > 0 ? args[:timeout] : @max_timeout
+      unless(@lock_class)
+        NotImplemented
+      else
+        unless(parent_exists?)
+          Conflict
         else
-          lock.timeout = @default_timeout
+          lock_check(args[:scope])
+          lock = @lock_class.explicit_locks(@path).find{|l| l.scope == args[:scope] && l.kind == args[:type] && l.user == @user}
+          unless(lock)
+            token = UUIDTools::UUID.random_create.to_s
+            lock = @lock_class.generate(@path, @user, token)
+            lock.scope = args[:scope]
+            lock.kind = args[:type]
+            lock.owner = args[:owner]
+            lock.depth = args[:depth].is_a?(Symbol) ? args[:depth] : args[:depth].to_i
+            if(args[:timeout])
+              lock.timeout = args[:timeout] <= @max_timeout && args[:timeout] > 0 ? args[:timeout] : @max_timeout
+            else
+              lock.timeout = @default_timeout
+            end
+            lock.save if lock.respond_to? :save
+          end
+          begin
+            lock_check(args[:type])
+          rescue DAV4Rack::LockFailure => lock_failure
+            lock.destroy
+            raise lock_failure
+          rescue HTTPStatus::Status => status
+            status
+          end
+          [lock.remaining_timeout, lock.token]
         end
-        lock.save if lock.respond_to? :save
       end
-      begin
-        lock_check(args[:type])
-      rescue DAV4Rack::LockFailure => e
-        lock.destroy
-        raise e
-      end
-      [lock.remaining_timeout, lock.token]
     end
 
     # lock_scope:: scope of lock
@@ -286,20 +294,30 @@ module DAV4Rack
     # token:: Lock token
     # Remove the given lock
     def unlock(token)
-      raise NotImplementedError if @lock_class.nil?
-      token = token.slice(1, token.length - 2)
-      raise BadRequest if token.nil? || token.empty?
-      lock = @lock_class.find_by_token(token)
-      raise Forbidden unless lock && lock.user == @user
-      raise Conflict unless lock.path =~ /^#{Regexp.escape(@path)}.*$/
-      lock.destroy
-      NoContent
+      unless(@lock_class)
+        NotImplemented
+      else
+        token = token.slice(1, token.length - 2)
+        if(token.nil? || token.empty?)
+          BadRequest
+        else
+          lock = @lock_class.find_by_token(token)
+          if(lock.nil? || lock.user != @user)
+            Forbidden
+          elsif(lock.path !~ /^#{Regexp.escape(@path)}.*$/)
+            Conflict
+          else
+            lock.destroy
+            NoContent
+          end
+        end
+      end
     end
     
     
     # Create this resource as collection.
     def make_collection
-      raise NotImplementedError
+      NotImplemented
     end
 
     # other:: Resource
@@ -348,13 +366,13 @@ module DAV4Rack
       when 'getlastmodified' then self.last_modified = Time.httpdate(value)
       end
     rescue ArgumentError
-      raise HTTPStatus::Conflict
+      Conflict
     end
 
     # name:: Property name
     # Remove the property from the resource
     def remove_property(name)
-      raise HTTPStatus::Forbidden
+      Forbidden
     end
 
     # name:: Name of child
