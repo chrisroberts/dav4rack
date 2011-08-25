@@ -44,35 +44,45 @@ module DAV4Rack
     
     # Return response to HEAD
     def head
-      raise NotFound unless resource.exist?
-      response['Etag'] = resource.etag
-      response['Content-Type'] = resource.content_type
-      response['Last-Modified'] = resource.last_modified.httpdate
-      OK
+      if(resource.exist?)
+        response['Etag'] = resource.etag
+        response['Content-Type'] = resource.content_type
+        response['Last-Modified'] = resource.last_modified.httpdate
+        OK
+      else
+        NotFound
+      end
     end
     
     # Return response to GET
     def get
-      raise NotFound unless resource.exist?
-      res = resource.get(request, response)
-      if(res == OK && !resource.collection?)
-        response['Etag'] = resource.etag
-        response['Content-Type'] = resource.content_type
-        response['Content-Length'] = resource.content_length.to_s
-        response['Last-Modified'] = resource.last_modified.httpdate
+      if(resource.exist?)
+        res = resource.get(request, response)
+        if(res == OK && !resource.collection?)
+          response['Etag'] = resource.etag
+          response['Content-Type'] = resource.content_type
+          response['Content-Length'] = resource.content_length.to_s
+          response['Last-Modified'] = resource.last_modified.httpdate
+        end
+        res
+      else
+        NotFound
       end
-      res
     end
 
     # Return response to PUT
     def put
-      raise Forbidden if resource.collection?
-      raise Conflict unless resource.parent_exists? && resource.parent.collection?
-      resource.lock_check
-      status = resource.put(request, response)
-      response['Location'] = "#{scheme}://#{host}:#{port}#{resource.public_path}" if status == Created
-      response.body = response['Location']
-      status
+      if(resource.collection?)
+        Forbidden
+      elsif(!resource.parent_exists? || !resource.parent.collection?)
+        Conflict
+      else
+        resource.lock_check
+        status = resource.put(request, response)
+        response['Location'] = "#{scheme}://#{host}:#{port}#{resource.public_path}" if status == Created
+        response.body = response['Location']
+        status
+      end
     end
 
     # Return response to POST
@@ -82,9 +92,12 @@ module DAV4Rack
 
     # Return response to DELETE
     def delete
-      raise NotFound unless resource.exist?
-      resource.lock_check
-      resource.delete
+      if(resource.exist?)
+        resource.lock_check
+        resource.delete
+      else
+        NotFound
+      end
     end
     
     # Return response to MKCOL
@@ -108,43 +121,53 @@ module DAV4Rack
     # Move Resource to new location. If :copy is provided,
     # Resource will be copied (implementation ease)
     def move(*args)
-      raise NotFound unless resource.exist?
-      resource.lock_check unless args.include?(:copy)
-      destination = url_unescape(env['HTTP_DESTINATION'].sub(%r{https?://([^/]+)}, ''))
-      dest_host = $1
-      raise BadGateway if dest_host and dest_host.gsub(/:\d{2,5}$/,'') != request.host
-      raise Forbidden if destination == resource.public_path
-      dest = resource_class.new(destination, clean_path(destination), @request, @response, @options.merge(:user => resource.user))
-      status = nil
-      if(args.include?(:copy))
-        status = resource.copy(dest, overwrite)
+      unless(resource.exist?)
+        NotFound
       else
-        raise Conflict unless depth.is_a?(Symbol) || depth > 1
-        status = resource.move(dest, overwrite)
-      end
-      response['Location'] = "#{scheme}://#{host}:#{port}#{dest.public_path}" if status == Created
-      multistatus do |xml|
-        xml.response do
-          xml.href "#{scheme}://#{host}:#{port}#{status == Created ? dest.public_path : resource.public_path}"
-          xml.status "#{http_version} #{status.status_line}"
+        resource.lock_check unless args.include?(:copy)
+        destination = url_unescape(env['HTTP_DESTINATION'].sub(%r{https?://([^/]+)}, ''))
+        dest_host = $1
+        if(dest_host && dest_host.gsub(/:\d{2,5}$/, '') != request.host)
+          BadGateway
+        elsif(destination == resource.public_path)
+          Forbidden
+        else
+          dest = resource_class.new(destination, clean_path(destination), @request, @response, @options.merge(:user => resource.user))
+          status = nil
+          if(args.include?(:copy))
+            status = resource.copy(dest, overwrite)
+          else
+            return Conflict unless depth.is_a?(Symbol) || depth > 1
+            status = resource.move(dest, overwrite)
+          end
+          response['Location'] = "#{scheme}://#{host}:#{port}#{dest.public_path}" if status == Created
+          multistatus do |xml|
+            xml.response do
+              xml.href "#{scheme}://#{host}:#{port}#{status == Created ? dest.public_path : resource.public_path}"
+              xml.status "#{http_version} #{status.status_line}"
+            end
+          end
         end
       end
     end
     
     # Return respoonse to PROPFIND
     def propfind
-      raise NotFound unless resource.exist?
-      unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
-        names = resource.property_names
+      unless(resource.exist?)
+        NotFound
       else
-        names = request_document.xpath("//#{ns}propfind/#{ns}prop").children.find_all{|n|n.element?}.map{|n|n.name}
-        names = resource.property_names if names.empty?
-      end
-      multistatus do |xml|
-        find_resources.each do |resource|
-          xml.response do
-            xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
-            propstats(xml, get_properties(resource, names))
+        unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
+          names = resource.property_names
+        else
+          names = request_document.xpath("//#{ns}propfind/#{ns}prop").children.find_all{|n|n.element?}.map{|n|n.name}
+          names = resource.property_names if names.empty?
+        end
+        multistatus do |xml|
+          find_resources.each do |resource|
+            xml.response do
+              xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+              propstats(xml, get_properties(resource, names))
+            end
           end
         end
       end
@@ -152,15 +175,18 @@ module DAV4Rack
     
     # Return response to PROPPATCH
     def proppatch
-      raise NotFound unless resource.exist?
-      resource.lock_check
-      prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
-      prop_set = request_match('/propertyupdate/set/prop').children.map{|n| [n.name, n.text] }
-      multistatus do |xml|
-        find_resources.each do |resource|
-          xml.response do
-            xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
-            propstats(xml, set_properties(resource, prop_set))
+      unless(resource.exist?)
+        NotFound
+      else
+        resource.lock_check
+        prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
+        prop_set = request_match('/propertyupdate/set/prop').children.map{|n| [n.name, n.text] }
+        multistatus do |xml|
+          find_resources.each do |resource|
+            xml.response do
+              xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+              propstats(xml, set_properties(resource, prop_set))
+            end
           end
         end
       end
@@ -171,48 +197,50 @@ module DAV4Rack
     # NOTE: This will pass an argument hash to Resource#lock and
     # wait for a success/failure response. 
     def lock
-      raise NotFound unless resource.exist?
       lockinfo = request_document.xpath("//#{ns}lockinfo")
       asked = {}
       asked[:timeout] = request.env['Timeout'].split(',').map{|x|x.strip} if request.env['Timeout']
       asked[:depth] = depth
-      raise BadRequest unless [0, :infinity].include?(asked[:depth])
-      asked[:scope] = lockinfo.xpath("//#{ns}lockscope").children.find_all{|n|n.element?}.map{|n|n.name}.first
-      asked[:type] = lockinfo.xpath("#{ns}locktype").children.find_all{|n|n.element?}.map{|n|n.name}.first
-      asked[:owner] = lockinfo.xpath("//#{ns}owner/#{ns}href").children.map{|n|n.text}.first
-      begin
-        lock_time, locktoken = resource.lock(asked)
-        render_xml(:prop) do |xml|
-          xml.lockdiscovery do
-            xml.activelock do
-              if(asked[:scope])
-                xml.lockscope do
-                  xml.send(asked[:scope])
+      unless([0, :infinity].include?(asked[:depth]))
+        BadRequest
+      else
+        asked[:scope] = lockinfo.xpath("//#{ns}lockscope").children.find_all{|n|n.element?}.map{|n|n.name}.first
+        asked[:type] = lockinfo.xpath("#{ns}locktype").children.find_all{|n|n.element?}.map{|n|n.name}.first
+        asked[:owner] = lockinfo.xpath("//#{ns}owner/#{ns}href").children.map{|n|n.text}.first
+        begin
+          lock_time, locktoken = resource.lock(asked)
+          render_xml(:prop) do |xml|
+            xml.lockdiscovery do
+              xml.activelock do
+                if(asked[:scope])
+                  xml.lockscope do
+                    xml.send(asked[:scope])
+                  end
                 end
-              end
-              if(asked[:type])
-                xml.locktype do
-                  xml.send(asked[:type])
+                if(asked[:type])
+                  xml.locktype do
+                    xml.send(asked[:type])
+                  end
                 end
-              end
-              xml.depth asked[:depth].to_s
-              xml.timeout lock_time ? "Second-#{lock_time}" : 'infinity'
-              xml.locktoken do
-                xml.href locktoken
-              end
-              if(asked[:owner])
-                xml.owner asked[:owner]
+                xml.depth asked[:depth].to_s
+                xml.timeout lock_time ? "Second-#{lock_time}" : 'infinity'
+                xml.locktoken do
+                  xml.href locktoken
+                end
+                if(asked[:owner])
+                  xml.owner asked[:owner]
+                end
               end
             end
           end
-        end
-        response.status = resource.exist? ? OK : Created
-      rescue LockFailure => e
-        multistatus do |xml|
-          e.path_status.each_pair do |path, status|
-            xml.response do
-              xml.href path
-              xml.status "#{http_version} #{status.status_line}"
+          response.status = resource.exist? ? OK : Created
+        rescue LockFailure => e
+          multistatus do |xml|
+            e.path_status.each_pair do |path, status|
+              xml.response do
+                xml.href path
+                xml.status "#{http_version} #{status.status_line}"
+              end
             end
           end
         end
