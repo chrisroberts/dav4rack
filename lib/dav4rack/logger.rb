@@ -8,10 +8,12 @@ module DAV4Rack
       # args:: Arguments for Logger -> [path, level] (level is optional) or a Logger instance
       # Set the path to the log file.
       def set(*args)
-        if(args.first.is_a?(Logger))
+        if(%w(info debug warn fatal).all?{|meth| args.first.respond_to?(meth)})
           @@logger = args.first
+        elsif(args.first.respond_to?(:to_s))
+          @@logger = ::Logger.new(args.first.to_s, 'weekly')
         else
-          @@logger = ::Logger.new(args.first, 'weekly')
+          raise 'Invalid type specified for logger'
         end
         if(args.size > 1)
           @@logger.level = args[1]
