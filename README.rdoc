@@ -308,6 +308,7 @@ A big thanks to everyone contributing to help make this project better.
 * {teefax}[http://github.com/teefax]
 * {buffym}[https://github.com/buffym]
 * {jbangert}[https://github.com/jbangert]
+* {doxavore}[https://github.com/doxavore]
 
 == License
 

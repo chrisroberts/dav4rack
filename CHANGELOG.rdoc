@@ -1,3 +1,8 @@
+=== v0.2.8
+* Allow custom logger types to be used
+* Allow resource to handle existence on locking (fixes issue {#21}[https://github.com/chrisroberts/dav4rack/issues/21] thanks {doxavore}[https://github.com/doxavore])
+* Removed exception based control flow in favor of logic based control flow
+
 === v0.2.7
 * Include location content within PUT response body (fixes issue described in {#20}[https://github.com/chrisroberts/dav4rack/issues/20])
 
