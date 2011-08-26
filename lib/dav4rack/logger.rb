@@ -10,9 +10,9 @@ module DAV4Rack
       def set(*args)
         if(%w(info debug warn fatal).all?{|meth| args.first.respond_to?(meth)})
           @@logger = args.first
-        elsif(args.first.respond_to?(:to_s))
+        elsif(args.first.respond_to?(:to_s) && !args.first.to_s.empty?)
           @@logger = ::Logger.new(args.first.to_s, 'weekly')
-        else
+        elsif(args.first)
           raise 'Invalid type specified for logger'
         end
         if(args.size > 1)
