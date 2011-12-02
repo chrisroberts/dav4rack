@@ -77,8 +77,7 @@ module DAV4Rack
       else
         resource.lock_check
         status = resource.put(request, response)
-        response['Location'] = "#{scheme}://#{host}:#{port}#{resource.public_path}" if status == Created
-        response['Location'] = url_escape(response['Location'])
+        response['Location'] = "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}" if status == Created
         response.body = response['Location']
         status
       end
@@ -139,11 +138,10 @@ module DAV4Rack
             return Conflict unless depth.is_a?(Symbol) || depth > 1
             status = resource.move(dest, overwrite)
           end
-          response['Location'] = "#{scheme}://#{host}:#{port}#{dest.public_path}" if status == Created
-          response['Location'] = url_escape(response['Location'])
+          response['Location'] = "#{scheme}://#{host}:#{port}#{url_escape(dest.public_path)}" if status == Created
           multistatus do |xml|
             xml.response do
-              xml.href "#{scheme}://#{host}:#{port}#{status == Created ? dest.public_path : resource.public_path}"
+              xml.href "#{scheme}://#{host}:#{port}#{url_escape(status == Created ? dest.public_path : resource.public_path)}"
               xml.status "#{http_version} #{status.status_line}"
             end
           end
@@ -422,7 +420,7 @@ module DAV4Rack
     def response_errors(xml, errors)
       for path, status in errors
         xml.response do
-          xml.href "#{scheme}://#{host}:#{port}#{path}"
+          xml.href "#{scheme}://#{host}:#{port}#{url_escape(path)}"
           xml.status "#{http_version} #{status.status_line}"
         end
       end
