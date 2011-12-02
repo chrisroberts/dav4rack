@@ -11,14 +11,11 @@ require 'mongoid'
 describe DAV4Rack::Handler do
 
   before do
-#   FileUtils.mkdir(DOC_ROOT) unless File.exists?(DOC_ROOT)
-#   @controller = DAV4Rack::Handler.new(:root => DOC_ROOT)
     Mongoid.database = Mongo::Connection.new("localhost").db("test")
     @controller = DAV4Rack::Handler.new(:root => '/webdav', :resource_class => ::DAV4Rack::MongoResource, :root_uri_path => '')
   end
 
   after do
-#   FileUtils.rm_rf(DOC_ROOT) if File.exists?(DOC_ROOT)
     Mongoid.database.collection('fs.files').drop
   end
   
@@ -160,15 +157,13 @@ describe DAV4Rack::Handler do
 
   it 'should copy a single resource' do
     put('/test', :input => 'body').should be_created
-    copy('/test', 'HTTP_DESTINATION' => '/copy')
-    multi_status_created.should eq true
+    copy('/test', 'HTTP_DESTINATION' => '/copy').should be_created
     get('/copy').body.should == 'body'
   end
 
   it 'should copy a resource with escaped characters' do
     put(url_escape('/a b'), :input => 'body').should be_created
-    copy(url_escape('/a b'), 'HTTP_DESTINATION' => url_escape('/a c'))
-    multi_status_created.should eq true
+    copy(url_escape('/a b'), 'HTTP_DESTINATION' => url_escape('/a c')).should be_created
     get(url_escape('/a c')).should be_ok
     response.body.should == 'body'
   end
@@ -176,19 +171,14 @@ describe DAV4Rack::Handler do
   it 'should deny a copy without overwrite' do
     put('/test', :input => 'body').should be_created
     put('/copy', :input => 'copy').should be_created
-    copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'F')
-    
-    multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/test/
-    multistatus_response('/D:status').first.text.should match(/412 Precondition Failed/)
-    
+    copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'F').should be_precondition_failed
     get('/copy').body.should == 'copy'
   end
   
   it 'should allow a copy with overwrite' do
     put('/test', :input => 'body').should be_created
     put('/copy', :input => 'copy').should be_created
-    copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'T')
-    multi_status_no_content.should eq true
+    copy('/test', 'HTTP_DESTINATION' => '/copy', 'HTTP_OVERWRITE' => 'T').should be_no_content
     get('/copy').body.should == 'body'
   end
   
@@ -299,7 +289,6 @@ describe DAV4Rack::Handler do
   context "when mapping a path" do
     
     before do
-#     @controller = DAV4Rack::Handler.new(:root => DOC_ROOT, :root_uri_path => '/webdav/')
       @controller = DAV4Rack::Handler.new(:root => '/webdav', :resource_class => ::DAV4Rack::MongoResource, :root_uri_path => '/webdav')
     end
     
