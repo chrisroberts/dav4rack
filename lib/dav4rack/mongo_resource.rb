@@ -213,7 +213,7 @@ module DAV4Rack
         @collection.remove(exists) if exists
       end
 
-      collection? ? OK : (exists ? NoContent : Created)
+      collection? ? Created : (exists ? NoContent : Created)
     end
 
     # HTTP MOVE request.
@@ -243,7 +243,7 @@ module DAV4Rack
         @collection.remove(exists) if exists
       end
 
-      collection? ? OK : (exists ? NoContent : Created)
+      collection? ? Created : (exists ? NoContent : Created)
     end
 
     # HTTP MKCOL request.
