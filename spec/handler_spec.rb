@@ -48,9 +48,7 @@ describe DAV4Rack::Handler do
   end
  
   def url_escape(string)
-    string.gsub(/([^ a-zA-Z0-9_.-]+)/n) do
-      '%' + $1.unpack('H2' * $1.size).join('%').upcase
-    end.tr(' ', '+')
+    URI.escape(string)
   end
   
   def response_xml
@@ -136,8 +134,7 @@ describe DAV4Rack::Handler do
   end
   
   it 'should delete recursively' do
-    mkcol('/folder')
-    multi_status_created.should eq true
+    mkcol('/folder').should be_created
     put('/folder/a', :input => 'body').should be_created
     put('/folder/b', :input => 'body').should be_created
     
@@ -192,8 +189,7 @@ describe DAV4Rack::Handler do
   end
   
   it 'should copy a collection' do  
-    mkcol('/folder')
-    multi_status_created.should eq true
+    mkcol('/folder').should be_created
     copy('/folder', 'HTTP_DESTINATION' => '/copy')
     multi_status_ok.should eq true
     propfind('/copy', :input => propfind_xml(:resourcetype))
@@ -201,8 +197,7 @@ describe DAV4Rack::Handler do
   end
 
   it 'should copy a collection resursively' do
-    mkcol('/folder')
-    multi_status_created.should eq true
+    mkcol('/folder').should be_created
     put('/folder/a', :input => 'A').should be_created
     put('/folder/b', :input => 'B').should be_created
     
@@ -215,8 +210,7 @@ describe DAV4Rack::Handler do
   end
   
   it 'should move a collection recursively' do
-    mkcol('/folder')
-    multi_status_created.should eq true
+    mkcol('/folder').should be_created
     put('/folder/a', :input => 'A').should be_created
     put('/folder/b', :input => 'B').should be_created
     
@@ -232,15 +226,13 @@ describe DAV4Rack::Handler do
   end
   
   it 'should create a collection' do
-    mkcol('/folder')
-    multi_status_created.should eq true
+    mkcol('/folder').should be_created
     propfind('/folder', :input => propfind_xml(:resourcetype))
     multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
   end
   
   it 'should return full urls after creating a collection' do
-    mkcol('/folder')
-    multi_status_created.should eq true
+    mkcol('/folder').should be_created
     propfind('/folder', :input => propfind_xml(:resourcetype))
     multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
     multistatus_response('/D:href').first.text.should =~ /http:\/\/localhost(:\d+)?\/folder/
