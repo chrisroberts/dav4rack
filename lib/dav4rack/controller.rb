@@ -102,12 +102,8 @@ module DAV4Rack
     def mkcol
       resource.lock_check
       status = resource.make_collection
-      multistatus do |xml|
-        xml.response do
-          xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
-          xml.status "#{http_version} #{status.status_line}"
-        end
-      end
+      response['Location'] = "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}" if status == Created
+      status
     end
     
     # Return response to COPY
