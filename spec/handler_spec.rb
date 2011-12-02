@@ -157,14 +157,14 @@ describe DAV4Rack::Handler do
   it 'should copy a single resource' do
     put('/test', :input => 'body').should be_created
     copy('/test', 'HTTP_DESTINATION' => '/copy')
-    multi_status_no_content.should eq true
+    multi_status_created.should eq true
     get('/copy').body.should == 'body'
   end
 
   it 'should copy a resource with escaped characters' do
     put(url_escape('/a b'), :input => 'body').should be_created
     copy(url_escape('/a b'), 'HTTP_DESTINATION' => url_escape('/a c'))
-    multi_status_no_content.should eq true
+    multi_status_created.should eq true
     get(url_escape('/a c')).should be_ok
     response.body.should == 'body'
   end

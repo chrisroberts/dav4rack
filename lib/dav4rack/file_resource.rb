@@ -113,7 +113,7 @@ module DAV4Rack
         FileUtils.cp_r("#{file_path}/.", "#{dest.send(:file_path)}/")
         OK
       else
-        exists = File.exists?(file_path)
+        exists = File.exists?(dest.file_path)
         if(exists && !overwrite)
           PreconditionFailed
         else
@@ -157,7 +157,7 @@ module DAV4Rack
       File.unlink(tempfile) rescue nil
     end
     
-    private
+    protected
 
     def authenticate(user, pass)
       if(options[:username])
