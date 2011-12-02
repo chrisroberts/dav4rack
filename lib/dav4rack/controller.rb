@@ -1,3 +1,5 @@
+require 'uri'
+
 module DAV4Rack
   
   class Controller
@@ -21,17 +23,13 @@ module DAV4Rack
     # s:: string
     # Escape URL string
     def url_escape(s)
-      s.gsub(/([^\/a-zA-Z0-9_.-]+)/n) do
-        '%' + $1.unpack('H2' * $1.size).join('%').upcase
-      end.tr(' ', '+')
+      URI.escape(s)
     end
     
     # s:: string
     # Unescape URL string
     def url_unescape(s)
-      s.tr('+', ' ').gsub(/((?:%[0-9a-fA-F]{2})+)/n) do
-        [$1.delete('%')].pack('H*')
-      end
+      URI.unescape(s)
     end  
     
     # Return response to OPTIONS
@@ -80,6 +78,7 @@ module DAV4Rack
         resource.lock_check
         status = resource.put(request, response)
         response['Location'] = "#{scheme}://#{host}:#{port}#{resource.public_path}" if status == Created
+        response['Location'] = url_escape(response['Location'])
         response.body = response['Location']
         status
       end
@@ -141,6 +140,7 @@ module DAV4Rack
             status = resource.move(dest, overwrite)
           end
           response['Location'] = "#{scheme}://#{host}:#{port}#{dest.public_path}" if status == Created
+          response['Location'] = url_escape(response['Location'])
           multistatus do |xml|
             xml.response do
               xml.href "#{scheme}://#{host}:#{port}#{status == Created ? dest.public_path : resource.public_path}"
