@@ -237,9 +237,10 @@ module DAV4Rack
 
         exists = @collection.find_one({:filename => dst_name}) rescue nil
 
-        bson['filename'] = dst_name
-        @collection.save(bson)
-
+        # http://mongoid.org/docs/persistence/atomic.html
+        # http://rubydoc.info/github/mongoid/mongoid/master/Mongoid/Collection#update-instance_method
+        @collection.update({'_id' => bson['_id']}, {'$set' => {'filename' => dst_name}}, :safe => true)
+        
         @collection.remove(exists) if exists
       end
 
