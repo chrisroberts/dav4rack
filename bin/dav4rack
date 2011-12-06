@@ -87,7 +87,7 @@ app = Rack::Builder.new do
   use Rack::CommonLogger
   use Rack::Reloader
   use Rack::Lint
-  
+
   run DAV4Rack::Handler.new(credentials)
 
 end.to_app
@@ -97,7 +97,7 @@ runners << lambda do |x|
   print 'Looking for unicorn... '
   require 'unicorn'
   puts 'OK'
-  Unicorn.run(x, :listeners => ["0.0.0.0:3000"])
+  Unicorn::HttpServer.new(x, :listeners => ["0.0.0.0:3000"]).start.join
 end
 runners << lambda do |x|
   print 'Looking for mongrel... '
