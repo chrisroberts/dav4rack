@@ -309,6 +309,8 @@ A big thanks to everyone contributing to help make this project better.
 * {buffym}[https://github.com/buffym]
 * {jbangert}[https://github.com/jbangert]
 * {doxavore}[https://github.com/doxavore]
+* {spicyj}[https://github.com/spicyj]
+* {TurchenkoAlex}[https://github.com/TurchenkoAlex]
 
 == License
 

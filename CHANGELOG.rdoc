@@ -1,3 +1,7 @@
+=== v0.2.10
+* Fix unicorn starting from exec script (thanks {spicyj}[https://github.com/spicyj])
+* Return correct size using #bytesize instead of #size (thanks {TurchenkoAlex}[https://github.com/TurchenkoAlex])
+
 === v0.2.9
 * Be less restrictive of Nokogiri dependency
 
