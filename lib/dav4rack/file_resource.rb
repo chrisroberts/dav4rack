@@ -67,7 +67,7 @@ module DAV4Rack
         Rack::Directory.new(root).call(request.env)[2].each do |line|
           response.body << line
         end
-        response['Content-Length'] = response.body.size.to_s
+        response['Content-Length'] = response.body.bytesize.to_s
       else
         file = Rack::File.new(root)
         response.body = file
