@@ -97,7 +97,11 @@ runners << lambda do |x|
   print 'Looking for unicorn... '
   require 'unicorn'
   puts 'OK'
-  Unicorn::HttpServer.new(x, :listeners => ["0.0.0.0:3000"]).start.join
+  if(Unicorn.respond_to?(:run))
+    Unicorn.run(x, :listeners => ["0.0.0.0:3000"])
+  else
+    Unicorn::HttpServer.new(x, :listeners => ["0.0.0.0:3000"]).start.join
+  end
 end
 runners << lambda do |x|
   print 'Looking for mongrel... '
