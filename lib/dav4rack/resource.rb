@@ -347,7 +347,7 @@ module DAV4Rack
       case name
       when 'resourcetype'     then resource_type
       when 'displayname'      then display_name
-      when 'creationdate'     then creation_date.xmlschema 
+      when 'creationdate'     then creation_date.httpdate 
       when 'getcontentlength' then content_length.to_s
       when 'getcontenttype'   then content_type
       when 'getetag'          then etag
