@@ -311,6 +311,7 @@ A big thanks to everyone contributing to help make this project better.
 * {doxavore}[https://github.com/doxavore]
 * {spicyj}[https://github.com/spicyj]
 * {TurchenkoAlex}[https://github.com/TurchenkoAlex]
+* {exabugs}[https://github.com/exabugs]
 
 == License
 
