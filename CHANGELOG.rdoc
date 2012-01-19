@@ -1,3 +1,9 @@
+=== v0.2.11
+* URL escaping updates (thanks {exabugs}[https://github.com/exabugs])
+* Return status updates to match RFC (thanks {exabugs}[https://github.com/exabugs])
+* Add option to provide httpdate formatted creation date to MS clients (thanks {doxavore}[https://github.com/doxavore])
+
+
 === v0.2.10
 * Fix unicorn starting from exec script (thanks {spicyj}[https://github.com/spicyj])
 * Return correct size using #bytesize instead of #size (thanks {TurchenkoAlex}[https://github.com/TurchenkoAlex])
