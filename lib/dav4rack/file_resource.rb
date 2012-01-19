@@ -111,7 +111,7 @@ module DAV4Rack
       elsif(stat.directory?)
         dest.make_collection
         FileUtils.cp_r("#{file_path}/.", "#{dest.send(:file_path)}/")
-        OK
+        Created
       else
         exists = File.exists?(dest.file_path)
         if(exists && !overwrite)
@@ -131,7 +131,7 @@ module DAV4Rack
     def move(*args)
       copy(*args)
       delete
-      OK
+      Created
     end
     
     # HTTP MKCOL request.

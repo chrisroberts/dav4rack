@@ -191,7 +191,7 @@ describe DAV4Rack::Handler do
   it 'should copy a collection' do  
     mkcol('/folder').should be_created
     copy('/folder', 'HTTP_DESTINATION' => '/copy')
-    multi_status_ok.should eq true
+    multi_status_created.should eq true
     propfind('/copy', :input => propfind_xml(:resourcetype))
     multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
   end
@@ -202,7 +202,7 @@ describe DAV4Rack::Handler do
     put('/folder/b', :input => 'B').should be_created
     
     copy('/folder', 'HTTP_DESTINATION' => '/copy')
-    multi_status_ok.should eq true
+    multi_status_created.should eq true
     propfind('/copy', :input => propfind_xml(:resourcetype))
     multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty
     get('/copy/a').body.should == 'A'
@@ -215,7 +215,7 @@ describe DAV4Rack::Handler do
     put('/folder/b', :input => 'B').should be_created
     
     move('/folder', 'HTTP_DESTINATION' => '/move')
-    multi_status_ok.should eq true
+    multi_status_created.should eq true
     propfind('/move', :input => propfind_xml(:resourcetype))
     multistatus_response('/D:propstat/D:prop/D:resourcetype/D:collection').should_not be_empty    
     
