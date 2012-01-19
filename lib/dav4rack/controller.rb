@@ -13,7 +13,7 @@ module DAV4Rack
     # Create a new Controller.
     # NOTE: options will be passed to Resource
     def initialize(request, response, options={})
-      raise Forbidden if request.path_info.include?('../')
+      raise Forbidden if request.path_info.include?('..')
       @request = request
       @response = response
       @options = options
@@ -102,8 +102,18 @@ module DAV4Rack
     def mkcol
       resource.lock_check
       status = resource.make_collection
-      response['Location'] = "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}" if status == Created
-      status
+      gen_url = "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}" if status == Created
+      if(resource.use_compat_mkcol_response?)
+        multistatus do |xml|
+          xml.response do
+            xml.href gen_url
+            xml.status "#{http_version} #{status.status_line}"
+          end
+        end
+      else
+        response['Location'] = gen_url
+        status
+      end
     end
     
     # Return response to COPY

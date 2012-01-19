@@ -347,7 +347,7 @@ module DAV4Rack
       case name
       when 'resourcetype'     then resource_type
       when 'displayname'      then display_name
-      when 'creationdate'     then creation_date.xmlschema 
+      when 'creationdate'     then use_ms_compat_creationdate? ? creation_date.httpdate : creation_date.xmlschema 
       when 'getcontentlength' then content_length.to_s
       when 'getcontenttype'   then content_type
       when 'getetag'          then etag
@@ -405,8 +405,6 @@ module DAV4Rack
       list
     end
     
-    protected
-    
     # Index page template for GETs on collection
     def index_page
       '<html><head> <title>%s</title>
@@ -425,10 +423,30 @@ module DAV4Rack
         %r{cyberduck}i,
         %r{konqueror}i
       ].any? do |regexp|
-        (request.respond_to?(:user_agent) ? request.user_agent : request.env['HTTP_USER_AGENT']) =~ regexp
+        (request.respond_to?(:user_agent) ? request.user_agent : request.env['HTTP_USER_AGENT']).to_s =~ regexp
       end
     end
-    
+
+    def use_compat_mkcol_response?
+      @options[:compat_mkcol] || @options[:compat_all]
+    end
+
+    # Returns true if using an MS client
+    def use_ms_compat_creationdate?
+      if(@options[:compat_ms_mangled_creationdate] || @options[:compat_all])
+        is_ms_client?
+      end
+    end
+
+    # Basic user agent testing for MS authored client
+    def is_ms_client?
+      [%r{microsoft-webdav}i, %r{microsoft office}i].any? do |regexp| 
+        (request.respond_to?(:user_agent) ? request.user_agent : request.env['HTTP_USER_AGENT']).to_s =~ regexp
+      end
+    end
+   
+    protected
+
     # Returns authentication credentials if available in form of [username,password]
     # TODO: Add support for digest
     def auth_credentials
