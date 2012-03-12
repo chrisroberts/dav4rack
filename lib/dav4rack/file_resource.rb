@@ -138,8 +138,20 @@ module DAV4Rack
     #
     # Create this resource as collection.
     def make_collection
-      Dir.mkdir(file_path)
-      Created
+      if(request.body.read.to_s == '')
+        if(File.directory?(file_path))
+          MethodNotAllowed
+        else
+          if(File.directory?(File.dirname(file_path)))
+            Dir.mkdir(file_path)
+            Created
+          else
+            Conflict
+          end
+        end
+      else
+        UnsupportedMediaType
+      end
     end
   
     # Write to this resource from given IO.
