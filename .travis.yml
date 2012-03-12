@@ -13,4 +13,4 @@ before_install:
 before_script:
   - rm -rf /tmp/dav-file-store
   - mkdir /tmp/dav-file-store
-script: test/script.sh
+script: ./test/script.sh
