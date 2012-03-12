@@ -8,6 +8,9 @@ if [ $? -ne 0 ] ; then
   exit 1
 fi
 
+echo "*** Specs passed. Starting litmus"
+echo
+
 # Run litmus test
 bundle exec dav4rack --root /tmp/dav-file-store &
 
@@ -24,6 +27,7 @@ LITMUS=$?
 kill $DAV_PID
 
 if [ $? -ne 0 ] ; then
+  echo
   echo "*** Litmus failed to properly complete"
   exit 1
 fi
