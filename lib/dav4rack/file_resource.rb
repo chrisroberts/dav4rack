@@ -105,33 +105,51 @@ module DAV4Rack
     # HTTP COPY request.
     #
     # Copy this resource to given destination resource.
-    def copy(dest, overwrite = false)
-      if(dest.path == path)
-        Conflict
-      elsif(stat.directory?)
-        dest.make_collection
-        FileUtils.cp_r("#{file_path}/.", "#{dest.send(:file_path)}/")
-        Created
+    # Copy this resource to given destination resource.
+    def copy(dest, overwrite)
+      if(collection?)
+        if(dest.exist?)
+          if(dest.collection? && overwrite)
+            FileUtils.cp_r(file_path, dest.send(:file_path))
+            Created
+          else
+            if(overwrite)
+              FileUtils.rm(dest.send(:file_path))
+              FileUtils.cp_r(file_path, dest.send(:file_path))
+              NoContent
+            else
+              PreconditionFailed
+            end
+          end
+        else
+          FileUtils.cp_r(file_path, dest.send(:file_path))
+          Created
+        end
       else
-        exists = File.exists?(dest.file_path)
-        if(exists && !overwrite)
+        if(dest.exist? && !overwrite)
           PreconditionFailed
         else
-          open(file_path, "rb") do |file|
-            dest.write(file)
+          if(File.directory?(File.dirname(dest.send(:file_path))))
+            new = !dest.exist?
+            if(dest.collection? && dest.exist?)
+              FileUtils.rm_rf(dest.send(:file_path))
+            end
+            FileUtils.cp(file_path, dest.send(:file_path).sub(/\/$/, ''))
+            new ? Created : NoContent
+          else
+            Conflict
           end
-          exists ? NoContent : Created
         end
       end
     end
-  
+    
     # HTTP MOVE request.
     #
     # Move this resource to given destination resource.
     def move(*args)
-      copy(*args)
-      delete
-      Created
+      result = copy(*args)
+      delete if [Created, NoContent].include?(result)
+      result
     end
     
     # HTTP MKCOL request.
