@@ -7,6 +7,8 @@ require 'nokogiri'
 require 'dav4rack/mongo_resource'
 require 'mongo'
 require 'mongoid'
+require 'rspec'
+require File.join(File.dirname(__FILE__), 'handler_spec.rb')
 
 describe DAV4Rack::Handler do
 
