@@ -27,7 +27,8 @@ opts = GetoptLong.new(
   ['--version', '-v', GetoptLong::NO_ARGUMENT],
   ['--root', '-r', GetoptLong::REQUIRED_ARGUMENT],
   ['--log', '-l', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--verbosity', '-V', GetoptLong::REQUIRED_ARGUMENT]
+  ['--verbosity', '-V', GetoptLong::REQUIRED_ARGUMENT],
+  ['--pretty-xml', '-P', GetoptLong::REQUIRED_ARGUMENT]
 )
 
 credentials = {}
@@ -47,6 +48,8 @@ opts.each do |opt,arg|
       puts "ERROR: Path provided is not a valid directory (#{arg})"
       exit(-1)
     end
+  when '--pretty-xml'
+    credentials[:pretty_xml] = true
   when '--version'
     print_version_info
     exit(0)

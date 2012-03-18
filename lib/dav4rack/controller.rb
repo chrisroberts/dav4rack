@@ -412,8 +412,14 @@ module DAV4Rack
           yield xml
         end
       end
-      
-      response.body = doc.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::AS_XML)
+     
+      if(@options[:pretty_xml])
+        response.body = doc.to_xml
+      else
+        response.body = doc.to_xml(
+          :save_with => Nokogiri::XML::Node::SaveOptions::AS_XML
+        )
+      end
       response["Content-Type"] = 'text/xml; charset="utf-8"'
       response["Content-Length"] = response.body.size.to_s
     end
