@@ -187,7 +187,50 @@ module DAV4Rack
       File.unlink(tempfile) rescue nil
     end
     
+    # name:: String - Property name
+    # Returns the value of the given property
+    def get_property(name)
+      super || custom_props(name)
+    end
+
+    # name:: String - Property name
+    # value:: New value
+    # Set the property to the given value
+    def set_property(name, value)
+      super || set_custom_props(name,value)
+    end
+
     protected
+
+    def set_custom_props(key,val)
+      prop_hash[key.to_sym] = val
+      File.open(prop_path, 'w') do |file|
+        file.write(YAML.dump(prop_hash))
+      end
+    end
+
+    def custom_props(key)
+      prop_hash[key.to_sym]
+    end
+
+    def prop_path
+      path = File.join(root, '.props', File.dirname(file_path), File.basename(file_path))
+      unless(File.directory?(File.dirname(path)))
+        FileUtils.mkdir_p(File.dirname(path))
+      end
+      path
+    end
+
+    def prop_hash
+      unless(@_prop_hash)
+        if(File.exists?(prop_path))
+          @_prop_hash = YAML.load(File.read(prop_path))
+        else
+          @_prop_hash = {}
+        end
+      end
+      @_prop_hash
+    end
 
     def authenticate(user, pass)
       if(options[:username])
@@ -202,7 +245,7 @@ module DAV4Rack
     end
 
     def file_path
-      root + '/' + path
+      File.join(root, path)
     end
 
     def stat
