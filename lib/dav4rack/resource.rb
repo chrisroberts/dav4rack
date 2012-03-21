@@ -365,8 +365,6 @@ module DAV4Rack
       when 'getetag'         then self.etag = value
       when 'getlastmodified' then self.last_modified = Time.httpdate(value)
       end
-    rescue ArgumentError
-      Conflict
     end
 
     # name:: Property name
