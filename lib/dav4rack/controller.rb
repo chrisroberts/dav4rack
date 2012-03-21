@@ -488,7 +488,9 @@ module DAV4Rack
         xml.propstat do
           xml.prop do
             for name, value in props
-              if(value.is_a?(Nokogiri::XML::Node))
+              if(value.is_a?(Nokogiri::XML::DocumentFragment))
+                xml.__send__ :insert, value
+              elsif(value.is_a?(Nokogiri::XML::Node))
                 xml.send(name) do
                   xml_convert(xml, value)
                 end
