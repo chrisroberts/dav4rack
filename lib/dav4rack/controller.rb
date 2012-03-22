@@ -385,10 +385,11 @@ module DAV4Rack
 
     # Namespace being used within XML document
     # TODO: Make this better
-    def ns
+    def ns(wanted_uri="DAV:")
       _ns = ''
       if(request_document && request_document.root && request_document.root.namespace_definitions.size > 0)
-        _ns = request_document.root.namespace_definitions.first.prefix.to_s
+        _ns = request_document.root.namespace_definitions.collect{|__ns| __ns if __ns.href == wanted_uri}.compact.first.prefix.to_s
+        _ns = request_document.root.namespace_definitions.first.prefix.to_s if _ns.empty?
         _ns += ':' unless _ns.empty?
       end
       _ns
