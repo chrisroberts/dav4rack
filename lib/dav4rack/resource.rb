@@ -16,7 +16,7 @@ module DAV4Rack
   end
   
   class Resource
-    attr_reader :path, :options, :public_path, :request, :response
+    attr_reader :path, :options, :public_path, :request, :response, :fully_qualified
     attr_accessor :user
     @@blocks = {}
     
@@ -71,6 +71,7 @@ module DAV4Rack
       ]
       @public_path = public_path.dup
       @path = path.dup
+      @fully_qualified = true # Do we want the whole URL or just the path in PROPFIND responses
       @request = request
       @response = response
       unless(options.has_key?(:lock_class))
