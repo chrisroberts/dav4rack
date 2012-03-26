@@ -184,7 +184,11 @@ module DAV4Rack
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
-              xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+              if resource.fully_qualified
+                xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+              else
+                xml.href url_escape(resource.public_path)
+              end
               propstats(xml, get_properties(resource, names))
             end
           end
@@ -497,7 +501,9 @@ module DAV4Rack
         xml.propstat do
           xml.prop do
             for name, value in props
-              if(value.is_a?(Nokogiri::XML::Node))
+              if(value.is_a?(Nokogiri::XML::DocumentFragment))
+                xml.__send__ :insert, value
+              elsif(value.is_a?(Nokogiri::XML::Node))
                 xml.send(name) do
                   xml_convert(xml, value)
                 end
