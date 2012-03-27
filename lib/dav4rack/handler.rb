@@ -24,7 +24,8 @@ module DAV4Rack
         
         controller = nil
         begin
-          controller = Controller.new(request, response, @options.dup)
+          controller_class = @options[:controller_class] || Controller
+          controller = controller_class.new(request, response, @options.dup)
           controller.authenticate
           res = controller.send(request.request_method.downcase)
           response.status = res.code if res.respond_to?(:code)
