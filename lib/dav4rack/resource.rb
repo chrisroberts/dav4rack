@@ -17,7 +17,7 @@ module DAV4Rack
   
   class Resource
     attr_reader :path, :options, :public_path, :request, 
-      :response, :propstat_relative_path
+      :response, :propstat_relative_path, :root_xml_attributes
     attr_accessor :user
     @@blocks = {}
     
@@ -73,6 +73,7 @@ module DAV4Rack
       @public_path = public_path.dup
       @path = path.dup
       @propstat_relative_path = !!options.delete(:propstat_relative_path)
+      @root_xml_attributes = options.delete(:root_xml_attributes) || {}
       @request = request
       @response = response
       unless(options.has_key?(:lock_class))
