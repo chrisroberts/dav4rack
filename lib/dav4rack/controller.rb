@@ -184,7 +184,7 @@ module DAV4Rack
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
-              if resource.fully_qualified
+              unless(resource.propstat_relative_path)
                 xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
               else
                 xml.href url_escape(resource.public_path)
