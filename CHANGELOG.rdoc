@@ -3,6 +3,9 @@
 * Return status updates to match RFC (thanks {exabugs}[https://github.com/exabugs])
 * Add option to provide httpdate formatted creation date to MS clients (thanks {doxavore}[https://github.com/doxavore])
 * New MongoDB resource (thanks {exabugs}[https://github.com/exabugs])
+* Controller subclass support (thanks {inferiorhumanorgans}[https://github.com/inferiorhumanorgans])
+* Root XML attributes (thanks {inferiorhumanorgans}[https://github.com/inferiorhumanorgans])
+* Allow propstat to return relative paths (apple carddav hack) (thanks {inferiorhumanorgans}[https://github.com/inferiorhumanorgans])
 
 === v0.2.10
 * Fix unicorn starting from exec script (thanks {spicyj}[https://github.com/spicyj])

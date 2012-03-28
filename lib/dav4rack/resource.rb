@@ -16,7 +16,8 @@ module DAV4Rack
   end
   
   class Resource
-    attr_reader :path, :options, :public_path, :request, :response, :fully_qualified
+    attr_reader :path, :options, :public_path, :request, 
+      :response, :propstat_relative_path, :root_xml_attributes
     attr_accessor :user
     @@blocks = {}
     
@@ -71,7 +72,8 @@ module DAV4Rack
       ]
       @public_path = public_path.dup
       @path = path.dup
-      @fully_qualified = true # Do we want the whole URL or just the path in PROPFIND responses
+      @propstat_relative_path = !!options.delete(:propstat_relative_path)
+      @root_xml_attributes = options.delete(:root_xml_attributes) || {}
       @request = request
       @response = response
       unless(options.has_key?(:lock_class))
@@ -366,8 +368,6 @@ module DAV4Rack
       when 'getetag'         then self.etag = value
       when 'getlastmodified' then self.last_modified = Time.httpdate(value)
       end
-    rescue ArgumentError
-      Conflict
     end
 
     # name:: Property name

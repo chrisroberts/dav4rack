@@ -169,13 +169,22 @@ module DAV4Rack
         unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
           names = resource.property_names
         else
-          names = request_document.xpath("//#{ns}propfind/#{ns}prop").children.find_all{|n|n.element?}.map{|n|n.name}
+          names = (
+            ns.empty? ? request_document.remove_namespaces! : request_document
+          ).xpath(
+            "//#{ns}propfind/#{ns}prop"
+          ).children.find_all{ |item|
+            item.element? && item.name.start_with?(ns)
+          }.map{ |item|
+            item.name.sub("#{ns}::", '')
+          }
+          raise BadRequest if names.empty?
           names = resource.property_names if names.empty?
         end
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
-              if resource.fully_qualified
+              unless(resource.propstat_relative_path)
                 xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
               else
                 xml.href url_escape(resource.public_path)
@@ -401,9 +410,9 @@ module DAV4Rack
     
     # pattern:: XPath pattern
     # Search XML document for given XPath
+    # TODO: Stripping namespaces not so great
     def request_match(pattern)
-      nil unless request_document
-      request_document.xpath(pattern, request_document.root.namespaces)
+      request_document.remove_namespaces!.xpath(pattern, request_document.root.namespaces)
     end
 
     # root_type:: Root tag name
@@ -411,7 +420,7 @@ module DAV4Rack
     def render_xml(root_type, root_attribs = {})
       raise ArgumentError.new 'Expecting block' unless block_given?
       doc = Nokogiri::XML::Builder.new do |xml_base|
-        xml_base.send(root_type.to_s, {'xmlns:D' => 'DAV:'}.merge(root_attribs)) do
+        xml_base.send(root_type.to_s, {'xmlns:D' => 'DAV:'}.merge(resource.root_xml_attributes)) do
           xml_base.parent.namespace = xml_base.parent.namespace_definitions.first
           xml = xml_base['D']
           yield xml
