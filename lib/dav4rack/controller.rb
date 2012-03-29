@@ -506,14 +506,15 @@ module DAV4Rack
         xml.propstat do
           xml.prop do
             for element, value in props
+              _ns = xml.doc.root.namespace_definitions.find{|ns_def| ns_def.href == element[:ns_href]}.prefix
               if (value.is_a?(Nokogiri::XML::Node)) or (value.is_a?(Nokogiri::XML::DocumentFragment))
                 xml.__send__ :insert, value
               elsif(value.is_a?(Symbol))
-                xml[element[:namespace]].send(name) do
-                  xml[element[:namespace]].send(value)
+                xml[_ns].send(element[:name]) do
+                  xml[_ns].send(value)
                 end
               else
-                xml[element[:namespace]].send(element[:name], value)
+                xml[_ns].send(element[:name], value)
               end
             end
           end
