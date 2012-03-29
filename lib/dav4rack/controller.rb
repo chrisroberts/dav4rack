@@ -167,19 +167,19 @@ module DAV4Rack
         NotFound
       else
         unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
-          names = resource.property_names
+          properties = resource.properties
         else
-          names = (
+          properties = (
             ns.empty? ? request_document.remove_namespaces! : request_document
           ).xpath(
             "//#{ns}propfind/#{ns}prop"
           ).children.find_all{ |item|
-            item.element? && item.name.start_with?(ns)
+            item.element?
           }.map{ |item|
-            item.name.sub("#{ns}::", '')
+            {:name => item.name, :namespace => item.namespace.prefix, :ns_href => item.namespace.href}
           }
-          raise BadRequest if names.empty?
-          names = resource.property_names if names.empty?
+          raise BadRequest if properties.empty?
+          properties = resource.properties if properties.empty?
         end
         multistatus do |xml|
           find_resources.each do |resource|
@@ -189,7 +189,7 @@ module DAV4Rack
               else
                 xml.href url_escape(resource.public_path)
               end
-              propstats(xml, get_properties(resource, names))
+              propstats(xml, get_properties(resource, properties))
             end
           end
         end
@@ -203,7 +203,10 @@ module DAV4Rack
       else
         resource.lock_check
         prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
-        prop_set = request_match('/propertyupdate/set/prop').children.map{|n| [n.name, n.text] }
+        prop_set = request_match('/propertyupdate/set/prop').children.inject({}) do |ret, elem|
+          ret[{:name => n.name, :namespace => n.namespace.prefix, :ns_href => n.namespace.href}] = n.text
+          ret
+        end
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
@@ -401,7 +404,8 @@ module DAV4Rack
     def ns(wanted_uri="DAV:")
       _ns = ''
       if(request_document && request_document.root && request_document.root.namespace_definitions.size > 0)
-        _ns = request_document.root.namespace_definitions.collect{|__ns| __ns if __ns.href == wanted_uri}.compact.first.prefix.to_s
+        _ns = request_document.root.namespace_definitions.collect{|__ns| __ns if __ns.href == wanted_uri}.compact
+        _ns = _ns.first.prefix.to_s unless _ns.empty?
         _ns = request_document.root.namespace_definitions.first.prefix.to_s if _ns.empty?
         _ns += ':' unless _ns.empty?
       end
@@ -459,35 +463,35 @@ module DAV4Rack
     end
 
     # resource:: Resource
-    # names:: Property names
+    # elements:: Property hashes (name, namespace, ns_href)
     # Returns array of property values for given names
-    def get_properties(resource, names)
+    def get_properties(resource, elements)
       stats = Hash.new { |h, k| h[k] = [] }
-      for name in names
+      for element in elements
         begin
-          val = resource.get_property(name)
-          stats[OK].push [name, val]
+          val = resource.get_property(element)
+          stats[OK] << [element, val]
         rescue Unauthorized => u
           raise u
         rescue Status
-          stats[$!] << name
+          stats[$!] << element
         end
       end
       stats
     end
 
     # resource:: Resource
-    # pairs:: name value pairs
+    # elements:: Property hashes (name, namespace, ns_href)
     # Sets the given properties
-    def set_properties(resource, pairs)
+    def set_properties(resource, elements)
       stats = Hash.new { |h, k| h[k] = [] }
-      for name, value in pairs
+      for element, value in element
         begin
-          stats[OK] << [name, resource.set_property(name, value)]
+          stats[OK] << [element, resource.set_property(name, value)]
         rescue Unauthorized => u
           raise u
         rescue Status
-          stats[$!] << name
+          stats[$!] << element
         end
       end
       stats
@@ -501,19 +505,15 @@ module DAV4Rack
       for status, props in stats
         xml.propstat do
           xml.prop do
-            for name, value in props
-              if(value.is_a?(Nokogiri::XML::DocumentFragment))
+            for element, value in props
+              if (value.is_a?(Nokogiri::XML::Node)) or (value.is_a?(Nokogiri::XML::DocumentFragment))
                 xml.__send__ :insert, value
-              elsif(value.is_a?(Nokogiri::XML::Node))
-                xml.send(name) do
-                  xml_convert(xml, value)
-                end
               elsif(value.is_a?(Symbol))
-                xml.send(name) do
-                  xml.send(value)
+                xml[element[:namespace]].send(name) do
+                  xml[element[:namespace]].send(value)
                 end
               else
-                xml.send(name, value)
+                xml[element[:namespace]].send(element[:name], value)
               end
             end
           end

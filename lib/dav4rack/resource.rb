@@ -340,14 +340,17 @@ module DAV4Rack
     end
     
     # Available properties
-    def property_names
-      %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength)
+    def properties
+      %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength).collect do |prop|
+        dav_property(prop)
+      end
     end
     
     # name:: String - Property name
     # Returns the value of the given property
-    def get_property(name)
-      case name
+    def get_property(element)
+      raise NotImplemented if (element[:ns_href] != 'DAV:')
+      case element[:name]
       when 'resourcetype'     then resource_type
       when 'displayname'      then display_name
       when 'creationdate'     then use_ms_compat_creationdate? ? creation_date.httpdate : creation_date.xmlschema 
@@ -454,7 +457,12 @@ module DAV4Rack
       auth = Rack::Auth::Basic::Request.new(request.env)
       auth.provided? && auth.basic? ? auth.credentials : [nil,nil]
     end
-    
+
+    # Quick helper to create a property hash for DAV properties
+    def dav_property(name)
+      {:name => name, :namespace => 'D', :ns_href => 'DAV:'}
+    end
+
   end
 
 end
