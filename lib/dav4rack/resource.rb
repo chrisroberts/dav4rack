@@ -394,9 +394,9 @@ module DAV4Rack
     
     # Return parent of this resource
     def parent
-      elements = @path.scan(/[^\/]+/)
-      return nil if elements.empty?
-      self.class.new(('/' + @public_path.scan(/[^\/]+/)[0..-2].join('/')), ('/' + elements[0..-2].to_a.join('/')), @request, @response, @options.merge(:user => @user))
+      return nil if @path.empty?
+      parent_path = File.split(@public_path).first
+      self.class.new(parent_path, parent_path, @request, @response, @options.merge(:user => @user))
     end
     
     # Return list of descendants
