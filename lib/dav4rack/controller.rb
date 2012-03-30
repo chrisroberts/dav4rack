@@ -22,8 +22,12 @@ module DAV4Rack
     
     # s:: string
     # Escape URL string
-    def url_escape(s)
-      URI.escape(s)
+    def url_format(resource)
+      ret = URI.escape(resource.public_path)
+      if resource.collection? and ret[-1] != '/'
+        ret += '/'
+      end
+      ret
     end
     
     # s:: string
@@ -77,7 +81,7 @@ module DAV4Rack
       else
         resource.lock_check
         status = resource.put(request, response)
-        response['Location'] = "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}" if status == Created
+        response['Location'] = "#{scheme}://#{host}:#{port}#{url_format(resource)}" if status == Created
         response.body = response['Location']
         status
       end
@@ -102,7 +106,7 @@ module DAV4Rack
     def mkcol
       resource.lock_check
       status = resource.make_collection
-      gen_url = "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}" if status == Created
+      gen_url = "#{scheme}://#{host}:#{port}#{url_format(resource)}" if status == Created
       if(resource.use_compat_mkcol_response?)
         multistatus do |xml|
           xml.response do
@@ -145,12 +149,12 @@ module DAV4Rack
             return Conflict unless depth.is_a?(Symbol) || depth > 1
             status = resource.move(dest, overwrite)
           end
-          response['Location'] = "#{scheme}://#{host}:#{port}#{url_escape(dest.public_path)}" if status == Created
+          response['Location'] = "#{scheme}://#{host}:#{port}#{url_format(dest)}" if status == Created
           # RFC 2518
           if collection
             multistatus do |xml|
               xml.response do
-                xml.href "#{scheme}://#{host}:#{port}#{url_escape(status == Created ? dest.public_path : resource.public_path)}"
+                xml.href "#{scheme}://#{host}:#{port}#{url_format(status == Created ? dest : resource)}"
                 xml.status "#{http_version} #{status.status_line}"
               end
             end
@@ -185,9 +189,9 @@ module DAV4Rack
           find_resources.each do |resource|
             xml.response do
               unless(resource.propstat_relative_path)
-                xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+                xml.href "#{scheme}://#{host}:#{port}#{url_format(resource)}"
               else
-                xml.href url_escape(resource.public_path)
+                xml.href url_format(resource)
               end
               propstats(xml, get_properties(resource, names))
             end
@@ -207,7 +211,7 @@ module DAV4Rack
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
-              xml.href "#{scheme}://#{host}:#{port}#{url_escape(resource.public_path)}"
+              xml.href "#{scheme}://#{host}:#{port}#{url_format(resource)}"
               propstats(xml, set_properties(resource, prop_set))
             end
           end
@@ -451,7 +455,7 @@ module DAV4Rack
     def response_errors(xml, errors)
       for path, status in errors
         xml.response do
-          xml.href "#{scheme}://#{host}:#{port}#{url_escape(path)}"
+          xml.href "#{scheme}://#{host}:#{port}#{URI.escape(path)}"
           xml.status "#{http_version} #{status.status_line}"
         end
       end
