@@ -24,7 +24,7 @@ module DAV4Rack
     # Escape URL string
     def url_format(resource)
       ret = URI.escape(resource.public_path)
-      if resource.collection? and ret[-1] != '/'
+      if resource.collection? and ret[-1,1] != '/'
         ret += '/'
       end
       ret
