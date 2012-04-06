@@ -394,9 +394,17 @@ module DAV4Rack
     
     # Return parent of this resource
     def parent
-      return nil if @path.empty?
-      parent_path = File.split(@public_path).first
-      self.class.new(parent_path, parent_path, @request, @response, @options.merge(:user => @user))
+      unless(@path.to_s.empty?)
+        self.class.new(
+          File.split(@public_path).first,
+          File.split(@path).first,
+          @request,
+          @response,
+          @options.merge(
+            :user => @user
+          )
+        )
+      end
     end
     
     # Return list of descendants
