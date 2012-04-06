@@ -367,11 +367,13 @@ module DAV4Rack
     # value:: New value
     # Set the property to the given value
     def set_property(element, value)
+      raise NotImplemented if (element[:ns_href] != 'DAV:')
       case element[:name]
       when 'resourcetype'    then self.resource_type = value
       when 'getcontenttype'  then self.content_type = value
       when 'getetag'         then self.etag = value
       when 'getlastmodified' then self.last_modified = Time.httpdate(value)
+      else                   raise NotImplemented
       end
     end
 
