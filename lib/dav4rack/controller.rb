@@ -511,9 +511,9 @@ module DAV4Rack
     # Sets the given properties
     def set_properties(resource, elements)
       stats = Hash.new { |h, k| h[k] = [] }
-      for element, value in element
+      for element, value in elements
         begin
-          stats[OK] << [element, resource.set_property(name, value)]
+          stats[OK] << [element, resource.set_property(element, value)]
         rescue Unauthorized => u
           raise u
         rescue Status
