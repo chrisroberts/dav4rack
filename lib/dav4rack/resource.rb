@@ -366,8 +366,8 @@ module DAV4Rack
     # name:: String - Property name
     # value:: New value
     # Set the property to the given value
-    def set_property(name, value)
-      case name
+    def set_property(element, value)
+      case element[:name]
       when 'resourcetype'    then self.resource_type = value
       when 'getcontenttype'  then self.content_type = value
       when 'getetag'         then self.etag = value
@@ -377,7 +377,7 @@ module DAV4Rack
 
     # name:: Property name
     # Remove the property from the resource
-    def remove_property(name)
+    def remove_property(element)
       Forbidden
     end
 
