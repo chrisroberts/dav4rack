@@ -232,6 +232,7 @@ module DAV4Rack
     end
 
     def custom_props(element)
+      raise NotFound unless prop_hash.include?(element_key(element))
       prop_hash[element_key(element)]
     end
 
