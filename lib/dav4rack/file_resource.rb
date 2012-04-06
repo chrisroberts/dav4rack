@@ -99,6 +99,8 @@ module DAV4Rack
       else
         File.unlink(file_path)
       end
+      File.unlink(prop_path) if File.exists?(prop_path)
+      prop_hash.clear
       NoContent
     end
     
@@ -135,6 +137,7 @@ module DAV4Rack
               FileUtils.rm_rf(dest.send(:file_path))
             end
             FileUtils.cp(file_path, dest.send(:file_path).sub(/\/$/, ''))
+            FileUtils.cp(prop_path, dest.prop_path) if File.exist? prop_path
             new ? Created : NoContent
           else
             Conflict
