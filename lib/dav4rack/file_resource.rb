@@ -203,6 +203,13 @@ module DAV4Rack
       super || set_custom_props(name,value)
     end
 
+    def remove_property(element)
+      prop_hash.delete(element_key(element))
+      File.open(prop_path, 'w') do |file|
+        file.write(YAML.dump(prop_hash))
+      end
+    end
+
     protected
 
     def element_key(elem)
