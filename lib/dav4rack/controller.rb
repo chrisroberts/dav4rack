@@ -180,7 +180,15 @@ module DAV4Rack
           ).children.find_all{ |item|
             item.element?
           }.map{ |item|
-            {:name => item.name, :namespace => item.namespace.prefix, :ns_href => item.namespace.href}
+            namespace = item.namespace
+            prefix = namespace.nil? ? nil : namespace.prefix
+            href = namespace.nil? ? nil : namespace.href
+
+            # We should do this, but Nokogiri transforms prefix w/ null href into
+            # something valid.  Oops.
+            # raise BadRequest if href.nil? and prefix.nil?
+
+            {:name => item.name, :namespace => prefix, :ns_href => href}
           }
           raise BadRequest if properties.empty?
           properties = resource.properties if properties.empty?
