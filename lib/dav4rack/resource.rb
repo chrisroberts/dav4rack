@@ -359,6 +359,7 @@ module DAV4Rack
       when 'getcontenttype'   then content_type
       when 'getetag'          then etag
       when 'getlastmodified'  then last_modified.httpdate
+      else                    raise NotImplemented
       end
     end
 
