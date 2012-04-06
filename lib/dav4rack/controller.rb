@@ -534,19 +534,29 @@ module DAV4Rack
             for element, value in props
               defn = xml.doc.root.namespace_definitions.find{|ns_def| ns_def.href == element[:ns_href]}
               if defn.nil?
-                _ns = "unknown#{rand(0..65536)}"
-                xml.doc.root.add_namespace_definition(_ns, element[:ns_href])
+                if element[:ns_href] and not element[:ns_href].empty?
+                  _ns = "unknown#{rand(0..65536)}"
+                  xml.doc.root.add_namespace_definition(_ns, element[:ns_href])
+                else
+                  _ns = nil
+                end
               else
-                _ns = defn.prefix
+                # Unfortunately Nokogiri won't let the null href, non-null prefix happen
+                # So we can't properly handle that error.
+                _ns = element[:ns_href].nil? ? nil : defn.prefix
               end
+              ns_xml = _ns.nil? ? xml : xml[_ns]
               if (value.is_a?(Nokogiri::XML::Node)) or (value.is_a?(Nokogiri::XML::DocumentFragment))
                 xml.__send__ :insert, value
               elsif(value.is_a?(Symbol))
-                xml[_ns].send(element[:name]) do
-                  xml[_ns].send(value)
+                ns_xml.send(element[:name]) do
+                  ns_xml.send(value)
                 end
               else
-                xml[_ns].send(element[:name], value)
+                ns_xml.send(element[:name], value) do |x|
+                  # Make sure we return valid XML
+                  x.parent.namespace = nil if _ns.nil?
+                end
               end
             end
           end
