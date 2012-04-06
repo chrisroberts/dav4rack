@@ -214,7 +214,7 @@ module DAV4Rack
     end
 
     def prop_path
-      path = File.join(root, '.props', File.dirname(file_path), File.basename(file_path))
+      path = File.join(root, '.props', File.join(File.dirname(file_path), File.basename(file_path)).gsub('/', '|'))
       unless(File.directory?(File.dirname(path)))
         FileUtils.mkdir_p(File.dirname(path))
       end
