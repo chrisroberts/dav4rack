@@ -202,15 +202,19 @@ module DAV4Rack
 
     protected
 
-    def set_custom_props(key,val)
-      prop_hash[key.to_sym] = val
+    def element_key(elem)
+      "#{elem[:ns_href]}!!!#{elem[:name]}"
+    end
+
+    def set_custom_props(element, val)
+      prop_hash[element_key(element)] = val
       File.open(prop_path, 'w') do |file|
         file.write(YAML.dump(prop_hash))
       end
     end
 
-    def custom_props(key)
-      prop_hash[key.to_sym]
+    def custom_props(element)
+      prop_hash[element_key(element)]
     end
 
     def prop_path
