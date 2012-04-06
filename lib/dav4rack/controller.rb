@@ -558,6 +558,9 @@ module DAV4Rack
                   x.parent.namespace = nil if _ns.nil?
                 end
               end
+
+              # This is gross, but make sure we set the current namespace back to DAV:
+              xml['D']
             end
           end
           xml.status "#{http_version} #{status.status_line}"
