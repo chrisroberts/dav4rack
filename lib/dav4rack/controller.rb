@@ -409,8 +409,12 @@ module DAV4Rack
       _ns = ''
       if(request_document && request_document.root && request_document.root.namespace_definitions.size > 0)
         _ns = request_document.root.namespace_definitions.collect{|__ns| __ns if __ns.href == wanted_uri}.compact
-        _ns = _ns.first.prefix.to_s unless _ns.empty?
-        _ns = request_document.root.namespace_definitions.first.prefix.to_s if _ns.empty?
+        if _ns.empty?
+          _ns = request_document.root.namespace_definitions.first.prefix.to_s if _ns.empty?
+        else
+          _ns = _ns.first
+          _ns = _ns.prefix.nil? ? 'xmlns' : _ns.prefix.to_s
+        end
         _ns += ':' unless _ns.empty?
       end
       _ns
