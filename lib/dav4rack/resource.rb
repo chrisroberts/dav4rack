@@ -140,22 +140,23 @@ module DAV4Rack
     
     # Return the creation time.
     def creation_date
-      NotImplemented
+      raise NotImplemented
     end
 
     # Return the time of last modification.
     def last_modified
-      NotImplemented
+      raise NotImplemented
     end
     
     # Set the time of last modification.
     def last_modified=(time)
-      NotImplemented
+      # Is this correct?
+      raise NotImplemented
     end
 
     # Return an Etag, an unique hash value for this resource.
     def etag
-      NotImplemented
+      raise NotImplemented
     end
 
     # Return the resource type. Generally only used to specify
@@ -166,12 +167,12 @@ module DAV4Rack
 
     # Return the mime type of this resource.
     def content_type
-      NotImplemented
+      raise NotImplemented
     end
 
     # Return the size in bytes for this resource.
     def content_length
-      NotImplemented
+      raise NotImplemented
     end
 
     # HTTP GET request.
