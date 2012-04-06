@@ -214,15 +214,23 @@ module DAV4Rack
         NotFound
       else
         resource.lock_check
-        prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
-        prop_set = request_match('/propertyupdate/set/prop').children.inject({}) do |ret, elem|
-          ret[{:name => n.name, :namespace => n.namespace.prefix, :ns_href => n.namespace.href}] = n.text
+        prop_rem = request_document.xpath("/#{ns}propertyupdate/#{ns}remove/#{ns}prop").children.inject({}) do |ret, elem|
+          prefix = elem.namespace.nil? ? nil : elem.namespace.prefix
+          href = elem.namespace.nil? ? nil : elem.namespace.href
+          ret[{:name => elem.name, :namespace => prefix, :ns_href => href}] = true
           ret
         end
+        prop_set = request_document.xpath("/#{ns}propertyupdate/#{ns}set/#{ns}prop").children.inject({}) do |ret, elem|
+          prefix = elem.namespace.nil? ? nil : elem.namespace.prefix
+          href = elem.namespace.nil? ? nil : elem.namespace.href
+          ret[{:name => elem.name, :namespace => prefix, :ns_href => href}] = elem.text
+          ret
+         end
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
               xml.href "#{scheme}://#{host}:#{port}#{url_format(resource)}"
+              rm_properties(resource, prop_rem)
               propstats(xml, set_properties(resource, prop_set))
             end
           end
@@ -428,13 +436,6 @@ module DAV4Rack
       _ns
     end
     
-    # pattern:: XPath pattern
-    # Search XML document for given XPath
-    # TODO: Stripping namespaces not so great
-    def request_match(pattern)
-      request_document.remove_namespaces!.xpath(pattern, request_document.root.namespaces)
-    end
-
     # root_type:: Root tag name
     # Render XML and set Rack::Response#body= to final XML
     def render_xml(root_type)
@@ -494,6 +495,15 @@ module DAV4Rack
         end
       end
       stats
+    end
+
+    # resource:: Resource
+    # elements:: Property hashes (name, namespace, ns_href)
+    # Removes the given properties from a resource
+    def rm_properties(resource, elements)
+      for element, value in elements
+        resource.remove_property(element)
+      end
     end
 
     # resource:: Resource
