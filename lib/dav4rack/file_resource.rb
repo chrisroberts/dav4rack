@@ -193,14 +193,22 @@ module DAV4Rack
     # name:: String - Property name
     # Returns the value of the given property
     def get_property(name)
-      super || custom_props(name)
+      begin
+        super
+      rescue NotImplemented
+        custom_props(name)
+      end
     end
 
     # name:: String - Property name
     # value:: New value
     # Set the property to the given value
     def set_property(name, value)
-      super || set_custom_props(name,value)
+      begin
+        super
+      rescue NotImplemented
+        set_custom_props(name,value)
+      end
     end
 
     def remove_property(element)
