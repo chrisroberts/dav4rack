@@ -4,6 +4,7 @@ module DAV4Rack
   
   class Controller
     include DAV4Rack::HTTPStatus
+    include DAV4Rack::Utils
     
     attr_reader :request, :response, :resource
 
@@ -180,15 +181,11 @@ module DAV4Rack
           ).children.find_all{ |item|
             item.element?
           }.map{ |item|
-            namespace = item.namespace
-            prefix = namespace.nil? ? nil : namespace.prefix
-            href = namespace.nil? ? nil : namespace.href
-
             # We should do this, but Nokogiri transforms prefix w/ null href into
             # something valid.  Oops.
             # raise BadRequest if href.nil? and prefix.nil?
 
-            {:name => item.name, :namespace => prefix, :ns_href => href}
+            to_element_hash(item)
           }
           raise BadRequest if properties.empty?
           properties = resource.properties if properties.empty?
@@ -215,15 +212,12 @@ module DAV4Rack
       else
         resource.lock_check
         prop_rem = request_document.xpath("/#{ns}propertyupdate/#{ns}remove/#{ns}prop").children.inject({}) do |ret, elem|
-          prefix = elem.namespace.nil? ? nil : elem.namespace.prefix
-          href = elem.namespace.nil? ? nil : elem.namespace.href
-          ret[{:name => elem.name, :namespace => prefix, :ns_href => href}] = true
+          ret[to_element_key(elem)] = true
           ret
         end
         prop_set = request_document.xpath("/#{ns}propertyupdate/#{ns}set/#{ns}prop").children.inject({}) do |ret, elem|
-          prefix = elem.namespace.nil? ? nil : elem.namespace.prefix
           href = elem.namespace.nil? ? nil : elem.namespace.href
-          ret[{:name => elem.name, :namespace => prefix, :ns_href => href}] = elem.text
+          ret[to_element_key(elem)] = true
           ret
          end
         multistatus do |xml|
@@ -480,7 +474,7 @@ module DAV4Rack
     end
 
     # resource:: Resource
-    # elements:: Property hashes (name, namespace, ns_href)
+    # elements:: Property hashes (name, ns_href, children)
     # Returns array of property values for given names
     def get_properties(resource, elements)
       stats = Hash.new { |h, k| h[k] = [] }
@@ -498,7 +492,7 @@ module DAV4Rack
     end
 
     # resource:: Resource
-    # elements:: Property hashes (name, namespace, ns_href)
+    # elements:: Property hashes (name, namespace, children)
     # Removes the given properties from a resource
     def rm_properties(resource, elements)
       for element, value in elements
@@ -507,7 +501,7 @@ module DAV4Rack
     end
 
     # resource:: Resource
-    # elements:: Property hashes (name, namespace, ns_href)
+    # elements:: Property hashes (name, namespace, children)
     # Sets the given properties
     def set_properties(resource, elements)
       stats = Hash.new { |h, k| h[k] = [] }

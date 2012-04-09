@@ -343,7 +343,7 @@ module DAV4Rack
     # Available properties
     def properties
       %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength).collect do |prop|
-        dav_property(prop)
+        {:name => prop, :ns_href => 'DAV:'}
       end
     end
     
@@ -468,11 +468,6 @@ module DAV4Rack
     def auth_credentials
       auth = Rack::Auth::Basic::Request.new(request.env)
       auth.provided? && auth.basic? ? auth.credentials : [nil,nil]
-    end
-
-    # Quick helper to create a property hash for DAV properties
-    def dav_property(name)
-      {:name => name, :namespace => 'D', :ns_href => 'DAV:'}
     end
 
   end

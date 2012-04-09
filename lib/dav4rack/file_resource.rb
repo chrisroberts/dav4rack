@@ -5,6 +5,7 @@ module DAV4Rack
   class FileResource < Resource
     
     include WEBrick::HTTPUtils
+    include DAV4Rack::Utils
     
     # If this is a collection, return the child resources.
     def children
@@ -212,7 +213,7 @@ module DAV4Rack
     end
 
     def remove_property(element)
-      prop_hash.delete(element_key(element))
+      prop_hash.delete(to_element_key(element))
       File.open(prop_path, 'w') do |file|
         file.write(YAML.dump(prop_hash))
       end
@@ -220,20 +221,16 @@ module DAV4Rack
 
     protected
 
-    def element_key(elem)
-      "#{elem[:ns_href]}!!!#{elem[:name]}"
-    end
-
     def set_custom_props(element, val)
-      prop_hash[element_key(element)] = val
+      prop_hash[to_element_key(element)] = val
       File.open(prop_path, 'w') do |file|
         file.write(YAML.dump(prop_hash))
       end
     end
 
     def custom_props(element)
-      raise NotFound unless prop_hash.include?(element_key(element))
-      prop_hash[element_key(element)]
+      raise NotFound unless prop_hash.include?(to_element_key(element))
+      prop_hash[to_element_key(element)]
     end
 
     def prop_path

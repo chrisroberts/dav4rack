@@ -3,6 +3,7 @@ require 'uri'
 require 'nokogiri'
 
 require 'rack'
+require 'dav4rack/utils'
 require 'dav4rack/http_status'
 require 'dav4rack/resource'
 require 'dav4rack/handler'
