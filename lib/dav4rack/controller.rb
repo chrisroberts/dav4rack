@@ -473,7 +473,7 @@ module DAV4Rack
         rescue Unauthorized => u
           raise u
         rescue Status
-          stats[$!] << name
+          stats[$!.class] << name
         end
       end
       stats
@@ -490,7 +490,7 @@ module DAV4Rack
         rescue Unauthorized => u
           raise u
         rescue Status
-          stats[$!] << name
+          stats[$!.class] << name
         end
       end
       stats
