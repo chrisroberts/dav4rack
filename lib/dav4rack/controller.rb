@@ -525,7 +525,7 @@ module DAV4Rack
               defn = xml.doc.root.namespace_definitions.find{|ns_def| ns_def.href == element[:ns_href]}
               if defn.nil?
                 if element[:ns_href] and not element[:ns_href].empty?
-                  _ns = "unknown#{rand(0..65536)}"
+                  _ns = "unknown#{rand(65536)}"
                   xml.doc.root.add_namespace_definition(_ns, element[:ns_href])
                 else
                   _ns = nil
