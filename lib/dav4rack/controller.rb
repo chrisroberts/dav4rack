@@ -212,14 +212,13 @@ module DAV4Rack
       else
         resource.lock_check
         prop_rem = request_document.xpath("/#{ns}propertyupdate/#{ns}remove/#{ns}prop").children.inject({}) do |ret, elem|
-          ret[to_element_key(elem)] = true
+          ret[to_element_hash(elem)] = elem.text
           ret
         end
         prop_set = request_document.xpath("/#{ns}propertyupdate/#{ns}set/#{ns}prop").children.inject({}) do |ret, elem|
-          href = elem.namespace.nil? ? nil : elem.namespace.href
-          ret[to_element_key(elem)] = true
+          ret[to_element_hash(elem)] = elem.text
           ret
-         end
+        end
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
@@ -312,9 +311,6 @@ module DAV4Rack
       end
       raise Unauthorized unless authed
     end
-    
-    # ************************************************************
-    # private methods
     
     private
 
