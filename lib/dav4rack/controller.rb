@@ -174,19 +174,20 @@ module DAV4Rack
         unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
           properties = resource.properties
         else
-          properties = (
-            ns.empty? ? request_document.remove_namespaces! : request_document
-          ).xpath(
+          properties = request_document.xpath(
             "//#{ns}propfind/#{ns}prop"
           ).children.find_all{ |item|
             item.element?
           }.map{ |item|
             # We should do this, but Nokogiri transforms prefix w/ null href into
             # something valid.  Oops.
-            # raise BadRequest if href.nil? and prefix.nil?
-
-            to_element_hash(item)
-          }
+            # TODO: Hacky grep fix that's horrible
+            hsh = to_element_hash(item)
+            if(hsh.namespace.nil? && !ns.empty?)
+              raise BadRequest if request_document.to_s.scan(%r{<#{item.name}[^>]+xmlns=""}).empty?
+            end
+            hsh
+          }.compact
           raise BadRequest if properties.empty?
           properties = resource.properties if properties.empty?
         end
@@ -211,20 +212,31 @@ module DAV4Rack
         NotFound
       else
         resource.lock_check
-        prop_rem = request_document.xpath("/#{ns}propertyupdate/#{ns}remove/#{ns}prop").children.inject({}) do |ret, elem|
-          ret[to_element_hash(elem)] = elem.text
-          ret
-        end
-        prop_set = request_document.xpath("/#{ns}propertyupdate/#{ns}set/#{ns}prop").children.inject({}) do |ret, elem|
-          ret[to_element_hash(elem)] = elem.text
-          ret
+        prop_actions = []
+        request_document.xpath("/#{ns}propertyupdate").children.each do |element|
+          case element.name
+          when 'set', 'remove'
+            prp = element.children.detect{|e|e.name == 'prop'}
+            if(prp)
+              prp.children.each do |elm|
+                next if elm.name == 'text'
+                prop_actions << {:type => element.name, :name => to_element_hash(elm), :value => elm.text}
+              end
+            end
+          end
         end
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
               xml.href "#{scheme}://#{host}:#{port}#{url_format(resource)}"
-              rm_properties(resource, prop_rem)
-              propstats(xml, set_properties(resource, prop_set))
+              prop_actions.each do |action|
+                case action[:type]
+                when 'set'
+                  propstats(xml, set_properties(resource, action[:name] => action[:value]))
+                when 'remove'
+                  rm_properties(resource, action[:name] => action[:value])
+                end
+              end
             end
           end
         end
@@ -272,6 +284,7 @@ module DAV4Rack
               end
             end
           end
+          response.headers['Lock-Token'] = locktoken
           response.status = resource.exist? ? OK : Created
         rescue LockFailure => e
           multistatus do |xml|
