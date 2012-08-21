@@ -6,7 +6,9 @@ require 'webrick/httputils'
 module DAV4Rack
 
   class FileResource < Resource
-    
+   
+    IS_18 = RUBY_VERSION[0,3] == '1.8'
+
     include WEBrick::HTTPUtils
     include DAV4Rack::Utils
     
@@ -263,7 +265,7 @@ module DAV4Rack
     end
 
     def prop_hash
-      @_prop_hash ||= PStore.new(prop_path, true)
+      @_prop_hash ||= IS_18 ? PStore.new(prop_path) : PStore.new(prop_path, true)
     end
 
     def authenticate(user, pass)
