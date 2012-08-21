@@ -1,3 +1,6 @@
+# encoding: UTF-8
+
+require 'pstore'
 require 'webrick/httputils'
 
 module DAV4Rack
@@ -101,7 +104,7 @@ module DAV4Rack
         File.unlink(file_path)
       end
       File.unlink(prop_path) if File.exists?(prop_path)
-      prop_hash.clear
+      @_prop_hash = nil
       NoContent
     end
     
@@ -164,7 +167,7 @@ module DAV4Rack
         if(File.directory?(file_path))
           MethodNotAllowed
         else
-          if(File.directory?(File.dirname(file_path)))
+          if(File.directory?(File.dirname(file_path)) && !File.exists?(file_path))
             Dir.mkdir(file_path)
             Created
           else
@@ -179,13 +182,11 @@ module DAV4Rack
     # Write to this resource from given IO.
     def write(io)
       tempfile = "#{file_path}.#{Process.pid}.#{object_id}"
-      
       open(tempfile, "wb") do |file|
         while part = io.read(8192)
           file << part
         end
       end
-
       File.rename(tempfile, file_path)      
     ensure
       File.unlink(tempfile) rescue nil
@@ -213,28 +214,48 @@ module DAV4Rack
     end
 
     def remove_property(element)
-      prop_hash.delete(to_element_key(element))
-      File.open(prop_path, 'w') do |file|
-        file.write(YAML.dump(prop_hash))
+      prop_hash.transaction do
+        prop_hash.delete(to_element_key(element))
+        prop_hash.commit
       end
+      val = prop_hash.transaction{ prop_hash[to_element_key(element)] }
     end
 
     protected
 
     def set_custom_props(element, val)
-      prop_hash[to_element_key(element)] = val
-      File.open(prop_path, 'w') do |file|
-        file.write(YAML.dump(prop_hash))
+      prop_hash.transaction do
+        prop_hash[to_element_key(element)] = val
+        prop_hash.commit
       end
     end
 
     def custom_props(element)
-      raise NotFound unless prop_hash.include?(to_element_key(element))
-      prop_hash[to_element_key(element)]
+      val = prop_hash.transaction(true) do
+        prop_hash[to_element_key(element)]
+      end
+      raise NotFound unless val
+      val
+    end
+    
+    def store_directory
+      path = File.join(root, '.attrib_store')
+      unless(File.directory?(File.dirname(path)))
+        FileUtils.mkdir_p(File.dirname(path))
+      end
+      path
     end
 
     def prop_path
-      path = File.join(root, '.props', File.join(File.dirname(file_path), File.basename(file_path)).gsub('/', '|'))
+      path = File.join(store_directory, "#{File.join(File.dirname(file_path), File.basename(file_path)).gsub('/', '_')}.pstore")
+      unless(File.directory?(File.dirname(path)))
+        FileUtils.mkdir_p(File.dirname(path))
+      end
+      path
+    end
+    
+    def lock_path
+      path = File.join(store_directory, 'locks.pstore')
       unless(File.directory?(File.dirname(path)))
         FileUtils.mkdir_p(File.dirname(path))
       end
@@ -242,14 +263,7 @@ module DAV4Rack
     end
 
     def prop_hash
-      unless(@_prop_hash)
-        if(File.exists?(prop_path))
-          @_prop_hash = YAML.load(File.read(prop_path))
-        else
-          @_prop_hash = {}
-        end
-      end
-      @_prop_hash
+      @_prop_hash ||= PStore.new(prop_path, true)
     end
 
     def authenticate(user, pass)
