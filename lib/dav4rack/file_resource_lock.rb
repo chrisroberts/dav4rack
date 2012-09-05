@@ -18,7 +18,7 @@ module DAV4Rack
         }
       end
 
-      def implicilty_locked?(path, croot=nil)
+      def implicitly_locked?(path, croot=nil)
         store = init_pstore(croot)
         !!store.transaction(true){
           store[:paths].keys.detect do |check|
@@ -44,8 +44,9 @@ module DAV4Rack
         end
       end
 
-      def generate(path, token)
-        lock = self.new
+      def generate(path, user, token, croot)
+        lock = self.new(:root => croot)
+        lock.user = user
         lock.path = path
         lock.token = token
         lock.save
@@ -60,25 +61,28 @@ module DAV4Rack
         @root || '/tmp/dav4rack'
       end
 
-      def init_pstore(root)
-        path = File.join(root, '.attribs', 'locks.pstore')
+      def init_pstore(croot)
+        path = File.join(croot, '.attribs', 'locks.pstore')
         FileUtils.mkdir_p(File.dirname(path)) unless File.directory?(File.dirname(path))
         store = IS_18 ? PStore.new(path) : PStore.new(path, true)
         store.transaction do
-          store[:paths] = {}
-          store[:tokens] = {}
-          store.commit
+          unless(store[:paths])
+            store[:paths] = {}
+            store[:tokens] = {}
+            store.commit
+          end
         end
+        store
       end
     end
 
     def initialize(args={})
-      @store = init_pstore(args[:root])
-      @max_timeout = args[:max_timeout] || 86400
-      @default_timeout = args[:max_timeout] || 60
       @path = args[:path]
       @root = args[:root]
       @owner = args[:owner]
+      @store = init_pstore(@root)
+      @max_timeout = args[:max_timeout] || 86400
+      @default_timeout = args[:max_timeout] || 60
       load_if_exists!
       @new_record = true if token.nil?
     end

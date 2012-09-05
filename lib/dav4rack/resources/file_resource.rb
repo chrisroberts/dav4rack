@@ -2,6 +2,7 @@
 
 require 'pstore'
 require 'webrick/httputils'
+require 'dav4rack/file_resource_lock'
 
 module DAV4Rack
 
@@ -226,10 +227,10 @@ module DAV4Rack
         Conflict
       else
         lock_check(args[:type])
-        lock = FileResourceLock.explicit_locks(@path).find(:first, :conditions => ["scope = ? AND kind = ? AND user_id = ?", args[:scope], args[:type], @user.id])
+        lock = FileResourceLock.explicit_locks(@path, root).find(:first, :conditions => ["scope = ? AND kind = ? AND user_id = ?", args[:scope], args[:type], @user.id])
         unless(lock)
           token = UUIDTools::UUID.random_create.to_s
-          lock = FileResourceLock.generate(@path, @user, token)
+          lock = FileResourceLock.generate(@path, @user, token, root)
           lock.scope = args[:scope]
           lock.kind = args[:type]
           lock.owner = args[:owner]
@@ -273,12 +274,12 @@ module DAV4Rack
     protected
 
     def lock_check(lock_type=nil)
-      if(FileResourceLock.explicitly_locked?(@path))
+      if(FileResourceLock.explicitly_locked?(@path, root))
         raise Locked if lock_type && lock_type == 'exclusive'
         raise Locked if FileResourceLock.explicit_locks(@path).find(:all, :conditions => ["scope = 'exclusive' AND user_id != ?", @user.id]).size > 0
-      elsif(FileResouceLock.implicitly_locked?(@path))
+      elsif(FileResourceLock.implicitly_locked?(@path, root))
         if(lock_type.to_s == 'exclusive')
-          locks = FileResouceLock.implicit_locks(@path)
+          locks = FileResourceLock.implicit_locks(@path)
           failure = DAV4Rack::LockFailure.new("Failed to lock: #{@path}")
           locks.each do |lock|
             failure.add_failure(@path, Locked)
