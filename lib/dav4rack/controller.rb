@@ -80,7 +80,7 @@ module DAV4Rack
       elsif(!resource.parent_exists? || !resource.parent.collection?)
         Conflict
       else
-        resource.lock_check
+        resource.lock_check if resource.supports_locking?
         status = resource.put(request, response)
         response['Location'] = "#{scheme}://#{host}:#{port}#{url_format(resource)}" if status == Created
         response.body = response['Location']
@@ -96,7 +96,7 @@ module DAV4Rack
     # Return response to DELETE
     def delete
       if(resource.exist?)
-        resource.lock_check
+        resource.lock_check if resource.supports_locking?
         resource.delete
       else
         NotFound
@@ -105,7 +105,7 @@ module DAV4Rack
     
     # Return response to MKCOL
     def mkcol
-      resource.lock_check
+      resource.lock_check if resource.supports_locking?
       status = resource.make_collection
       gen_url = "#{scheme}://#{host}:#{port}#{url_format(resource)}" if status == Created
       if(resource.use_compat_mkcol_response?)
@@ -133,7 +133,7 @@ module DAV4Rack
       unless(resource.exist?)
         NotFound
       else
-        resource.lock_check unless args.include?(:copy)
+        resource.lock_check if resource.supports_locking? && !args.include(:copy)
         destination = url_unescape(env['HTTP_DESTINATION'].sub(%r{https?://([^/]+)}, ''))
         dest_host = $1
         if(dest_host && dest_host.gsub(/:\d{2,5}$/, '') != request.host)
@@ -211,7 +211,7 @@ module DAV4Rack
       unless(resource.exist?)
         NotFound
       else
-        resource.lock_check
+        resource.lock_check if resource.supports_locking?
         prop_actions = []
         request_document.xpath("/#{ns}propertyupdate").children.each do |element|
           case element.name

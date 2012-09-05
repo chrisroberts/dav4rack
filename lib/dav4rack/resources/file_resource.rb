@@ -7,11 +7,9 @@ module DAV4Rack
 
   class FileResource < Resource
    
-    IS_18 = RUBY_VERSION[0,3] == '1.8'
-
     include WEBrick::HTTPUtils
     include DAV4Rack::Utils
-    
+
     # If this is a collection, return the child resources.
     def children
       Dir[file_path + '/*'].map do |path|
@@ -223,7 +221,81 @@ module DAV4Rack
       val = prop_hash.transaction{ prop_hash[to_element_key(element)] }
     end
 
+    def lock(args)
+      unless(parent_exists?)
+        Conflict
+      else
+        lock_check(args[:type])
+        lock = FileResourceLock.explicit_locks(@path).find(:first, :conditions => ["scope = ? AND kind = ? AND user_id = ?", args[:scope], args[:type], @user.id])
+        unless(lock)
+          token = UUIDTools::UUID.random_create.to_s
+          lock = FileResourceLock.generate(@path, @user, token)
+          lock.scope = args[:scope]
+          lock.kind = args[:type]
+          lock.owner = args[:owner]
+          lock.depth = args[:depth]
+          if(args[:timeout])
+            lock.timeout = args[:timeout] <= @max_timeout && args[:timeout] > 0 ? args[:timeout] : @max_timeout
+          else
+            lock.timeout = @default_timeout
+          end
+          lock.save
+        end
+        begin
+          lock_check(args[:type])
+        rescue DAV4Rack::LockFailure => lock_failure
+          lock.destroy
+          raise lock_failure
+        rescue HTTPStatus::Status => status
+          status
+        end
+        [lock.remaining_timeout, lock.token]
+      end
+    end
+
+    def unlock(token)
+      token = token.slice(1, token.length - 2)
+      if(token.nil? || token.empty?)
+        BadRequest
+      else
+        lock = FileResourceLock.find_by_token(token)
+        if(lock.nil? || lock.user_id != @user.id)
+          Forbidden
+        elsif(lock.path !~ /^#{Regexp.escape(@path)}.*$/)
+          Conflict
+        else
+          lock.destroy
+          NoContent
+        end
+      end
+    end
+
     protected
+
+    def lock_check(lock_type=nil)
+      if(FileResourceLock.explicitly_locked?(@path))
+        raise Locked if lock_type && lock_type == 'exclusive'
+        raise Locked if FileResourceLock.explicit_locks(@path).find(:all, :conditions => ["scope = 'exclusive' AND user_id != ?", @user.id]).size > 0
+      elsif(FileResouceLock.implicitly_locked?(@path))
+        if(lock_type.to_s == 'exclusive')
+          locks = FileResouceLock.implicit_locks(@path)
+          failure = DAV4Rack::LockFailure.new("Failed to lock: #{@path}")
+          locks.each do |lock|
+            failure.add_failure(@path, Locked)
+          end
+          raise failure
+        else
+          locks = FileResourceLock.implict_locks(@path).find(:all, :conditions => ["scope = 'exclusive' AND user_id != ?", @user.id])
+          if(locks.size > 0)
+            failure = LockFailure.new("Failed to lock: #{@path}")
+            locks.each do |lock|
+              failure.add_failure(@path, Locked)
+            end
+            raise failure
+          end
+        end
+      end
+    end
 
     def set_custom_props(element, val)
       prop_hash.transaction do

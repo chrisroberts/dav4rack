@@ -117,7 +117,12 @@ module DAV4Rack
       @runner.call(class_sym, :after, orig)
       result
     end
-    
+  
+    # Returns if resource supports locking
+    def supports_locking?
+      false #true
+    end
+
     # If this is a collection, return the child resources.
     def children
       NotImplemented
