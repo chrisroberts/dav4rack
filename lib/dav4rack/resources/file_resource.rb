@@ -227,7 +227,7 @@ module DAV4Rack
         Conflict
       else
         lock_check(args[:type])
-        lock = FileResourceLock.explicit_locks(@path, root).find(:first, :conditions => ["scope = ? AND kind = ? AND user_id = ?", args[:scope], args[:type], @user.id])
+        lock = FileResourceLock.explicit_locks(@path, root, :scope => args[:scope], :kind => args[:type], :user => @user)
         unless(lock)
           token = UUIDTools::UUID.random_create.to_s
           lock = FileResourceLock.generate(@path, @user, token, root)
@@ -276,7 +276,7 @@ module DAV4Rack
     def lock_check(lock_type=nil)
       if(FileResourceLock.explicitly_locked?(@path, root))
         raise Locked if lock_type && lock_type == 'exclusive'
-        raise Locked if FileResourceLock.explicit_locks(@path).find(:all, :conditions => ["scope = 'exclusive' AND user_id != ?", @user.id]).size > 0
+        #raise Locked if FileResourceLock.explicit_locks(@path, root).find(:all, :conditions => ["scope = 'exclusive' AND user_id != ?", @user.id]).size > 0
       elsif(FileResourceLock.implicitly_locked?(@path, root))
         if(lock_type.to_s == 'exclusive')
           locks = FileResourceLock.implicit_locks(@path)

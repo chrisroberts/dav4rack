@@ -6,8 +6,11 @@ module DAV4Rack
     attr_accessor :token
     attr_accessor :timeout
     attr_accessor :depth
+    attr_accessor :user
+    attr_accessor :scope
+    attr_accessor :kind
+    attr_accessor :owner
     attr_reader :created_at
-    attr_reader :owner
     attr_reader :root
 
     class << self
@@ -25,6 +28,9 @@ module DAV4Rack
             check.start_with?(path)
           end
         }
+      end
+
+      def explicit_locks(path, croot, args={})
       end
 
       def find_by_path(path, croot=nil)
@@ -134,13 +140,19 @@ module DAV4Rack
       struct = @store.transaction do
         @store[:paths][path]
       end
-      @path = struct[:path]
-      @token = struct[:token]
-      @timeout = struct[:timeout]
-      @depth = struct[:depth]
-      @created_at = struct[:created_at]
-      @owner = struct[:owner]
+      if(struct)
+        @path = struct[:path]
+        @token = struct[:token]
+        @timeout = struct[:timeout]
+        @depth = struct[:depth]
+        @created_at = struct[:created_at]
+        @owner = struct[:owner]
+      end
       self
+    end
+
+    def init_pstore(croot=nil)
+      self.class.init_pstore(croot || @root)
     end
 
   end
