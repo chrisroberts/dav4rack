@@ -178,7 +178,8 @@ module DAV4Rack
           ).xpath(
             "//#{ns}propfind/#{ns}prop"
           ).children.find_all{ |item|
-            item.element? && item.name.start_with?(ns)
+            # With nokogiri 1.5.5 it appears that the namespace prefix is already stripped
+            item.element?# && item.name.start_with?(ns)
           }.map{ |item|
             item.name.sub("#{ns}::", '')
           }
