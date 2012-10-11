@@ -178,7 +178,8 @@ module DAV4Rack
           ).xpath(
             "//#{ns}propfind/#{ns}prop"
           ).children.find_all{ |item|
-            item.element? && item.name.start_with?(ns)
+            # With nokogiri 1.5.5 it appears that the namespace prefix is already stripped
+            item.element?# && item.name.start_with?(ns)
           }.map{ |item|
             item.name.sub("#{ns}::", '')
           }
@@ -299,6 +300,20 @@ module DAV4Rack
       end
       raise Unauthorized unless authed
     end
+    
+    # If the resource class defines a `prepare` method, it is called.
+    # This happens between authentication and request-processing and
+    # can be used to check and personalise the filing system.
+    #
+    # It is quite possible that I am not making the right use of the 
+    # _DAV_ prefix here.
+    #
+    def prepare
+      if resource.respond_to?(:_DAV_prepare, true)
+        resource.send :_DAV_prepare
+      end
+    end
+    
     
     # ************************************************************
     # private methods
