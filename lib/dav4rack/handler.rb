@@ -27,6 +27,7 @@ module DAV4Rack
           controller_class = @options[:controller_class] || Controller
           controller = controller_class.new(request, response, @options.dup)
           controller.authenticate
+          controller.prepare
           res = controller.send(request.request_method.downcase)
           response.status = res.code if res.respond_to?(:code)
         rescue HTTPStatus::Unauthorized => status
@@ -49,7 +50,7 @@ module DAV4Rack
         buf = true
         buf = request.body.read(8192) while buf
 
-        Logger.debug "Response in string form. Outputting contents: \n#{response.body}" if response.body.is_a?(String)
+        Logger.debug "Response in stringish form. Outputting contents: \n#{response.body}" if response.body.is_a?(String)
         Logger.info "Completed in: #{((Time.now.to_f - start.to_f) * 1000).to_i} ms | #{response.status} [#{request.url}]"
         
         response.body.is_a?(Rack::File) ? response.body.call(env) : response.finish

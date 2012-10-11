@@ -301,6 +301,20 @@ module DAV4Rack
       raise Unauthorized unless authed
     end
     
+    # If the resource class defines a `prepare` method, it is called.
+    # This happens between authentication and request-processing and
+    # can be used to check and personalise the filing system.
+    #
+    # It is quite possible that I am not making the right use of the 
+    # _DAV_ prefix here.
+    #
+    def prepare
+      if resource.respond_to?(:_DAV_prepare, true)
+        resource.send :_DAV_prepare
+      end
+    end
+    
+    
     # ************************************************************
     # private methods
     
