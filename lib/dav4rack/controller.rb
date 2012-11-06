@@ -20,12 +20,12 @@ module DAV4Rack
       @options = options
       
       @dav_extensions = options.delete(:dav_extensions) || []
-      @alway_include_dav_header = options.delete(:alway_include_dav_header)
+      @always_include_dav_header = options.delete(:always_include_dav_header)
       
       @resource = resource_class.new(actual_path, implied_path, @request, @response, @options)
       
-      if @alway_include_dav_header
-        add_dav_header()
+      if(@always_include_dav_header)
+        add_dav_header
       end
     end
     
@@ -46,17 +46,17 @@ module DAV4Rack
     end
     
     def add_dav_header
-      unless response["Dav"]
-        dav_support = ["1", "2"] + @dav_extensions
-        response["Dav"] = dav_support.join(', ')
+      unless(response['Dav'])
+        dav_support = %w(1 2) + @dav_extensions
+        response['Dav'] = dav_support.join(', ')
       end
     end
     
     # Return response to OPTIONS
     def options
-      add_dav_header()
-      response["Allow"] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
-      response["Ms-Author-Via"] = "DAV"
+      add_dav_header
+      response['Allow'] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
+      response['Ms-Author-Via'] = 'DAV'
       OK
     end
     
