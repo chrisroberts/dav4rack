@@ -465,6 +465,23 @@ module DAV4Rack
         (request.respond_to?(:user_agent) ? request.user_agent : request.env['HTTP_USER_AGENT']).to_s =~ regexp
       end
     end
+
+    def build_xml(root_type, ns = 'D')
+      raise ArgumentError.new 'Expecting block' unless block_given?
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.send(root_type.to_s, {'xmlns:D' => 'DAV:'}.merge(@root_xml_attributes)) do
+          xml.parent.namespace = xml.parent.namespace_definitions.find do |n|
+            n.prefix == ns
+          end
+          yield xml[ns]
+        end
+      end
+    end
+
+    def xml_frag(*args, &block)
+      builder = build_xml(*args, &block)
+      builder.doc.root
+    end
    
     protected
 
