@@ -203,8 +203,6 @@ module DAV4Rack
             end
             hsh
           }.compact
-          raise BadRequest if properties.empty?
-          properties = resource.properties if properties.empty?
         end
         multistatus do |xml|
           find_resources.each do |resource|
@@ -214,7 +212,7 @@ module DAV4Rack
               else
                 xml.href url_format(resource)
               end
-              propstats(xml, get_properties(resource, properties))
+              propstats(xml, get_properties(resource, properties.empty? ? resource.properties : properties))
             end
           end
         end
