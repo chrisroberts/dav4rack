@@ -203,7 +203,6 @@ module DAV4Rack
             end
             hsh
           }.compact
-          raise BadRequest if properties.empty?
           properties = resource.properties if properties.empty?
         end
         multistatus do |xml|
