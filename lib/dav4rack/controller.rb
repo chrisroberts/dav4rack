@@ -92,7 +92,7 @@ module DAV4Rack
     def put
       if(resource.collection?)
         Forbidden
-      elsif(!resource.parent_exists? || !resource.parent.collection?)
+      elsif(!resource.parent_exists? || !resource.parent_collection?)
         Conflict
       else
         resource.lock_check if resource.supports_locking?
