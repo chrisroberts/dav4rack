@@ -143,6 +143,11 @@ module DAV4Rack
       parent.exist?
     end
     
+    # Is the parent resource a collection?
+    def parent_collection?
+      parent.collection?
+    end
+    
     # Return the creation time.
     def creation_date
       raise NotImplemented
