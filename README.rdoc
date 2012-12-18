@@ -318,7 +318,7 @@ A big thanks to everyone contributing to help make this project better.
 * {TurchenkoAlex}[https://github.com/TurchenkoAlex]
 * {exabugs}[https://github.com/exabugs]
 * {inferiorhumanorgans}[https://github.com/inferiorhumanorgans]
-* {schmurphy}[https://github.com/schmurfy]
+* {schmurfy}[https://github.com/schmurfy]
 
 == License
 
