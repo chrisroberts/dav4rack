@@ -1,3 +1,15 @@
+=== v0.3.0
+* New minor release towards full litmus pass
+* Litmus passing: basic, copymove, props
+* Litmus in progress: locks
+* Internal reorganization of file structures
+* Propfind updates to provide proper returns (thanks {schmurfy}[https://github.com/schmurfy])
+* Properly detect malformed propfind requests
+* Updated custom attribute storage
+* Allow customized DAV headers (thanks {schmurfy}[https://github.com/schmurfy])
+* Extract parent collection detection to resource (thanks {schmurfy}[https://github.com/schmurfy])
+* Start of new locking implementation
+
 === v0.2.11
 * URL escaping updates (thanks {exabugs}[https://github.com/exabugs])
 * Return status updates to match RFC (thanks {exabugs}[https://github.com/exabugs])
