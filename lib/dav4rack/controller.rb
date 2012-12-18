@@ -181,7 +181,7 @@ module DAV4Rack
       end
     end
     
-    # Return respoonse to PROPFIND
+    # Return response to PROPFIND
     def propfind
       unless(resource.exist?)
         NotFound
@@ -189,20 +189,25 @@ module DAV4Rack
         unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
           properties = resource.properties
         else
-          properties = request_document.xpath(
-            "//#{ns}propfind/#{ns}prop"
-          ).children.find_all{ |item|
-            item.element?
-          }.map{ |item|
-            # We should do this, but Nokogiri transforms prefix w/ null href into
-            # something valid.  Oops.
-            # TODO: Hacky grep fix that's horrible
-            hsh = to_element_hash(item)
-            if(hsh.namespace.nil? && !ns.empty?)
-              raise BadRequest if request_document.to_s.scan(%r{<#{item.name}[^>]+xmlns=""}).empty?
-            end
-            hsh
-          }.compact
+          check = request_document.xpath("//#{ns}propfind")
+          if(check && !check.empty?)
+            properties = request_document.xpath(
+              "//#{ns}propfind/#{ns}prop"
+            ).children.find_all{ |item|
+              item.element?
+            }.map{ |item|
+              # We should do this, but Nokogiri transforms prefix w/ null href into
+              # something valid.  Oops.
+              # TODO: Hacky grep fix that's horrible
+              hsh = to_element_hash(item)
+              if(hsh.namespace.nil? && !ns.empty?)
+                raise BadRequest if request_document.to_s.scan(%r{<#{item.name}[^>]+xmlns=""}).empty?
+              end
+              hsh
+            }.compact
+          else
+            raise BadRequest
+          end
         end
         multistatus do |xml|
           find_resources.each do |resource|
