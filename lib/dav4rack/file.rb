@@ -17,7 +17,7 @@ module DAV4Rack
     def _call(env)
       begin
         if F.file?(@path) && F.readable?(@path)
-          serving
+          serving(env)
         else
           raise Errno::EPERM
         end
