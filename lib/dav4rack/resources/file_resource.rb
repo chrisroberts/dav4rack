@@ -7,27 +7,27 @@ require 'dav4rack/file_resource_lock'
 module DAV4Rack
 
   class FileResource < Resource
-   
+
     include WEBrick::HTTPUtils
     include DAV4Rack::Utils
 
     # If this is a collection, return the child resources.
     def children
       Dir[file_path + '/*'].map do |path|
-        child File.basename(path)
+        child ::File.basename(path)
       end
     end
 
     # Is this resource a collection?
     def collection?
-      File.directory?(file_path)
+      ::File.directory?(file_path)
     end
 
     # Does this recource exist?
     def exist?
-      File.exist?(file_path)
+      ::File.exist?(file_path)
     end
-    
+
     # Return the creation time.
     def creation_date
       stat.ctime
@@ -37,10 +37,10 @@ module DAV4Rack
     def last_modified
       stat.mtime
     end
-    
+
     # Set the time of last modification.
     def last_modified=(time)
-      File.utime(Time.now, time, file_path)
+      ::File.utime(Time.now, time, file_path)
     end
 
     # Return an Etag, an unique hash value for this resource.
@@ -52,7 +52,7 @@ module DAV4Rack
     def content_type
       if stat.directory?
         "text/html"
-      else 
+      else
         mime_type(file_path, DefaultMimeTypes)
       end
     end
@@ -87,14 +87,14 @@ module DAV4Rack
       write(request.body)
       Created
     end
-    
+
     # HTTP POST request.
     #
     # Usually forbidden.
     def post(request, response)
       raise HTTPStatus::Forbidden
     end
-    
+
     # HTTP DELETE request.
     #
     # Delete this resource.
@@ -102,13 +102,13 @@ module DAV4Rack
       if stat.directory?
         FileUtils.rm_rf(file_path)
       else
-        File.unlink(file_path)
+        ::File.unlink(file_path)
       end
-      File.unlink(prop_path) if File.exists?(prop_path)
+      ::File.unlink(prop_path) if ::File.exists?(prop_path)
       @_prop_hash = nil
       NoContent
     end
-    
+
     # HTTP COPY request.
     #
     # Copy this resource to given destination resource.
@@ -136,13 +136,13 @@ module DAV4Rack
         if(dest.exist? && !overwrite)
           PreconditionFailed
         else
-          if(File.directory?(File.dirname(dest.send(:file_path))))
+          if(::File.directory?(::File.dirname(dest.send(:file_path))))
             new = !dest.exist?
             if(dest.collection? && dest.exist?)
               FileUtils.rm_rf(dest.send(:file_path))
             end
             FileUtils.cp(file_path, dest.send(:file_path).sub(/\/$/, ''))
-            FileUtils.cp(prop_path, dest.prop_path) if File.exist? prop_path
+            FileUtils.cp(prop_path, dest.prop_path) if ::File.exist? prop_path
             new ? Created : NoContent
           else
             Conflict
@@ -150,7 +150,7 @@ module DAV4Rack
         end
       end
     end
-    
+
     # HTTP MOVE request.
     #
     # Move this resource to given destination resource.
@@ -159,16 +159,16 @@ module DAV4Rack
       delete if [Created, NoContent].include?(result)
       result
     end
-    
+
     # HTTP MKCOL request.
     #
     # Create this resource as collection.
     def make_collection
       if(request.body.read.to_s == '')
-        if(File.directory?(file_path))
+        if(::File.directory?(file_path))
           MethodNotAllowed
         else
-          if(File.directory?(File.dirname(file_path)) && !File.exists?(file_path))
+          if(::File.directory?(::File.dirname(file_path)) && !::File.exists?(file_path))
             Dir.mkdir(file_path)
             Created
           else
@@ -179,7 +179,7 @@ module DAV4Rack
         UnsupportedMediaType
       end
     end
-  
+
     # Write to this resource from given IO.
     def write(io)
       tempfile = "#{file_path}.#{Process.pid}.#{object_id}"
@@ -188,11 +188,11 @@ module DAV4Rack
           file << part
         end
       end
-      File.rename(tempfile, file_path)      
+      ::File.rename(tempfile, file_path)
     ensure
-      File.unlink(tempfile) rescue nil
+      ::File.unlink(tempfile) rescue nil
     end
-    
+
     # name:: String - Property name
     # Returns the value of the given property
     def get_property(name)
@@ -312,27 +312,27 @@ module DAV4Rack
       raise NotFound unless val
       val
     end
-    
+
     def store_directory
-      path = File.join(root, '.attrib_store')
-      unless(File.directory?(File.dirname(path)))
-        FileUtils.mkdir_p(File.dirname(path))
+      path = ::File.join(root, '.attrib_store')
+      unless(::File.directory?(::File.dirname(path)))
+        FileUtils.mkdir_p(::File.dirname(path))
       end
       path
     end
 
     def prop_path
-      path = File.join(store_directory, "#{File.join(File.dirname(file_path), File.basename(file_path)).gsub('/', '_')}.pstore")
-      unless(File.directory?(File.dirname(path)))
-        FileUtils.mkdir_p(File.dirname(path))
+      path = ::File.join(store_directory, "#{::File.join(::File.dirname(file_path), ::File.basename(file_path)).gsub('/', '_')}.pstore")
+      unless(::File.directory?(::File.dirname(path)))
+        FileUtils.mkdir_p(::File.dirname(path))
       end
       path
     end
-    
+
     def lock_path
-      path = File.join(store_directory, 'locks.pstore')
-      unless(File.directory?(File.dirname(path)))
-        FileUtils.mkdir_p(File.dirname(path))
+      path = ::File.join(store_directory, 'locks.pstore')
+      unless(::File.directory?(::File.dirname(path)))
+        FileUtils.mkdir_p(::File.dirname(path))
       end
       path
     end
@@ -348,17 +348,17 @@ module DAV4Rack
         true
       end
     end
-    
+
     def root
       @options[:root]
     end
 
     def file_path
-      File.join(root, path)
+      ::File.join(root, path)
     end
 
     def stat
-      @stat ||= File.stat(file_path)
+      @stat ||= ::File.stat(file_path)
     end
 
   end
