@@ -319,6 +319,7 @@ A big thanks to everyone contributing to help make this project better.
 * {exabugs}[https://github.com/exabugs]
 * {inferiorhumanorgans}[https://github.com/inferiorhumanorgans]
 * {schmurfy}[https://github.com/schmurfy]
+* {pifleo}[https://github.com/pifleo]
 
 == License
 

@@ -9,6 +9,8 @@
 * Allow customized DAV headers (thanks {schmurfy}[https://github.com/schmurfy])
 * Extract parent collection detection to resource (thanks {schmurfy}[https://github.com/schmurfy])
 * Start of new locking implementation
+* Fix rack #serving usage in DAV4Rack::File (thanks {pifleo}[https://github.com/pifleo])
+* Force file namespacing in file resource to prevent conflicts with DAV4Rack::File (thanks {pifleo}[https://github.com/pifleo])
 
 === v0.2.11
 * URL escaping updates (thanks {exabugs}[https://github.com/exabugs])
