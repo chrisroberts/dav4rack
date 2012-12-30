@@ -286,6 +286,11 @@ Something special to notice in the last example is the DAV_ prefix on authentica
 any callbacks being applied to the given method. This allows us to provide a public method that the callback can access on the resource
 without getting stuck in a loop.
 
+== Software using DAV4Rack!
+
+* {meishi}[https://github.com/inferiorhumanorgans/meishi] - Lightweight CardDAV implementation in Rails
+* {dav4rack_ext}[https://github.com/schmurfy/dav4rack_ext] - CardDAV extension. (CalDAV planned)
+
 == Issues/Bugs/Questions
 
 === Known Issues
@@ -313,6 +318,9 @@ A big thanks to everyone contributing to help make this project better.
 * {TurchenkoAlex}[https://github.com/TurchenkoAlex]
 * {exabugs}[https://github.com/exabugs]
 * {inferiorhumanorgans}[https://github.com/inferiorhumanorgans]
+* {schmurfy}[https://github.com/schmurfy]
+* {pifleo}[https://github.com/pifleo]
+* {mlmorg}[https://github.com/mlmorg]
 
 == License
 

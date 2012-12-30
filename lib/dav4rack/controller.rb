@@ -4,6 +4,7 @@ module DAV4Rack
   
   class Controller
     include DAV4Rack::HTTPStatus
+    include DAV4Rack::Utils
     
     attr_reader :request, :response, :resource
 
@@ -17,7 +18,15 @@ module DAV4Rack
       @request = request
       @response = response
       @options = options
+      
+      @dav_extensions = options.delete(:dav_extensions) || []
+      @always_include_dav_header = options.delete(:always_include_dav_header)
+      
       @resource = resource_class.new(actual_path, implied_path, @request, @response, @options)
+      
+      if(@always_include_dav_header)
+        add_dav_header
+      end
     end
     
     # s:: string
@@ -34,13 +43,20 @@ module DAV4Rack
     # Unescape URL string
     def url_unescape(s)
       URI.unescape(s)
-    end  
+    end
+    
+    def add_dav_header
+      unless(response['Dav'])
+        dav_support = %w(1 2) + @dav_extensions
+        response['Dav'] = dav_support.join(', ')
+      end
+    end
     
     # Return response to OPTIONS
     def options
-      response["Allow"] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
-      response["Dav"] = "1, 2"
-      response["Ms-Author-Via"] = "DAV"
+      add_dav_header
+      response['Allow'] = 'OPTIONS,HEAD,GET,PUT,POST,DELETE,PROPFIND,PROPPATCH,MKCOL,COPY,MOVE,LOCK,UNLOCK'
+      response['Ms-Author-Via'] = 'DAV'
       OK
     end
     
@@ -76,10 +92,10 @@ module DAV4Rack
     def put
       if(resource.collection?)
         Forbidden
-      elsif(!resource.parent_exists? || !resource.parent.collection?)
+      elsif(!resource.parent_exists? || !resource.parent_collection?)
         Conflict
       else
-        resource.lock_check
+        resource.lock_check if resource.supports_locking?
         status = resource.put(request, response)
         response['Location'] = "#{scheme}://#{host}:#{port}#{url_format(resource)}" if status == Created
         response.body = response['Location']
@@ -95,7 +111,7 @@ module DAV4Rack
     # Return response to DELETE
     def delete
       if(resource.exist?)
-        resource.lock_check
+        resource.lock_check if resource.supports_locking?
         resource.delete
       else
         NotFound
@@ -104,7 +120,7 @@ module DAV4Rack
     
     # Return response to MKCOL
     def mkcol
-      resource.lock_check
+      resource.lock_check if resource.supports_locking?
       status = resource.make_collection
       gen_url = "#{scheme}://#{host}:#{port}#{url_format(resource)}" if status == Created
       if(resource.use_compat_mkcol_response?)
@@ -132,7 +148,7 @@ module DAV4Rack
       unless(resource.exist?)
         NotFound
       else
-        resource.lock_check unless args.include?(:copy)
+        resource.lock_check if resource.supports_locking? && !args.include(:copy)
         destination = url_unescape(env['HTTP_DESTINATION'].sub(%r{https?://([^/]+)}, ''))
         dest_host = $1
         if(dest_host && dest_host.gsub(/:\d{2,5}$/, '') != request.host)
@@ -165,25 +181,33 @@ module DAV4Rack
       end
     end
     
-    # Return respoonse to PROPFIND
+    # Return response to PROPFIND
     def propfind
       unless(resource.exist?)
         NotFound
       else
         unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
-          names = resource.property_names
+          properties = resource.properties
         else
-          names = (
-            ns.empty? ? request_document.remove_namespaces! : request_document
-          ).xpath(
-            "//#{ns}propfind/#{ns}prop"
-          ).children.find_all{ |item|
-            item.element? && item.name.start_with?(ns)
-          }.map{ |item|
-            item.name.sub("#{ns}::", '')
-          }
-          raise BadRequest if names.empty?
-          names = resource.property_names if names.empty?
+          check = request_document.xpath("//#{ns}propfind")
+          if(check && !check.empty?)
+            properties = request_document.xpath(
+              "//#{ns}propfind/#{ns}prop"
+            ).children.find_all{ |item|
+              item.element?
+            }.map{ |item|
+              # We should do this, but Nokogiri transforms prefix w/ null href into
+              # something valid.  Oops.
+              # TODO: Hacky grep fix that's horrible
+              hsh = to_element_hash(item)
+              if(hsh.namespace.nil? && !ns.empty?)
+                raise BadRequest if request_document.to_s.scan(%r{<#{item.name}[^>]+xmlns=""}).empty?
+              end
+              hsh
+            }.compact
+          else
+            raise BadRequest
+          end
         end
         multistatus do |xml|
           find_resources.each do |resource|
@@ -193,7 +217,7 @@ module DAV4Rack
               else
                 xml.href url_format(resource)
               end
-              propstats(xml, get_properties(resource, names))
+              propstats(xml, get_properties(resource, properties.empty? ? resource.properties : properties))
             end
           end
         end
@@ -205,14 +229,32 @@ module DAV4Rack
       unless(resource.exist?)
         NotFound
       else
-        resource.lock_check
-        prop_rem = request_match('/propertyupdate/remove/prop').children.map{|n| [n.name] }
-        prop_set = request_match('/propertyupdate/set/prop').children.map{|n| [n.name, n.text] }
+        resource.lock_check if resource.supports_locking?
+        prop_actions = []
+        request_document.xpath("/#{ns}propertyupdate").children.each do |element|
+          case element.name
+          when 'set', 'remove'
+            prp = element.children.detect{|e|e.name == 'prop'}
+            if(prp)
+              prp.children.each do |elm|
+                next if elm.name == 'text'
+                prop_actions << {:type => element.name, :name => to_element_hash(elm), :value => elm.text}
+              end
+            end
+          end
+        end
         multistatus do |xml|
           find_resources.each do |resource|
             xml.response do
               xml.href "#{scheme}://#{host}:#{port}#{url_format(resource)}"
-              propstats(xml, set_properties(resource, prop_set))
+              prop_actions.each do |action|
+                case action[:type]
+                when 'set'
+                  propstats(xml, set_properties(resource, action[:name] => action[:value]))
+                when 'remove'
+                  rm_properties(resource, action[:name] => action[:value])
+                end
+              end
             end
           end
         end
@@ -260,6 +302,7 @@ module DAV4Rack
               end
             end
           end
+          response.headers['Lock-Token'] = locktoken
           response.status = resource.exist? ? OK : Created
         rescue LockFailure => e
           multistatus do |xml|
@@ -299,9 +342,6 @@ module DAV4Rack
       end
       raise Unauthorized unless authed
     end
-    
-    # ************************************************************
-    # private methods
     
     private
 
@@ -402,22 +442,21 @@ module DAV4Rack
 
     # Namespace being used within XML document
     # TODO: Make this better
-    def ns
+    def ns(wanted_uri="DAV:")
       _ns = ''
       if(request_document && request_document.root && request_document.root.namespace_definitions.size > 0)
-        _ns = request_document.root.namespace_definitions.first.prefix.to_s
+        _ns = request_document.root.namespace_definitions.collect{|__ns| __ns if __ns.href == wanted_uri}.compact
+        if _ns.empty?
+          _ns = request_document.root.namespace_definitions.first.prefix.to_s if _ns.empty?
+        else
+          _ns = _ns.first
+          _ns = _ns.prefix.nil? ? 'xmlns' : _ns.prefix.to_s
+        end
         _ns += ':' unless _ns.empty?
       end
       _ns
     end
     
-    # pattern:: XPath pattern
-    # Search XML document for given XPath
-    # TODO: Stripping namespaces not so great
-    def request_match(pattern)
-      request_document.remove_namespaces!.xpath(pattern, request_document.root.namespaces)
-    end
-
     # root_type:: Root tag name
     # Render XML and set Rack::Response#body= to final XML
     def render_xml(root_type)
@@ -462,35 +501,44 @@ module DAV4Rack
     end
 
     # resource:: Resource
-    # names:: Property names
+    # elements:: Property hashes (name, ns_href, children)
     # Returns array of property values for given names
-    def get_properties(resource, names)
+    def get_properties(resource, elements)
       stats = Hash.new { |h, k| h[k] = [] }
-      for name in names
+      for element in elements
         begin
-          val = resource.get_property(name)
-          stats[OK].push [name, val]
+          val = resource.get_property(element)
+          stats[OK] << [element, val]
         rescue Unauthorized => u
           raise u
         rescue Status
-          stats[$!.class] << name
+          stats[$!.class] << element
         end
       end
       stats
     end
 
     # resource:: Resource
-    # pairs:: name value pairs
+    # elements:: Property hashes (name, namespace, children)
+    # Removes the given properties from a resource
+    def rm_properties(resource, elements)
+      for element, value in elements
+        resource.remove_property(element)
+      end
+    end
+
+    # resource:: Resource
+    # elements:: Property hashes (name, namespace, children)
     # Sets the given properties
-    def set_properties(resource, pairs)
+    def set_properties(resource, elements)
       stats = Hash.new { |h, k| h[k] = [] }
-      for name, value in pairs
+      for element, value in elements
         begin
-          stats[OK] << [name, resource.set_property(name, value)]
+          stats[OK] << [element, resource.set_property(element, value)]
         rescue Unauthorized => u
           raise u
         rescue Status
-          stats[$!.class] << name
+          stats[$!.class] << element
         end
       end
       stats
@@ -504,20 +552,36 @@ module DAV4Rack
       for status, props in stats
         xml.propstat do
           xml.prop do
-            for name, value in props
-              if(value.is_a?(Nokogiri::XML::DocumentFragment))
-                xml.__send__ :insert, value
-              elsif(value.is_a?(Nokogiri::XML::Node))
-                xml.send(name) do
-                  xml_convert(xml, value)
-                end
-              elsif(value.is_a?(Symbol))
-                xml.send(name) do
-                  xml.send(value)
+            for element, value in props
+              defn = xml.doc.root.namespace_definitions.find{|ns_def| ns_def.href == element[:ns_href]}
+              if defn.nil?
+                if element[:ns_href] and not element[:ns_href].empty?
+                  _ns = "unknown#{rand(65536)}"
+                  xml.doc.root.add_namespace_definition(_ns, element[:ns_href])
+                else
+                  _ns = nil
                 end
               else
-                xml.send(name, value)
+                # Unfortunately Nokogiri won't let the null href, non-null prefix happen
+                # So we can't properly handle that error.
+                _ns = element[:ns_href].nil? ? nil : defn.prefix
               end
+              ns_xml = _ns.nil? ? xml : xml[_ns]
+              if (value.is_a?(Nokogiri::XML::Node)) or (value.is_a?(Nokogiri::XML::DocumentFragment))
+                xml.__send__ :insert, value
+              elsif(value.is_a?(Symbol))
+                ns_xml.send(element[:name]) do
+                  ns_xml.send(value)
+                end
+              else
+                ns_xml.send(element[:name], value) do |x|
+                  # Make sure we return valid XML
+                  x.parent.namespace = nil if _ns.nil?
+                end
+              end
+
+              # This is gross, but make sure we set the current namespace back to DAV:
+              xml['D']
             end
           end
           xml.status "#{http_version} #{status.status_line}"

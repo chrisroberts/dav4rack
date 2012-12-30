@@ -117,7 +117,12 @@ module DAV4Rack
       @runner.call(class_sym, :after, orig)
       result
     end
-    
+  
+    # Returns if resource supports locking
+    def supports_locking?
+      false #true
+    end
+
     # If this is a collection, return the child resources.
     def children
       NotImplemented
@@ -136,6 +141,11 @@ module DAV4Rack
     # Does the parent resource exist?
     def parent_exists?
       parent.exist?
+    end
+    
+    # Is the parent resource a collection?
+    def parent_collection?
+      parent.collection?
     end
     
     # Return the creation time.
@@ -341,14 +351,17 @@ module DAV4Rack
     end
     
     # Available properties
-    def property_names
-      %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength)
+    def properties
+      %w(creationdate displayname getlastmodified getetag resourcetype getcontenttype getcontentlength).collect do |prop|
+        {:name => prop, :ns_href => 'DAV:'}
+      end
     end
     
     # name:: String - Property name
     # Returns the value of the given property
-    def get_property(name)
-      case name
+    def get_property(element)
+      raise NotImplemented if (element[:ns_href] != 'DAV:')
+      case element[:name]
       when 'resourcetype'     then resource_type
       when 'displayname'      then display_name
       when 'creationdate'     then use_ms_compat_creationdate? ? creation_date.httpdate : creation_date.xmlschema 
@@ -356,24 +369,27 @@ module DAV4Rack
       when 'getcontenttype'   then content_type
       when 'getetag'          then etag
       when 'getlastmodified'  then last_modified.httpdate
+      else                    raise NotImplemented
       end
     end
 
     # name:: String - Property name
     # value:: New value
     # Set the property to the given value
-    def set_property(name, value)
-      case name
+    def set_property(element, value)
+      raise NotImplemented if (element[:ns_href] != 'DAV:')
+      case element[:name]
       when 'resourcetype'    then self.resource_type = value
       when 'getcontenttype'  then self.content_type = value
       when 'getetag'         then self.etag = value
       when 'getlastmodified' then self.last_modified = Time.httpdate(value)
+      else                   raise NotImplemented
       end
     end
 
     # name:: Property name
     # Remove the property from the resource
-    def remove_property(name)
+    def remove_property(element)
       Forbidden
     end
 
@@ -463,7 +479,7 @@ module DAV4Rack
       auth = Rack::Auth::Basic::Request.new(request.env)
       auth.provided? && auth.basic? ? auth.credentials : [nil,nil]
     end
-    
+
   end
 
 end
