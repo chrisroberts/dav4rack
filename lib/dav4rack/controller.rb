@@ -459,15 +459,8 @@ module DAV4Rack
     
     # root_type:: Root tag name
     # Render XML and set Rack::Response#body= to final XML
-    def render_xml(root_type)
-      raise ArgumentError.new 'Expecting block' unless block_given?
-      doc = Nokogiri::XML::Builder.new do |xml_base|
-        xml_base.send(root_type.to_s, {'xmlns:D' => 'DAV:'}.merge(resource.root_xml_attributes)) do
-          xml_base.parent.namespace = xml_base.parent.namespace_definitions.first
-          xml = xml_base['D']
-          yield xml
-        end
-      end
+    def render_xml(*args, &block)
+      doc = resource.build_xml(*args, &block)
      
       if(@options[:pretty_xml])
         response.body = doc.to_xml
