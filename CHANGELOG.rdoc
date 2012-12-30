@@ -11,6 +11,7 @@
 * Start of new locking implementation
 * Fix rack #serving usage in DAV4Rack::File (thanks {pifleo}[https://github.com/pifleo])
 * Force file namespacing in file resource to prevent conflicts with DAV4Rack::File (thanks {pifleo}[https://github.com/pifleo])
+* Add ability to build xml from within a resource (thanks {mlmorg}[https://github.com/mlmorg])
 
 === v0.2.11
 * URL escaping updates (thanks {exabugs}[https://github.com/exabugs])
