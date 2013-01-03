@@ -342,7 +342,7 @@ module DAV4Rack
 
     # Name of the resource
     def name
-      File.basename(path)
+      ::File.basename(path)
     end
 
     # Name of the resource to be displayed to the client
@@ -410,8 +410,8 @@ module DAV4Rack
     def parent
       unless(@path.to_s.empty?)
         self.class.new(
-          File.split(@public_path).first,
-          File.split(@path).first,
+          ::File.split(@public_path).first,
+          ::File.split(@path).first,
           @request,
           @response,
           @options.merge(
