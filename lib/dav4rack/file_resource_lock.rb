@@ -77,8 +77,8 @@ module DAV4Rack
       end
 
       def init_pstore(croot)
-        path = File.join(croot, '.attribs', 'locks.pstore')
-        FileUtils.mkdir_p(File.dirname(path)) unless File.directory?(File.dirname(path))
+        path = ::File.join(croot, '.attribs', 'locks.pstore')
+        FileUtils.mkdir_p(::File.dirname(path)) unless ::File.directory?(::File.dirname(path))
         store = IS_18 ? PStore.new(path) : PStore.new(path, true)
         store.transaction do
           unless(store[:paths])
