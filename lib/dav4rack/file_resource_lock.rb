@@ -43,8 +43,17 @@ module DAV4Rack
         struct = store.transaction(true){
           store[:tokens][token]
         }
-        if(tok)
-          self.class.new(:path => struct[:path], :root => croot)
+
+        # MS Word patch # MS remove first and last char of tokens
+        if !struct
+          struct = store.transaction(true){
+            store[:tokens].keys.each {|k| token = k if k.include?(token) }
+            store[:tokens][token]
+          }
+        end
+
+        if(struct)
+          self.new(:path => struct[:path], :root => croot)
         else
           nil
         end
@@ -68,8 +77,8 @@ module DAV4Rack
       end
 
       def init_pstore(croot)
-        path = File.join(croot, '.attribs', 'locks.pstore')
-        FileUtils.mkdir_p(File.dirname(path)) unless File.directory?(File.dirname(path))
+        path = ::File.join(croot, '.attribs', 'locks.pstore')
+        FileUtils.mkdir_p(::File.dirname(path)) unless ::File.directory?(::File.dirname(path))
         store = IS_18 ? PStore.new(path) : PStore.new(path, true)
         store.transaction do
           unless(store[:paths])
@@ -109,9 +118,9 @@ module DAV4Rack
 
     def save
       struct = {
-        :path => path, 
-        :token => token, 
-        :timeout => timeout, 
+        :path => path,
+        :token => token,
+        :timeout => timeout,
         :depth => depth,
         :created_at => Time.now,
         :owner => owner
