@@ -186,8 +186,8 @@ module DAV4Rack
       unless(resource.exist?)
         NotFound
       else
-        unless(request_document.xpath("//#{ns}propfind/#{ns}allprop").empty?)
-          properties = resource.properties
+        if request_document.xpath("//#{ns}propfind").empty? || request_document.xpath("//#{ns}propfind/#{ns}allprop").present?
+          properties = resource.properties.map { |prop| DAVElement.new(prop.merge(:namespace => DAVElement.new(:href => prop[:ns_href]))) }
         else
           check = request_document.xpath("//#{ns}propfind")
           if(check && !check.empty?)
