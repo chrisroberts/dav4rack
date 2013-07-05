@@ -1,5 +1,8 @@
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__)) + '/lib/'
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'dav4rack/version'
+
 Gem::Specification.new do |s|
   s.name = 'dav4rack'
   s.version = DAV4Rack::VERSION
@@ -12,29 +15,14 @@ Gem::Specification.new do |s|
   s.executables << 'dav4rack'
   s.has_rdoc = true
   s.extra_rdoc_files = ['README.rdoc']
+
+  s.files = `git ls-files`.split($/)
+  s.test_files = s.files.grep(%r{^(test|spec|features)/})
+
   s.add_dependency 'nokogiri', '>= 1.4.2'
   s.add_dependency 'uuidtools', '~> 2.1.1'
   s.add_dependency 'rack', '>= 1.1.0'
-  s.files = %w{
-.gitignore
-LICENSE
-dav4rack.gemspec
-lib/dav4rack.rb
-lib/dav4rack/file_resource.rb
-lib/dav4rack/handler.rb
-lib/dav4rack/controller.rb
-lib/dav4rack/http_status.rb
-lib/dav4rack/resource.rb
-lib/dav4rack/interceptor.rb
-lib/dav4rack/interceptor_resource.rb
-lib/dav4rack/remote_file.rb
-lib/dav4rack/file.rb
-lib/dav4rack/lock.rb
-lib/dav4rack/lock_store.rb
-lib/dav4rack/logger.rb
-lib/dav4rack/version.rb
-bin/dav4rack
-spec/handler_spec.rb
-README.rdoc
-}
+
+  s.add_development_dependency 'rack-test', '>= 0.6.0'
+
 end
