@@ -23,11 +23,11 @@ module DAV4Rack
     end
 
     def creation_date
-      repo.log('HEAD', relative_path).last.date
+      repo.log('HEAD', relative_path).last.date rescue Time.at(0)
     end
 
     def last_modified
-      repo.log('HEAD', relative_path, max_count: 1).first.date
+      repo.log('HEAD', relative_path, max_count: 1).first.date rescue Time.at(0)
     end
 
     def etag
