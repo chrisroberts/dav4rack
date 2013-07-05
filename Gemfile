@@ -6,5 +6,6 @@ gem 'mongo'
 gem 'mongoid'
 gem 'unicorn'
 gem 'rspec'
+gem 'grit'
 
 gemspec
