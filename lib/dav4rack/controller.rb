@@ -148,7 +148,7 @@ module DAV4Rack
       unless(resource.exist?)
         NotFound
       else
-        resource.lock_check if resource.supports_locking? && !args.include(:copy)
+        resource.lock_check if resource.supports_locking? && !args.include?(:copy)
         destination = url_unescape(env['HTTP_DESTINATION'].sub(%r{https?://([^/]+)}, ''))
         dest_host = $1
         if(dest_host && dest_host.gsub(/:\d{2,5}$/, '') != request.host)
