@@ -86,7 +86,8 @@ module DAV4Rack
       @options = options.dup
       @max_timeout = options[:max_timeout] || 86400
       @default_timeout = options[:default_timeout] || 60
-      @user = @options[:user] || request.ip
+      options[:user] ||= request.ip
+      @user = @options[:user]
       setup if respond_to?(:setup)
       public_methods(false).each do |method|
         next if @skip_alias.include?(method.to_sym) || method[0,4] == 'DAV_' || method[0,5] == '_DAV_'
