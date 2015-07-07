@@ -43,8 +43,8 @@ module DAV4Rack
         struct = store.transaction(true){
           store[:tokens][token]
         }
-        if(tok)
-          self.class.new(:path => struct[:path], :root => croot)
+        if(token)
+          self.new(:path => struct[:path], :root => croot)
         else
           nil
         end

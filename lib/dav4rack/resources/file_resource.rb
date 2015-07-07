@@ -259,8 +259,8 @@ module DAV4Rack
       if(token.nil? || token.empty?)
         BadRequest
       else
-        lock = FileResourceLock.find_by_token(token)
-        if(lock.nil? || lock.user_id != @user.id)
+        lock = FileResourceLock.find_by_token(token, root)
+        if(lock.nil? || lock.user != @user)
           Forbidden
         elsif(lock.path !~ /^#{Regexp.escape(@path)}.*$/)
           Conflict
@@ -350,7 +350,7 @@ module DAV4Rack
     end
 
     def root
-      @options[:root]
+      options[:root]
     end
 
     def file_path
